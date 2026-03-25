@@ -156,6 +156,7 @@ class AgentService:
         user_message: str,
         agent_name: Optional[str],
         instructions: str,
+        max_tokens: int = 800,
     ) -> str:
         """统一的 Agent 调用方法。优先用 agent_reference, 失败则 fallback 到 instructions。"""
         self._ensure_client()
@@ -164,6 +165,7 @@ class AgentService:
         kwargs: dict = {
             "model": settings.MODEL_DEPLOYMENT,
             "input": user_message,
+            "max_output_tokens": max_tokens,
         }
         if prev_id:
             kwargs["previous_response_id"] = prev_id
@@ -214,6 +216,7 @@ class AgentService:
                 user_message=user_message,
                 agent_name=settings.VOICE_AGENT_NAME,
                 instructions=VOICE_INSTRUCTIONS,
+                max_tokens=200,
             )
         except Exception as e:
             logger.error("Voice chat error: %s", e, exc_info=True)
