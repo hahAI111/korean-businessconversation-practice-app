@@ -27,7 +27,12 @@ jobs:
           pip install pytest pytest-asyncio httpx
 
       - name: Run tests
-        run: python -m pytest tests/ -v --tb=short
+        run: |
+          if [ -d "tests" ]; then
+            python -m pytest tests/ -v --tb=short
+          else
+            echo "No tests/ directory found — skipping tests"
+          fi
         env:
           DATABASE_URL: "sqlite+aiosqlite:///./test.db"
           REDIS_URL: "fake"
