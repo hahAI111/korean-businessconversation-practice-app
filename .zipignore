@@ -1,0 +1,14 @@
+.venv
+__pycache__
+*.pyc
+.git
+.azure
+_bmad
+bmad-docs
+applogs
+logs2
+*.zip
+docker_log_today.txt
+docker-compose.yml
+Dockerfile
+.env.local

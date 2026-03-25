@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#c9a96e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Korean Biz Coach — Vocabulary</title>
+  <link rel="stylesheet" href="/static/style.css?v=3">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/static/chat.html" class="nav-brand">
+      <span class="brand-icon">🇰🇷</span> KBCoach
+    </a>
+    <ul class="nav-links">
+      <li><a href="/static/chat.html">Chat</a></li>
+      <li><a href="/static/vocab.html" class="active">Vocabulary</a></li>
+      <li><a href="/static/progress.html">Progress</a></li>
+      <li><button id="logoutBtn">Logout</button></li>
+    </ul>
+  </nav>
+
+  <div class="page-body">
+    <div class="vocab-page container">
+      <div class="vocab-header">
+        <h1 class="section-title">📖 Vocabulary</h1>
+        <div style="display:flex;gap:0.8rem;align-items:center;">
+          <div class="vocab-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="unmastered">Learning</button>
+            <button class="filter-btn" data-filter="mastered">Mastered</button>
+          </div>
+          <button class="btn btn-sm" id="addVocabBtn">+ Add</button>
+        </div>
+      </div>
+
+      <div class="vocab-grid" id="vocabGrid">
+        <div class="loading">Loading...</div>
+      </div>
+
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-icon">📚</div>
+        <p>No vocabulary yet. Go to <a href="/static/chat.html" style="color:var(--primary);">Chat</a> to learn and add words!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Vocab Modal -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal">
+      <h2 id="modalTitle">➕ Add Vocabulary</h2>
+      <form id="addVocabForm">
+        <input type="hidden" id="editVocabId" value="">
+        <div class="form-group">
+          <label>Korean Word *</label>
+          <input type="text" id="wordKo" placeholder="e.g. 회의" required>
+        </div>
+        <div class="form-group">
+          <label>Romanization</label>
+          <input type="text" id="wordRoman" placeholder="e.g. hoe-ui">
+        </div>
+        <div class="form-group">
+          <label>Meaning *</label>
+          <input type="text" id="meaningZh" placeholder="e.g. meeting" required>
+        </div>
+        <div class="form-group">
+          <label>Example Sentence</label>
+          <input type="text" id="exampleSentence" placeholder="e.g. 회의가 몇 시에 시작해요?">
+        </div>
+        <div class="form-group">
+          <label>Tags (comma-separated)</label>
+          <input type="text" id="vocabTags" placeholder="e.g. meeting, business">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline btn-sm" id="cancelModal">Cancel</button>
+          <button type="submit" class="btn btn-sm" id="modalSubmitBtn">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/static/app.js"></script>
+  <script>
+    if (!Auth.token) { window.location.href = '/static/index.html'; }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
+
+    const vocabGrid = document.getElementById('vocabGrid');
+    const emptyState = document.getElementById('emptyState');
+    const addModal = document.getElementById('addModal');
+    let currentFilter = 'all';
+    let allVocab = [];
+
+    // ── Load Vocab ──
+    async function loadVocab() {
+      try {
+        allVocab = await Api.get('/api/vocab');
+        renderVocab();
+      } catch (err) {
+        vocabGrid.innerHTML = `<p style="color:var(--danger);">Failed to load: ${err.message}</p>`;
+      }
+    }
+
+    function renderVocab() {
+      let filtered = allVocab;
+      if (currentFilter === 'mastered') filtered = allVocab.filter(v => v.mastered);
+      if (currentFilter === 'unmastered') filtered = allVocab.filter(v => !v.mastered);
+
+      if (filtered.length === 0) {
+        vocabGrid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      emptyState.style.display = 'none';
+
+      vocabGrid.innerHTML = filtered.map(v => `
+        <div class="vocab-card ${v.mastered ? 'mastered' : ''}" data-id="${v.id}">
+          <div class="vocab-card-actions-top">
+            <button class="vocab-action-icon" onclick="editVocab(${v.id})" title="Edit">✏️</button>
+            <button class="vocab-action-icon danger" onclick="deleteVocab(${v.id})" title="Delete">🗑️</button>
+          </div>
+          <div class="vocab-word">${escHtml(v.word_ko)}</div>
+          <div class="vocab-romanized">${escHtml(v.word_romanized)}</div>
+          <div class="vocab-meaning">${escHtml(v.meaning_zh)}</div>
+          ${v.example_sentence ? `<div class="vocab-example">"${escHtml(v.example_sentence)}"</div>` : ''}
+          <div class="vocab-tags">
+            ${(v.tags || []).map(t => `<span class="tag">${escHtml(t)}</span>`).join('')}
+          </div>
+          <div class="vocab-actions">
+            <button class="btn btn-sm ${v.mastered ? 'btn-outline' : 'btn-success'}" onclick="toggleMaster(${v.id})">
+              ${v.mastered ? '↩ Relearn' : '✓ Mastered'}
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escHtml(s) {
+      return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
+    }
+
+    // ── Filters ──
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderVocab();
+      });
+    });
+
+    // ── Toggle Master ──
+    async function toggleMaster(id) {
+      try {
+        await Api.patch(`/api/vocab/${id}/master`);
+        const v = allVocab.find(x => x.id === id);
+        if (v) v.mastered = !v.mastered;
+        renderVocab();
+        Toast.show(v?.mastered ? 'Marked as mastered ✓' : 'Marked as learning', 'success');
+      } catch (err) {
+        Toast.show('Failed: ' + err.message, 'error');
+      }
+    }
+
+    // ── Delete ──
+    async function deleteVocab(id) {
+      if (!confirm('Delete this word?')) return;
+      try {
+        await Api.del(`/api/vocab/${id}`);
+        allVocab = allVocab.filter(v => v.id !== id);
+        renderVocab();
+        Toast.show('Deleted', 'success');
+      } catch (err) {
+        Toast.show('Delete failed: ' + err.message, 'error');
+      }
+    }
+
+    // ── Add Modal ──
+    document.getElementById('addVocabBtn').addEventListener('click', () => {
+      document.getElementById('editVocabId').value = '';
+      document.getElementById('modalTitle').textContent = '➕ Add Vocabulary';
+      document.getElementById('modalSubmitBtn').textContent = 'Add';
+      document.getElementById('addVocabForm').reset();
+      addModal.classList.add('show');
+    });
+    document.getElementById('cancelModal').addEventListener('click', () => addModal.classList.remove('show'));
+    addModal.addEventListener('click', (e) => { if (e.target === addModal) addModal.classList.remove('show'); });
+
+    // ── Edit Vocab ──
+    function editVocab(id) {
+      const v = allVocab.find(x => x.id === id);
+      if (!v) return;
+      document.getElementById('editVocabId').value = id;
+      document.getElementById('modalTitle').textContent = '✏️ Edit Vocabulary';
+      document.getElementById('modalSubmitBtn').textContent = 'Save';
+      document.getElementById('wordKo').value = v.word_ko;
+      document.getElementById('wordRoman').value = v.word_romanized || '';
+      document.getElementById('meaningZh').value = v.meaning_zh;
+      document.getElementById('exampleSentence').value = v.example_sentence || '';
+      document.getElementById('vocabTags').value = (v.tags || []).join(', ');
+      addModal.classList.add('show');
+    }
+
+    document.getElementById('addVocabForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const editId = document.getElementById('editVocabId').value;
+      try {
+        const tags = document.getElementById('vocabTags').value
+          .split(',').map(t => t.trim()).filter(Boolean);
+        const payload = {
+          word_ko: document.getElementById('wordKo').value,
+          word_romanized: document.getElementById('wordRoman').value,
+          meaning_zh: document.getElementById('meaningZh').value,
+          example_sentence: document.getElementById('exampleSentence').value,
+          tags,
+        };
+
+        if (editId) {
+          // Update existing
+          const updated = await Api.put(`/api/vocab/${editId}`, payload);
+          const idx = allVocab.findIndex(v => v.id === parseInt(editId));
+          if (idx > -1) allVocab[idx] = updated;
+          Toast.show('Updated: ' + updated.word_ko, 'success');
+        } else {
+          // Add new
+          const newVocab = await Api.post('/api/vocab', payload);
+          allVocab.unshift(newVocab);
+          Toast.show('Added: ' + newVocab.word_ko, 'success');
+        }
+        renderVocab();
+        addModal.classList.remove('show');
+        e.target.reset();
+        document.getElementById('editVocabId').value = '';
+      } catch (err) {
+        Toast.show((editId ? 'Update' : 'Add') + ' failed: ' + err.message, 'error');
+      }
+    });
+
+    // Init
+    loadVocab();
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

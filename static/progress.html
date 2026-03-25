@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#c9a96e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Korean Biz Coach — Progress</title>
+  <link rel="stylesheet" href="/static/style.css?v=3">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/static/chat.html" class="nav-brand">
+      <span class="brand-icon">🇰🇷</span> KBCoach
+    </a>
+    <ul class="nav-links">
+      <li><a href="/static/chat.html">Chat</a></li>
+      <li><a href="/static/vocab.html">Vocabulary</a></li>
+      <li><a href="/static/progress.html" class="active">Progress</a></li>
+      <li><button id="logoutBtn">Logout</button></li>
+    </ul>
+  </nav>
+
+  <div class="page-body">
+    <div class="progress-page container">
+      <h1 class="section-title">📊 Learning Progress</h1>
+
+      <!-- Check-in Section -->
+      <div class="checkin-section" id="checkinSection">
+        <h3>📅 Daily Check-in / 每日打卡</h3>
+        <p class="checkin-subtitle">Keep your streak alive! / 坚持每日学习打卡</p>
+        <button class="checkin-btn" id="checkinBtn" onclick="doCheckin()">
+          ✅ Check In Today / 今日打卡
+        </button>
+        <div class="checkin-today-info" id="checkinInfo"></div>
+        <div class="checkin-streak-badge" id="streakBadge" style="display:none;">
+          🔥 <span id="streakBadgeCount">0</span> Day Streak
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-value" id="streakDays">-</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-value" id="todayMinutes">-</div>
+          <div class="stat-label">Study Minutes (Today)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📚</div>
+          <div class="stat-value" id="completedLessons">-</div>
+          <div class="stat-label">Lessons Completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📖</div>
+          <div class="stat-value" id="vocabCount">-</div>
+          <div class="stat-label">Words Learned</div>
+        </div>
+      </div>
+
+      <!-- Streak Chart -->
+      <div class="streak-chart">
+        <h3>📅 Last 30 Days Study Record</h3>
+        <div class="streak-bar-container" id="streakChart">
+          <div class="loading">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Vocab Summary -->
+      <div style="margin-top:2rem;">
+        <h3 style="color:var(--white);margin-bottom:1rem;">📝 Recently Added Words</h3>
+        <div class="vocab-grid" id="recentVocab" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));">
+          <div class="loading">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/static/app.js"></script>
+  <script>
+    if (!Auth.token) { window.location.href = '/static/index.html'; }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
+
+    // ── Load Progress ──
+    async function loadProgress() {
+      try {
+        const [progress, vocab] = await Promise.all([
+          Api.get('/api/progress'),
+          Api.get('/api/vocab'),
+        ]);
+
+        document.getElementById('streakDays').textContent = progress.current_streak_days;
+        document.getElementById('todayMinutes').textContent = progress.total_study_minutes;
+        document.getElementById('completedLessons').textContent = progress.completed_lessons;
+        document.getElementById('vocabCount').textContent = vocab.length;
+
+        // Recent vocab (latest 6)
+        const recentVocab = document.getElementById('recentVocab');
+        const recent = vocab.slice(0, 6);
+        if (recent.length === 0) {
+          recentVocab.innerHTML = '<div class="empty-state"><p>No vocabulary yet</p></div>';
+        } else {
+          recentVocab.innerHTML = recent.map(v => `
+            <div class="vocab-card ${v.mastered ? 'mastered' : ''}">
+              <div class="vocab-word">${esc(v.word_ko)}</div>
+              <div class="vocab-romanized">${esc(v.word_romanized)}</div>
+              <div class="vocab-meaning">${esc(v.meaning_zh)}</div>
+              <div class="vocab-tags">
+                ${(v.tags||[]).map(t => `<span class="tag">${esc(t)}</span>`).join('')}
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        Toast.show('Failed to load: ' + err.message, 'error');
+      }
+    }
+
+    // ── Load Streaks ──
+    async function loadStreaks() {
+      const chart = document.getElementById('streakChart');
+      try {
+        const streaks = await Api.get('/api/streaks?days=30');
+
+        if (streaks.length === 0) {
+          // Generate empty bars for 30 days
+          const bars = [];
+          for (let i = 29; i >= 0; i--) {
+            const d = new Date(); d.setDate(d.getDate() - i);
+            bars.push(`<div class="streak-bar" style="height:4px;">
+              <div class="streak-tooltip">${d.toLocaleDateString('en-US', {month:'short',day:'numeric'})} — 0 min</div>
+            </div>`);
+          }
+          chart.innerHTML = bars.join('');
+          return;
+        }
+
+        // Map streaks by date
+        const byDate = {};
+        streaks.forEach(s => { byDate[s.date] = s.minutes_studied; });
+        let maxMin = Math.max(...streaks.map(s => s.minutes_studied), 1);
+
+        const bars = [];
+        for (let i = 29; i >= 0; i--) {
+          const d = new Date(); d.setDate(d.getDate() - i);
+          const key = d.toISOString().slice(0, 10);
+          const mins = byDate[key] || 0;
+          const h = Math.max(4, (mins / maxMin) * 90);
+          const active = mins > 0 ? 'active' : '';
+          bars.push(`<div class="streak-bar ${active}" style="height:${h}px;">
+            <div class="streak-tooltip">${d.toLocaleDateString('en-US', {month:'short',day:'numeric'})} — ${mins} min</div>
+          </div>`);
+        }
+        chart.innerHTML = bars.join('');
+      } catch {
+        chart.innerHTML = '<p style="color:var(--text-muted);">No data yet</p>';
+      }
+    }
+
+    function esc(s) {
+      return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
+    }
+
+    // ── Check-in ──
+    async function doCheckin() {
+      const btn = document.getElementById('checkinBtn');
+      btn.disabled = true;
+      try {
+        const result = await Api.post('/api/checkin', {});
+        if (result.already) {
+          btn.classList.add('checked');
+          btn.textContent = '✅ Already Checked In / 已打卡';
+          document.getElementById('checkinInfo').textContent = result.message;
+        } else {
+          btn.classList.add('checked');
+          btn.textContent = '✅ Checked In! / 已打卡';
+          document.getElementById('checkinInfo').textContent = result.message;
+          document.getElementById('streakBadge').style.display = 'inline-flex';
+          document.getElementById('streakBadgeCount').textContent = result.streak_days;
+          Toast.show(result.message, 'success');
+          // Reload data to update charts
+          loadProgress();
+          loadStreaks();
+        }
+      } catch (err) {
+        btn.disabled = false;
+        Toast.show('Check-in failed: ' + err.message, 'error');
+      }
+    }
+
+    // Check if already checked in today on load
+    async function checkTodayStatus() {
+      try {
+        const streaks = await Api.get('/api/streaks?days=1');
+        if (streaks.length > 0) {
+          const today = new Date().toISOString().slice(0, 10);
+          if (streaks[0].date === today) {
+            const btn = document.getElementById('checkinBtn');
+            btn.classList.add('checked');
+            btn.textContent = '✅ Already Checked In / 已打卡';
+            btn.disabled = true;
+            document.getElementById('checkinInfo').textContent =
+              `Today: ${streaks[0].minutes_studied} min studied`;
+          }
+        }
+      } catch {}
+    }
+
+    // Init
+    Promise.all([loadProgress(), loadStreaks(), checkTodayStatus()]);
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Korean Biz Coach — Offline</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0b0e13;
+      color: #e2dfd8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .offline-card {
+      text-align: center;
+      max-width: 400px;
+    }
+    .offline-icon { font-size: 4rem; margin-bottom: 1.5rem; }
+    h1 { color: #c9a96e; font-size: 1.5rem; margin-bottom: 0.5rem; }
+    p { color: #8a8a8a; margin-bottom: 1.5rem; line-height: 1.6; }
+    .retry-btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: linear-gradient(135deg, #c9a96e, #b8944d);
+      color: #0b0e13;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .retry-btn:hover { opacity: 0.9; }
+    .links { margin-top: 2rem; }
+    .links a {
+      color: #c9a96e;
+      text-decoration: none;
+      margin: 0 0.5rem;
+      font-size: 0.9rem;
+    }
+    .links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="offline-card">
+    <div class="offline-icon">📡</div>
+    <h1>오프라인 상태입니다</h1>
+    <p>인터넷 연결이 끊어졌습니다.<br>연결을 확인한 후 다시 시도해 주세요.</p>
+    <p style="font-size: 0.85rem;">网络连接已断开，请检查网络后重试。</p>
+    <button class="retry-btn" onclick="location.reload()">다시 시도 · 重试</button>
+    <div class="links">
+      <a href="/static/vocab.html">📖 단어장 · 单词本</a>
+    </div>
+  </div>
+</body>
+</html>

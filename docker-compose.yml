@@ -1,0 +1,11 @@
+services:
+  # ── API 服务 (连接 Azure PostgreSQL + Azure Redis) ──
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    restart: unless-stopped
+
+# 本地开发用 docker-compose（连接 Azure 托管的 PostgreSQL + Redis）
+# 不再需要本地 db/redis 容器

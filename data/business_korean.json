@@ -1,0 +1,1543 @@
+{
+  "vocabulary": [
+    {
+      "korean": "회의",
+      "romanization": "hoe-ui",
+      "chinese": "会议",
+      "english": "meeting",
+      "category": "meeting",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "회의를 진행하겠습니다 — 我来主持会议",
+        "회의 안건을 말씀드리겠습니다 — 我来说明会议议题"
+      ],
+      "examples": [
+        {
+          "korean": "내일 오전 10시에 회의가 있습니다.",
+          "romanization": "nae-il o-jeon yeol-si-e hoe-ui-ga it-seum-ni-da.",
+          "chinese": "明天上午10点有会议。"
+        },
+        {
+          "korean": "회의 자료를 준비해 주시겠습니까?",
+          "romanization": "hoe-ui ja-ryo-reul jun-bi-hae ju-si-get-seum-ni-kka?",
+          "chinese": "能请您准备会议资料吗？"
+        }
+      ]
+    },
+    {
+      "korean": "보고서",
+      "romanization": "bo-go-seo",
+      "chinese": "报告/报告书",
+      "english": "report",
+      "category": "general",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "보고서를 제출하겠습니다 — 我将提交报告",
+        "보고 드리겠습니다 — 我来向您汇报"
+      ],
+      "examples": [
+        {
+          "korean": "금요일까지 보고서를 제출해 주십시오.",
+          "romanization": "geum-yo-il-kka-ji bo-go-seo-reul je-chul-hae ju-sip-si-o.",
+          "chinese": "请在周五之前提交报告。"
+        }
+      ]
+    },
+    {
+      "korean": "계약",
+      "romanization": "gye-yak",
+      "chinese": "合同/契约",
+      "english": "contract",
+      "category": "negotiation",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "계약을 체결하다 — 签订合同",
+        "계약 조건을 검토하겠습니다 — 我将审查合同条件"
+      ],
+      "examples": [
+        {
+          "korean": "계약서에 서명해 주시겠습니까?",
+          "romanization": "gye-yak-seo-e seo-myeong-hae ju-si-get-seum-ni-kka?",
+          "chinese": "能请您在合同上签名吗？"
+        }
+      ]
+    },
+    {
+      "korean": "일정",
+      "romanization": "il-jeong",
+      "chinese": "日程/行程",
+      "english": "schedule",
+      "category": "general",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "일정을 조정하다 — 调整日程",
+        "일정을 확인해 주십시오 — 请确认日程"
+      ],
+      "examples": [
+        {
+          "korean": "이번 주 일정을 확인하겠습니다.",
+          "romanization": "i-beon ju il-jeong-eul hwak-in-ha-get-seum-ni-da.",
+          "chinese": "我来确认本周的日程。"
+        }
+      ]
+    },
+    {
+      "korean": "마감",
+      "romanization": "ma-gam",
+      "chinese": "截止/截止日期",
+      "english": "deadline",
+      "category": "general",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "마감일이 다가오고 있습니다 — 截止日期即将到来",
+        "마감을 연장해 주실 수 있습니까? — 能延长截止日期吗？"
+      ],
+      "examples": [
+        {
+          "korean": "이 프로젝트의 마감일은 다음 주 월요일입니다.",
+          "romanization": "i peu-ro-jek-teu-ui ma-gam-il-eun da-eum ju wol-yo-il-im-ni-da.",
+          "chinese": "这个项目的截止日期是下周一。"
+        }
+      ]
+    },
+    {
+      "korean": "제안",
+      "romanization": "je-an",
+      "chinese": "提案/建议",
+      "english": "proposal",
+      "category": "meeting",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "제안을 드리겠습니다 — 我提一个建议",
+        "제안서를 검토해 주십시오 — 请审阅提案书"
+      ],
+      "examples": [
+        {
+          "korean": "새로운 제안을 준비했습니다.",
+          "romanization": "sae-ro-un je-an-eul jun-bi-haet-seum-ni-da.",
+          "chinese": "我准备了新的提案。"
+        }
+      ]
+    },
+    {
+      "korean": "승인",
+      "romanization": "seung-in",
+      "chinese": "批准/审批",
+      "english": "approval",
+      "category": "general",
+      "difficulty": "intermediate",
+      "formal_expressions": [
+        "승인을 요청 드립니다 — 请求您的批准",
+        "승인해 주시면 감사하겠습니다 — 如果您能批准我将非常感谢"
+      ],
+      "examples": [
+        {
+          "korean": "부장님의 승인이 필요합니다.",
+          "romanization": "bu-jang-nim-ui seung-in-i pil-yo-ham-ni-da.",
+          "chinese": "需要部长的批准。"
+        }
+      ]
+    },
+    {
+      "korean": "거래처",
+      "romanization": "geo-rae-cheo",
+      "chinese": "客户/合作伙伴",
+      "english": "business partner / client",
+      "category": "negotiation",
+      "difficulty": "intermediate",
+      "formal_expressions": [
+        "거래처와 미팅이 있습니다 — 和客户有会面",
+        "거래처에 연락 드리겠습니다 — 我来联系客户"
+      ],
+      "examples": [
+        {
+          "korean": "거래처 담당자님께 이메일을 보내겠습니다.",
+          "romanization": "geo-rae-cheo dam-dang-ja-nim-kke i-me-il-eul bo-nae-get-seum-ni-da.",
+          "chinese": "我将给客户负责人发邮件。"
+        }
+      ]
+    },
+    {
+      "korean": "출장",
+      "romanization": "chul-jang",
+      "chinese": "出差",
+      "english": "business trip",
+      "category": "general",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "출장을 가다 — 去出差",
+        "출장 보고서를 작성하다 — 撰写出差报告"
+      ],
+      "examples": [
+        {
+          "korean": "다음 주에 서울로 출장을 갑니다.",
+          "romanization": "da-eum ju-e seo-ul-lo chul-jang-eul gam-ni-da.",
+          "chinese": "下周去首尔出差。"
+        }
+      ]
+    },
+    {
+      "korean": "명함",
+      "romanization": "myeong-ham",
+      "chinese": "名片",
+      "english": "business card",
+      "category": "networking",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "명함을 드리겠습니다 — 给您我的名片",
+        "명함을 교환하다 — 交换名片"
+      ],
+      "examples": [
+        {
+          "korean": "제 명함을 드리겠습니다. 잘 부탁드립니다.",
+          "romanization": "je myeong-ham-eul deu-ri-get-seum-ni-da. jal bu-tak-deu-rim-ni-da.",
+          "chinese": "给您我的名片。请多指教。"
+        }
+      ]
+    },
+    {
+      "korean": "협상",
+      "romanization": "hyeop-sang",
+      "chinese": "谈判/协商",
+      "english": "negotiation",
+      "category": "negotiation",
+      "difficulty": "intermediate",
+      "formal_expressions": [
+        "협상을 진행하다 — 进行谈判",
+        "협상 조건을 제시하다 — 提出谈判条件"
+      ],
+      "examples": [
+        {
+          "korean": "가격 협상을 진행하겠습니다.",
+          "romanization": "ga-gyeok hyeop-sang-eul jin-haeng-ha-get-seum-ni-da.",
+          "chinese": "我们进行价格谈判。"
+        }
+      ]
+    },
+    {
+      "korean": "견적",
+      "romanization": "gyeon-jeok",
+      "chinese": "报价/估价",
+      "english": "quotation / estimate",
+      "category": "negotiation",
+      "difficulty": "intermediate",
+      "formal_expressions": [
+        "견적서를 보내 드리겠습니다 — 我将给您发送报价单",
+        "견적을 요청 드립니다 — 请求报价"
+      ],
+      "examples": [
+        {
+          "korean": "견적서를 확인해 주시겠습니까?",
+          "romanization": "gyeon-jeok-seo-reul hwak-in-hae ju-si-get-seum-ni-kka?",
+          "chinese": "能请您确认报价单吗？"
+        }
+      ]
+    },
+    {
+      "korean": "프레젠테이션",
+      "romanization": "peu-re-jen-te-i-syeon",
+      "chinese": "演示/发表",
+      "english": "presentation",
+      "category": "meeting",
+      "difficulty": "intermediate",
+      "formal_expressions": [
+        "프레젠테이션을 시작하겠습니다 — 我开始演示",
+        "발표를 준비했습니다 — 我准备了发表"
+      ],
+      "examples": [
+        {
+          "korean": "프레젠테이션 자료를 공유해 드리겠습니다.",
+          "romanization": "peu-re-jen-te-i-syeon ja-ryo-reul gong-yu-hae deu-ri-get-seum-ni-da.",
+          "chinese": "我将与您共享演示资料。"
+        }
+      ]
+    },
+    {
+      "korean": "인사",
+      "romanization": "in-sa",
+      "chinese": "问候/人事",
+      "english": "greeting / HR",
+      "category": "networking",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "인사를 드리다 — 向…问好",
+        "인사 담당자 — 人事负责人"
+      ],
+      "examples": [
+        {
+          "korean": "먼저 인사를 드리겠습니다.",
+          "romanization": "meon-jeo in-sa-reul deu-ri-get-seum-ni-da.",
+          "chinese": "首先向大家打个招呼。"
+        }
+      ]
+    },
+    {
+      "korean": "담당자",
+      "romanization": "dam-dang-ja",
+      "chinese": "负责人/经办人",
+      "english": "person in charge",
+      "category": "general",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "담당자님께 문의 드립니다 — 向负责人咨询",
+        "담당자를 확인해 주십시오 — 请确认负责人"
+      ],
+      "examples": [
+        {
+          "korean": "이 건의 담당자가 누구입니까?",
+          "romanization": "i geon-ui dam-dang-ja-ga nu-gu-im-ni-kka?",
+          "chinese": "这件事的负责人是谁？"
+        }
+      ]
+    },
+    {
+      "korean": "첨부",
+      "romanization": "cheom-bu",
+      "chinese": "附件/附上",
+      "english": "attachment",
+      "category": "email",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "첨부 파일을 확인해 주십시오 — 请查看附件",
+        "자료를 첨부하여 보내 드립니다 — 随信附上资料"
+      ],
+      "examples": [
+        {
+          "korean": "관련 자료를 첨부하였습니다.",
+          "romanization": "gwal-lyeon ja-ryo-reul cheom-bu-ha-yeot-seum-ni-da.",
+          "chinese": "已附上相关资料。"
+        }
+      ]
+    },
+    {
+      "korean": "회신",
+      "romanization": "hoe-sin",
+      "chinese": "回复/回信",
+      "english": "reply",
+      "category": "email",
+      "difficulty": "intermediate",
+      "formal_expressions": [
+        "회신 부탁드립니다 — 请回复",
+        "빠른 회신 감사드립니다 — 感谢您的快速回复"
+      ],
+      "examples": [
+        {
+          "korean": "금주 내로 회신 부탁드립니다.",
+          "romanization": "geum-ju nae-ro hoe-sin bu-tak-deu-rim-ni-da.",
+          "chinese": "请在本周内回复。"
+        }
+      ]
+    },
+    {
+      "korean": "결재",
+      "romanization": "gyeol-jae",
+      "chinese": "审批/签批",
+      "english": "approval (document signing)",
+      "category": "general",
+      "difficulty": "intermediate",
+      "formal_expressions": [
+        "결재를 올리다 — 提交审批",
+        "결재 부탁드립니다 — 请审批"
+      ],
+      "examples": [
+        {
+          "korean": "결재 서류를 올려 드리겠습니다.",
+          "romanization": "gyeol-jae seo-ryu-reul ol-lyeo deu-ri-get-seum-ni-da.",
+          "chinese": "我将提交审批文件给您。"
+        }
+      ]
+    },
+    {
+      "korean": "매출",
+      "romanization": "mae-chul",
+      "chinese": "销售额/营业额",
+      "english": "sales / revenue",
+      "category": "general",
+      "difficulty": "intermediate",
+      "formal_expressions": [
+        "매출이 증가하다 — 销售额增长",
+        "매출 목표를 달성하다 — 达成销售目标"
+      ],
+      "examples": [
+        {
+          "korean": "이번 분기 매출이 10% 증가했습니다.",
+          "romanization": "i-beon bun-gi mae-chul-i sip-peu-ro jeung-ga-haet-seum-ni-da.",
+          "chinese": "本季度销售额增长了10%。"
+        }
+      ]
+    },
+    {
+      "korean": "야근",
+      "romanization": "ya-geun",
+      "chinese": "加班",
+      "english": "overtime work",
+      "category": "general",
+      "difficulty": "beginner",
+      "formal_expressions": [
+        "야근을 하다 — 加班",
+        "오늘 야근해야 할 것 같습니다 — 今天好像要加班了"
+      ],
+      "examples": [
+        {
+          "korean": "마감 전에 야근이 필요할 수 있습니다.",
+          "romanization": "ma-gam jeon-e ya-geun-i pil-yo-hal su it-seum-ni-da.",
+          "chinese": "截止日期前可能需要加班。"
+        }
+      ]
+    }
+  ],
+
+  "common_phrases": [
+    {
+      "korean": "처음 뵙겠습니다.",
+      "romanization": "cheo-eum boep-get-seum-ni-da.",
+      "chinese": "初次见面。（非常正式）",
+      "usage": "第一次见面时的正式问候"
+    },
+    {
+      "korean": "만나서 반갑습니다.",
+      "romanization": "man-na-seo ban-gap-seum-ni-da.",
+      "chinese": "很高兴见到您。",
+      "usage": "见面时的标准问候"
+    },
+    {
+      "korean": "잘 부탁드립니다.",
+      "romanization": "jal bu-tak-deu-rim-ni-da.",
+      "chinese": "请多多关照。",
+      "usage": "自我介绍后、开始合作时"
+    },
+    {
+      "korean": "수고하셨습니다.",
+      "romanization": "su-go-ha-syeot-seum-ni-da.",
+      "chinese": "辛苦了。（您辛苦了）",
+      "usage": "下班时、工作结束时"
+    },
+    {
+      "korean": "감사합니다.",
+      "romanization": "gam-sa-ham-ni-da.",
+      "chinese": "谢谢。（正式）",
+      "usage": "正式场合表达感谢"
+    },
+    {
+      "korean": "실례합니다.",
+      "romanization": "sil-lye-ham-ni-da.",
+      "chinese": "打扰了/不好意思。",
+      "usage": "打断别人、进入办公室时"
+    },
+    {
+      "korean": "죄송합니다.",
+      "romanization": "joe-song-ham-ni-da.",
+      "chinese": "对不起。（正式道歉）",
+      "usage": "正式道歉"
+    },
+    {
+      "korean": "말씀하세요.",
+      "romanization": "mal-sseum-ha-se-yo.",
+      "chinese": "请说。（您请讲）",
+      "usage": "请对方发言时"
+    }
+  ],
+
+  "grammar_patterns": [
+    {
+      "pattern": "-(스)ㅂ니다 / 습니다",
+      "chinese_name": "합니다체 (格式体终结语尾)",
+      "name": "Formal declarative ending",
+      "description": "最正式的终结语尾，用于商务会议、演讲、正式报告等场合。",
+      "structure": "动词/形容词词干 + ㅂ니다（元音词干）/ 습니다（辅音词干）",
+      "conjugation_rules": [
+        "元音词干：하 → 합니다, 가 → 갑니다",
+        "辅音词干：먹 → 먹습니다, 읽 → 읽습니다"
+      ],
+      "examples": [
+        {
+          "korean": "회의를 시작하겠습니다.",
+          "romanization": "hoe-ui-reul si-jak-ha-get-seum-ni-da.",
+          "chinese": "会议开始了。"
+        },
+        {
+          "korean": "보고 드리겠습니다.",
+          "romanization": "bo-go deu-ri-get-seum-ni-da.",
+          "chinese": "我来向您汇报。"
+        }
+      ],
+      "business_tip": "在所有正式商务场合（会议、对客户、上司）都应使用 합니다체。"
+    },
+    {
+      "pattern": "-(으)시-",
+      "chinese_name": "尊敬词缀",
+      "name": "Honorific infix",
+      "description": "在动词词干后加 -(으)시- 表示对主语的尊敬，商务场合必备。",
+      "structure": "动词词干 + (으)시 + 语尾",
+      "conjugation_rules": [
+        "元音词干：가 → 가시다, 하 → 하시다",
+        "辅音词干：읽 → 읽으시다, 먹 → 드시다（特殊）"
+      ],
+      "examples": [
+        {
+          "korean": "사장님께서 말씀하셨습니다.",
+          "romanization": "sa-jang-nim-kke-seo mal-sseum-ha-syeot-seum-ni-da.",
+          "chinese": "社长说了。（尊敬表达）"
+        },
+        {
+          "korean": "부장님, 확인해 주시겠습니까?",
+          "romanization": "bu-jang-nim, hwak-in-hae ju-si-get-seum-ni-kka?",
+          "chinese": "部长，能请您确认一下吗？"
+        }
+      ],
+      "business_tip": "谈论上级、客户的动作时必须使用尊敬词缀。"
+    },
+    {
+      "pattern": "-겠습니다",
+      "chinese_name": "意志/推测（正式）",
+      "name": "Formal intention / conjecture",
+      "description": "表达说话人的意志或推测，商务场合中常用于表达计划和承诺。",
+      "structure": "动词词干 + 겠습니다",
+      "conjugation_rules": [
+        "하다 → 하겠습니다",
+        "보내다 → 보내겠습니다",
+        "확인하다 → 확인하겠습니다"
+      ],
+      "examples": [
+        {
+          "korean": "내일까지 완료하겠습니다.",
+          "romanization": "nae-il-kka-ji wal-lyo-ha-get-seum-ni-da.",
+          "chinese": "我将在明天之前完成。"
+        },
+        {
+          "korean": "바로 확인하겠습니다.",
+          "romanization": "ba-ro hwak-in-ha-get-seum-ni-da.",
+          "chinese": "我马上确认。"
+        }
+      ],
+      "business_tip": "向上级或客户承诺时使用，显示积极态度和责任心。"
+    },
+    {
+      "pattern": "-아/어 주시겠습니까?",
+      "chinese_name": "正式请求",
+      "name": "Formal polite request",
+      "description": "商务中最礼貌的请求方式，请求对方（上级/客户）做某事。",
+      "structure": "动词词干 + 아/어 주시겠습니까?",
+      "conjugation_rules": [
+        "확인하다 → 확인해 주시겠습니까?",
+        "보내다 → 보내 주시겠습니까?",
+        "검토하다 → 검토해 주시겠습니까?"
+      ],
+      "examples": [
+        {
+          "korean": "서류를 검토해 주시겠습니까?",
+          "romanization": "seo-ryu-reul geom-to-hae ju-si-get-seum-ni-kka?",
+          "chinese": "能请您审查文件吗？"
+        },
+        {
+          "korean": "시간을 조정해 주시겠습니까?",
+          "romanization": "si-gan-eul jo-jeong-hae ju-si-get-seum-ni-kka?",
+          "chinese": "能请您调整一下时间吗？"
+        }
+      ],
+      "business_tip": "这是对上级和客户最标准的请求方式，比 '-아/어 주세요' 更正式。"
+    },
+    {
+      "pattern": "-기 바랍니다",
+      "chinese_name": "希望/期望（正式书面）",
+      "name": "Formal written wish / hope",
+      "description": "正式书面语中表达希望或期望，常用于商务邮件和公告。",
+      "structure": "动词词干 + 기 바랍니다",
+      "conjugation_rules": [
+        "확인하다 → 확인하시기 바랍니다",
+        "참석하다 → 참석하시기 바랍니다",
+        "연락하다 → 연락 주시기 바랍니다"
+      ],
+      "examples": [
+        {
+          "korean": "첨부 파일을 확인하시기 바랍니다.",
+          "romanization": "cheom-bu pa-il-eul hwak-in-ha-si-gi ba-ram-ni-da.",
+          "chinese": "请查看附件。（正式书面）"
+        },
+        {
+          "korean": "회의에 참석하시기 바랍니다.",
+          "romanization": "hoe-ui-e cham-seok-ha-si-gi ba-ram-ni-da.",
+          "chinese": "请出席会议。（正式书面）"
+        }
+      ],
+      "business_tip": "主要用于邮件、公告等书面正式文体，口语中较少使用。"
+    }
+  ],
+
+  "email_templates": {
+    "meeting_request": {
+      "purpose": "会议邀请",
+      "subject": {
+        "korean": "회의 참석 요청의 건",
+        "romanization": "hoe-ui cham-seok yo-cheong-ui geon",
+        "chinese": "关于请求出席会议"
+      },
+      "body": {
+        "korean": "안녕하십니까.\n\n○○ 프로젝트 관련 회의를 아래와 같이 진행하고자 합니다.\n\n- 일시: 2026년 3월 15일(월) 오후 2시\n- 장소: 본사 3층 회의실\n- 안건: ○○ 프로젝트 진행 현황 공유\n\n바쁘시겠지만 참석해 주시면 감사하겠습니다.\n회신 부탁드립니다.\n\n감사합니다.",
+        "romanization": "an-nyeong-ha-sip-ni-kka...",
+        "chinese": "您好。\n\n关于○○项目，拟召开会议如下。\n\n- 时间：2026年3月15日（周一）下午2点\n- 地点：总部3楼会议室\n- 议题：○○项目进展情况分享\n\n您很忙，但如果能出席我将非常感谢。\n请回复。\n\n谢谢。"
+      },
+      "key_phrases": [
+        "회의를 진행하고자 합니다 — 拟召开会议",
+        "참석해 주시면 감사하겠습니다 — 如能出席将非常感谢",
+        "회신 부탁드립니다 — 请回复"
+      ]
+    },
+    "thank_you": {
+      "purpose": "感谢邮件",
+      "subject": {
+        "korean": "감사 인사 드립니다",
+        "romanization": "gam-sa in-sa deu-rim-ni-da",
+        "chinese": "致以感谢"
+      },
+      "body": {
+        "korean": "안녕하십니까.\n\n바쁘신 중에 시간을 내 주셔서 감사합니다.\n말씀해 주신 내용을 바탕으로 진행하도록 하겠습니다.\n\n추가 문의 사항이 있으면 연락 드리겠습니다.\n앞으로도 잘 부탁드립니다.\n\n감사합니다.",
+        "chinese": "您好。\n\n感谢您在百忙之中抽出时间。\n我将根据您提到的内容继续推进。\n\n如有其他问题我将与您联系。\n今后也请多关照。\n\n谢谢。"
+      },
+      "key_phrases": [
+        "시간을 내 주셔서 감사합니다 — 感谢您抽出时间",
+        "바탕으로 진행하도록 하겠습니다 — 将据此推进",
+        "잘 부탁드립니다 — 请多关照"
+      ]
+    },
+    "apology": {
+      "purpose": "道歉邮件",
+      "subject": {
+        "korean": "사과 말씀 드립니다",
+        "romanization": "sa-gwa mal-sseum deu-rim-ni-da",
+        "chinese": "致以歉意"
+      },
+      "body": {
+        "korean": "안녕하십니까.\n\n이번 건으로 불편을 드려 대단히 죄송합니다.\n원인을 파악하여 빠르게 조치하겠습니다.\n\n다시 한번 사과 말씀 드리며, 재발 방지를 위해 최선을 다하겠습니다.\n\n감사합니다.",
+        "chinese": "您好。\n\n此次给您带来不便，深表歉意。\n我们将查明原因并迅速采取措施。\n\n再次致歉，我们将尽最大努力防止再次发生。\n\n谢谢。"
+      },
+      "key_phrases": [
+        "불편을 드려 대단히 죄송합니다 — 给您带来不便深表歉意",
+        "빠르게 조치하겠습니다 — 将迅速采取措施",
+        "재발 방지를 위해 최선을 다하겠습니다 — 将尽全力防止再发"
+      ]
+    },
+    "inquiry": {
+      "purpose": "询问邮件",
+      "subject": {
+        "korean": "○○ 관련 문의 드립니다",
+        "romanization": "○○ gwal-lyeon mun-ui deu-rim-ni-da",
+        "chinese": "关于○○的询问"
+      },
+      "body": {
+        "korean": "안녕하십니까.\n\n○○ 관련하여 문의 드립니다.\n\n아래 사항에 대해 확인 부탁드립니다.\n1. ○○\n2. ○○\n\n바쁘시겠지만 회신 부탁드립니다.\n\n감사합니다.",
+        "chinese": "您好。\n\n关于○○进行咨询。\n\n请确认以下事项。\n1. ○○\n2. ○○\n\n您很忙，但请回复。\n\n谢谢。"
+      },
+      "key_phrases": [
+        "관련하여 문의 드립니다 — 关于…进行咨询",
+        "확인 부탁드립니다 — 请确认",
+        "회신 부탁드립니다 — 请回复"
+      ]
+    }
+  },
+
+  "scenarios": {
+    "meeting": {
+      "title": "第一次商务会议",
+      "title_korean": "첫 비즈니스 미팅",
+      "description": "与韩国合作方第一次正式会面，包含自我介绍、交换名片、开始会议讨论。",
+      "dialogue": [
+        {
+          "speaker": "A（韩方）",
+          "korean": "안녕하세요. ○○회사 김민수 과장입니다. 처음 뵙겠습니다.",
+          "romanization": "an-nyeong-ha-se-yo. ○○hoe-sa gim-min-su gwa-jang-im-ni-da. cheo-eum boep-get-seum-ni-da.",
+          "chinese": "您好。我是○○公司的金民秀课长。初次见面。",
+          "note": "과장(课长)是韩国企业常见职级"
+        },
+        {
+          "speaker": "B（你）",
+          "korean": "안녕하세요. ○○회사 영업부의 ○○입니다. 만나서 반갑습니다.",
+          "romanization": "an-nyeong-ha-se-yo. ○○hoe-sa yeong-eop-bu-ui ○○-im-ni-da. man-na-seo ban-gap-seum-ni-da.",
+          "chinese": "您好。我是○○公司营业部的○○。很高兴见到您。",
+          "note": "영업부 = 营业部/销售部"
+        },
+        {
+          "speaker": "A",
+          "korean": "제 명함입니다. 잘 부탁드립니다.",
+          "romanization": "je myeong-ham-im-ni-da. jal bu-tak-deu-rim-ni-da.",
+          "chinese": "这是我的名片。请多关照。",
+          "note": "递名片时要双手递出，接名片时也要双手接"
+        },
+        {
+          "speaker": "B",
+          "korean": "감사합니다. 저도 명함을 드리겠습니다.",
+          "romanization": "gam-sa-ham-ni-da. jeo-do myeong-ham-eul deu-ri-get-seum-ni-da.",
+          "chinese": "谢谢。我也给您我的名片。",
+          "note": "명함 교환 후 바로 주머니에 넣지 않기 — 交换名片后不要立刻放入口袋"
+        },
+        {
+          "speaker": "A",
+          "korean": "그럼 회의를 시작하겠습니다. 오늘 안건은 ○○ 프로젝트 협력 방안입니다.",
+          "romanization": "geu-reom hoe-ui-reul si-jak-ha-get-seum-ni-da. o-neul an-geon-eun ○○ peu-ro-jek-teu hyeom-nyeok bang-an-im-ni-da.",
+          "chinese": "那么开始会议。今天的议题是○○项目的合作方案。",
+          "note": "안건 = 议题, 협력 방안 = 合作方案"
+        }
+      ],
+      "culture_tips": [
+        "交换名片：双手递出和接收，认真看一下再放好",
+        "座位：让职级高的人先入座",
+        "称呼：使用 姓 + 职级 + 님（如 김 과장님）"
+      ]
+    },
+    "phone_call": {
+      "title": "商务电话",
+      "title_korean": "비즈니스 전화",
+      "description": "接听/拨打商务电话，包含标准开场白、转接、留言等。",
+      "dialogue": [
+        {
+          "speaker": "接线方",
+          "korean": "감사합니다. ○○회사입니다. 무엇을 도와 드릴까요?",
+          "romanization": "gam-sa-ham-ni-da. ○○hoe-sa-im-ni-da. mu-eot-eul do-wa deu-ril-kka-yo?",
+          "chinese": "谢谢。这里是○○公司。有什么可以帮您的？",
+          "note": "韩国企业接电话时先说感谢"
+        },
+        {
+          "speaker": "你",
+          "korean": "안녕하세요. ○○회사 ○○입니다. 영업부 김 과장님 계십니까?",
+          "romanization": "an-nyeong-ha-se-yo. ○○hoe-sa ○○-im-ni-da. yeong-eop-bu gim gwa-jang-nim gye-sim-ni-kka?",
+          "chinese": "您好。我是○○公司的○○。营业部的金课长在吗？",
+          "note": "계시다 是 있다 的尊敬语"
+        },
+        {
+          "speaker": "接线方",
+          "korean": "잠시만 기다려 주십시오. 바꿔 드리겠습니다.",
+          "romanization": "jam-si-man gi-da-ryeo ju-sip-si-o. ba-kkwo deu-ri-get-seum-ni-da.",
+          "chinese": "请稍等。我帮您转接。",
+          "note": "바꾸다 = 换/转接"
+        },
+        {
+          "speaker": "接线方（如果不在）",
+          "korean": "죄송합니다. 지금 자리에 안 계십니다. 메모를 남겨 드릴까요?",
+          "romanization": "joe-song-ham-ni-da. ji-geum ja-ri-e an gye-sim-ni-da. me-mo-reul nam-gyeo deu-ril-kka-yo?",
+          "chinese": "对不起。他/她现在不在座位上。需要留言吗？",
+          "note": "자리에 안 계시다 = 不在座位上（尊敬语）"
+        }
+      ],
+      "culture_tips": [
+        "接电话先说 '감사합니다. ○○회사입니다.'",
+        "挂电话前说 '감사합니다. 수고하십시오.'",
+        "如对方是长辈/客户，等对方先挂电话"
+      ]
+    }
+  },
+
+  "sentence_endings": {
+    "연결어미_connectors": [
+      {
+        "ending": "-는데",
+        "name": "背景/转折连接",
+        "romanization": "-neun-de",
+        "usage": "提供背景信息或温和转折，商务口语中极其常用",
+        "formality": "neutral (可搭配敬语体)",
+        "examples": [
+          {
+            "korean": "보고서 다 썼는데, 한번 봐 주실 수 있으세요?",
+            "chinese": "报告写完了，您能看一下吗？",
+            "drama_ref": "미생 Misaeng 风格",
+            "note": "-는데 让语气更柔和，不像直接请求那么生硬"
+          },
+          {
+            "korean": "지금 회의 중인데, 나중에 전화 드려도 될까요?",
+            "chinese": "现在在开会，稍后给您打电话可以吗？",
+            "drama_ref": "직장 일상",
+            "note": "先说明状况再提出请求，非常自然的话术"
+          }
+        ]
+      },
+      {
+        "ending": "-거든요",
+        "name": "原因说明（口语）",
+        "romanization": "-geo-deun-yo",
+        "usage": "口语中解释原因/补充说明，比 -니까 更自然亲切",
+        "formality": "해요체 (polite casual)",
+        "examples": [
+          {
+            "korean": "회의 시간 좀 바꿔야 할 것 같아요. 출장이 잡혔거든요.",
+            "chinese": "会议时间可能得改一下。因为定了出差。",
+            "drama_ref": "스타트업 Start-Up 风格",
+            "note": "-거든요 放在句尾补充原因，口语感很强"
+          },
+          {
+            "korean": "이 프로젝트 제가 맡을게요. 경험이 있거든요.",
+            "chinese": "这个项目我来负责吧。因为我有经验。",
+            "drama_ref": "미생 Misaeng",
+            "note": "自信但不傲慢的表达方式"
+          }
+        ]
+      },
+      {
+        "ending": "-잖아요",
+        "name": "共知确认",
+        "romanization": "-jan-a-yo",
+        "usage": "提醒对方已知的事实，口语中表示'你也知道嘛'",
+        "formality": "해요체 (polite casual)",
+        "examples": [
+          {
+            "korean": "클라이언트가 까다롭잖아요. 좀 더 신경 쓰죠.",
+            "chinese": "客户很挑剔嘛。我们再上点心。",
+            "drama_ref": "김과장 Chief Kim 风格",
+            "note": "-잖아요 让对话有共鸣感，像在提醒对方"
+          },
+          {
+            "korean": "이번 달 마감이 빡빡하잖아요. 야근은 어쩔 수 없어요.",
+            "chinese": "这个月deadline很紧嘛。加班没办法。",
+            "drama_ref": "직장 드라마",
+            "note": "빡빡하다 = 很紧张/紧; 常用俚语"
+          }
+        ]
+      },
+      {
+        "ending": "-면서 / -으면서",
+        "name": "同时进行",
+        "romanization": "-myeon-seo",
+        "usage": "表示两个动作同时进行",
+        "formality": "neutral",
+        "examples": [
+          {
+            "korean": "커피 마시면서 얘기할까요?",
+            "chinese": "边喝咖啡边聊？",
+            "drama_ref": "직장 일상",
+            "note": "很自然的约同事聊天的方式"
+          },
+          {
+            "korean": "자료 보면서 설명드리겠습니다.",
+            "chinese": "我看着资料给您说明。",
+            "drama_ref": "미생 Misaeng",
+            "note": "搭配 겠습니다 就变正式了"
+          }
+        ]
+      },
+      {
+        "ending": "-다가",
+        "name": "中途转换",
+        "romanization": "-da-ga",
+        "usage": "做某事中途转做另一件事，或因果关系",
+        "formality": "neutral",
+        "examples": [
+          {
+            "korean": "야근하다가 너무 피곤해서 택시 타고 갔어요.",
+            "chinese": "加班加到太累了，打车回去了。",
+            "drama_ref": "미생 Misaeng",
+            "note": "很生活化的职场描述"
+          },
+          {
+            "korean": "미팅 준비하다가 갑자기 일정이 바뀌었어요.",
+            "chinese": "准备会议的时候日程突然变了。",
+            "drama_ref": "스타트업 Start-Up",
+            "note": "갑자기 = 突然, 바뀌다 = 变化"
+          }
+        ]
+      },
+      {
+        "ending": "-더니",
+        "name": "观察后结果",
+        "romanization": "-deo-ni",
+        "usage": "描述观察到的变化或结果，带回忆感",
+        "formality": "neutral",
+        "examples": [
+          {
+            "korean": "박 대리가 열심히 하더니 이번에 승진했어요.",
+            "chinese": "朴代理一直很努力，这次升职了。",
+            "drama_ref": "미생 Misaeng",
+            "note": "-더니 表示'之前看到...结果...'，有叙事感"
+          }
+        ]
+      },
+      {
+        "ending": "-길래",
+        "name": "因为看到/听到所以",
+        "romanization": "-gil-lae",
+        "usage": "口语中表示因为看到/听到某情况所以做了某事",
+        "formality": "해요체 (casual polite)",
+        "examples": [
+          {
+            "korean": "팀장님이 찾으시길래 바로 올라갔어요.",
+            "chinese": "组长找我所以我马上上去了。",
+            "drama_ref": "직장 드라마",
+            "note": "比 -니까 更口语更自然"
+          }
+        ]
+      }
+    ],
+    "종결어미_final_endings": [
+      {
+        "ending": "-네요",
+        "name": "感叹/新发现",
+        "romanization": "-ne-yo",
+        "usage": "发现新事实或表示惊讶/感叹，语气柔和",
+        "formality": "해요체 (polite casual)",
+        "examples": [
+          {
+            "korean": "이번 분기 실적이 정말 좋네요!",
+            "chinese": "这个季度业绩真不错啊！",
+            "drama_ref": "스타트업 Start-Up",
+            "note": "-네요 比 -군요 更口语更常用"
+          },
+          {
+            "korean": "벌써 6시네요. 슬슬 정리할까요?",
+            "chinese": "已经6点了呢。差不多收拾了？",
+            "drama_ref": "직장 일상",
+            "note": "슬슬 = 慢慢地/差不多; 很自然的下班暗示"
+          }
+        ]
+      },
+      {
+        "ending": "-더라고요",
+        "name": "回忆/传达经验",
+        "romanization": "-deo-ra-go-yo",
+        "usage": "分享自己的经历或所见所闻，非常口语化",
+        "formality": "해요체 (polite casual)",
+        "examples": [
+          {
+            "korean": "저번에 그 방법으로 하니까 효과가 좋더라고요.",
+            "chinese": "上次用那个方法效果很好来着。",
+            "drama_ref": "스타트업 Start-Up",
+            "note": "分享经验时特别好用，对同事很自然"
+          },
+          {
+            "korean": "거래처 반응이 생각보다 괜찮더라고요.",
+            "chinese": "客户反应比想象中还可以来着。",
+            "drama_ref": "김과장 Chief Kim",
+            "note": "생각보다 = 比想象中"
+          }
+        ]
+      },
+      {
+        "ending": "-는 거예요 / -은 거예요",
+        "name": "解释/强调",
+        "romanization": "-neun geo-ye-yo",
+        "usage": "解释情况或强调某事，口语中极常见",
+        "formality": "해요체 (polite casual)",
+        "examples": [
+          {
+            "korean": "지금 하고 있는 거예요. 조금만 기다려 주세요.",
+            "chinese": "正在做呢。请稍等一下。",
+            "drama_ref": "직장 일상",
+            "note": "比直接说 하고 있어요 更有解释的语气"
+          },
+          {
+            "korean": "이게 원래 그런 거예요. 시스템 문제라서요.",
+            "chinese": "本来就是这样的。因为是系统问题。",
+            "drama_ref": "직장 드라마",
+            "note": "원래 = 本来/原来"
+          }
+        ]
+      },
+      {
+        "ending": "-죠 / -지요",
+        "name": "确认/同意征求",
+        "romanization": "-jyo",
+        "usage": "征求同意、确认或温和提议，商务口语常用",
+        "formality": "해요체 (polite)",
+        "examples": [
+          {
+            "korean": "이 방향으로 진행하면 되죠?",
+            "chinese": "按这个方向进行就行了吧？",
+            "drama_ref": "미생 Misaeng",
+            "note": "-죠 温和确认，不会显得质疑对方"
+          },
+          {
+            "korean": "내일까지 가능하시죠?",
+            "chinese": "明天之前可以的吧？",
+            "drama_ref": "직장 드라마",
+            "note": "加 -시- 更礼貌"
+          }
+        ]
+      },
+      {
+        "ending": "-나 봐요",
+        "name": "推测/好像",
+        "romanization": "-na bwa-yo",
+        "usage": "根据观察做出推测，比直接断言更委婉",
+        "formality": "해요체 (polite casual)",
+        "examples": [
+          {
+            "korean": "오늘 회의가 길어지나 봐요.",
+            "chinese": "今天会议好像要拖长了。",
+            "drama_ref": "직장 일상",
+            "note": "温和推测，不确定但有根据"
+          }
+        ]
+      },
+      {
+        "ending": "-을걸요 / -ㄹ걸요",
+        "name": "轻微推测/可能",
+        "romanization": "-l-geol-yo",
+        "usage": "表示可能性或轻微猜测",
+        "formality": "해요체 (casual polite)",
+        "examples": [
+          {
+            "korean": "그건 팀장님한테 물어봐야 할걸요.",
+            "chinese": "那个可能得问问组长。",
+            "drama_ref": "직장 드라마",
+            "note": "不确定但提供建议"
+          }
+        ]
+      },
+      {
+        "ending": "-을게요 / -ㄹ게요",
+        "name": "意志/承诺（口语）",
+        "romanization": "-l-ge-yo",
+        "usage": "表达意志/承诺的口语形式，比 -겠습니다 更亲切",
+        "formality": "해요체 (polite casual)",
+        "examples": [
+          {
+            "korean": "확인하고 다시 연락드릴게요.",
+            "chinese": "我确认后再联系您。",
+            "drama_ref": "스타트업 Start-Up",
+            "note": "比 연락드리겠습니다 更自然亲切"
+          },
+          {
+            "korean": "제가 정리해서 메일로 보내 드릴게요.",
+            "chinese": "我整理好邮件发给您。",
+            "drama_ref": "직장 일상",
+            "note": "同事间最常用的承诺方式"
+          }
+        ]
+      },
+      {
+        "ending": "-다니까요",
+        "name": "强调/重复",
+        "romanization": "-da-ni-kka-yo",
+        "usage": "强调已经说过或确认过的事情",
+        "formality": "해요체 (polite but firm)",
+        "examples": [
+          {
+            "korean": "다 했다니까요. 걱정 마세요.",
+            "chinese": "跟你说都做完了嘛。别担心。",
+            "drama_ref": "직장 드라마",
+            "note": "有点急但还算礼貌的重复强调"
+          }
+        ]
+      }
+    ],
+    "비격식_존중_expressions": [
+      {
+        "pattern": "-시- 搭配 해요体",
+        "description": "用尊敬词缀 -시- 搭配 해요体，正式但不僵硬",
+        "examples": [
+          "확인하셨어요? — 您确认了吗？（比 확인하셨습니까 自然）",
+          "들어오세요. — 请进。（温和邀请）",
+          "편하게 말씀하세요. — 请随意说。"
+        ]
+      },
+      {
+        "pattern": "요 + 语气词",
+        "description": "해요体句尾加语气使句子更自然",
+        "examples": [
+          "괜찮아요, 천천히 하세요. — 没关系，您慢慢来。",
+          "아, 그렇군요. 알겠어요. — 啊，原来如此。知道了。",
+          "아직이요? 빨리 해 주세요~ — 还没吗？请快点~"
+        ]
+      }
+    ]
+  },
+
+  "drama_dialogues": [
+    {
+      "drama": "미생 (Misaeng / 未生)",
+      "genre": "职场现实剧",
+      "scene": "新人汇报工作",
+      "context": "张格莱给科长汇报出差准备情况",
+      "difficulty": "intermediate",
+      "dialogue": [
+        {
+          "speaker": "장그래 (新人)",
+          "korean": "과장님, 출장 준비 관련해서 보고드릴 게 있는데요.",
+          "romanization": "gwa-jang-nim, chul-jang jun-bi gwal-lyeon-hae-seo bo-go-deu-ril ge in-neun-de-yo.",
+          "chinese": "课长，关于出差准备有要向您汇报的。",
+          "grammar_points": ["-는데요 (温和引入话题)", "보고드리다 (汇报/谦让语)"]
+        },
+        {
+          "speaker": "오 과장 (科长)",
+          "korean": "그래, 어디까지 했어?",
+          "romanization": "geu-rae, eo-di-kka-ji haess-eo?",
+          "chinese": "好，做到哪了？",
+          "grammar_points": ["반말 (上级对下级用非敬语)", "어디까지 (到哪里/进度)"]
+        },
+        {
+          "speaker": "장그래",
+          "korean": "항공편이랑 호텔은 다 잡았고요, 미팅 스케줄은 거래처 쪽에서 아직 확인 중이에요.",
+          "romanization": "hang-gong-pyeon-i-rang ho-tel-eun da jab-at-go-yo, mi-ting seu-ke-jul-eun geo-rae-cheo jjog-e-seo a-jik hwak-in jung-i-e-yo.",
+          "chinese": "机票和酒店都订好了，会议日程客户那边还在确认中。",
+          "grammar_points": ["-고요 (列举/并且)", "확인 중이다 (确认中)", "-이랑 (和/口语)"]
+        },
+        {
+          "speaker": "오 과장",
+          "korean": "거래처 쪽에 한 번 더 연락해 봐. 오늘 중으로 확정 받아야 해.",
+          "romanization": "geo-rae-cheo jjog-e han beon deo yeol-lak-hae bwa. o-neul jung-eu-ro hwak-jeong bad-a-ya hae.",
+          "chinese": "再联系一下客户那边。今天之内必须确定。",
+          "grammar_points": ["-해 봐 (试着做)", "-아야 해 (必须做)"]
+        },
+        {
+          "speaker": "장그래",
+          "korean": "네, 알겠습니다. 바로 연락드려 볼게요.",
+          "romanization": "ne, al-get-seum-ni-da. ba-ro yeol-lak-deu-ryeo bol-ge-yo.",
+          "chinese": "好的，知道了。我马上联系试试。",
+          "grammar_points": ["알겠습니다 (正式应答)", "-드려 볼게요 (试着做/谦让+意志)"]
+        }
+      ],
+      "key_expressions": [
+        {"expression": "보고드릴 게 있는데요", "meaning": "有要汇报的", "register": "谦让+温和"},
+        {"expression": "다 잡았고요", "meaning": "都订好了", "register": "口语列举"},
+        {"expression": "확인 중이에요", "meaning": "确认中", "register": "进行状态"},
+        {"expression": "연락드려 볼게요", "meaning": "我联系试试", "register": "谦让+意志+尝试"}
+      ],
+      "culture_note": "韩国职场中新人对上级汇报时，用 -는데요 引入比较自然，不会显得太突兀。"
+    },
+    {
+      "drama": "스타트업 (Start-Up)",
+      "genre": "创业/商务剧",
+      "scene": "投资人面谈",
+      "context": "创业者向投资人介绍项目",
+      "difficulty": "advanced",
+      "dialogue": [
+        {
+          "speaker": "서달미 (创业者)",
+          "korean": "저희 서비스는 AI 기반 번역 플랫폼인데요, 기존 서비스와 차별점이 있어요.",
+          "romanization": "jeo-hui seo-bi-seu-neun AI gi-ban beon-yeok peul-laet-pom-in-de-yo, gi-jon seo-bi-seu-wa cha-byeol-jeom-i iss-eo-yo.",
+          "chinese": "我们的服务是基于AI的翻译平台，跟现有服务有差异化的点。",
+          "grammar_points": ["-인데요 (名词+는데요)", "차별점이 있다 (有差异化)"]
+        },
+        {
+          "speaker": "투자자 (投资人)",
+          "korean": "차별점이라면 구체적으로 어떤 건가요?",
+          "romanization": "cha-byeol-jeom-i-ra-myeon gu-che-jeok-eu-ro eo-tteon geon-ga-yo?",
+          "chinese": "说到差异化，具体是什么呢？",
+          "grammar_points": ["-이라면 (如果说是)", "어떤 건가요 (是什么样的呢)"]
+        },
+        {
+          "speaker": "서달미",
+          "korean": "기존 번역기는 문맥을 못 잡잖아요. 저희는 상황별 맞춤 번역이 가능해요.",
+          "romanization": "gi-jon beon-yeok-gi-neun mun-maek-eul mot jab-jan-a-yo. jeo-hui-neun sang-hwang-byeol mat-chum beon-yeok-i ga-neung-hae-yo.",
+          "chinese": "现有翻译器抓不住语境嘛。我们可以按情况定制翻译。",
+          "grammar_points": ["-잖아요 (你也知道嘛)", "상황별 맞춤 (按情况定制)"]
+        },
+        {
+          "speaker": "투자자",
+          "korean": "그럼 시장 규모는 어느 정도로 보고 계세요?",
+          "romanization": "geu-reom si-jang gyu-mo-neun eo-neu jeong-do-ro bo-go gye-se-yo?",
+          "chinese": "那市场规模您预估多大？",
+          "grammar_points": ["보고 계시다 (看/认为的尊敬语)", "어느 정도 (多少程度)"]
+        },
+        {
+          "speaker": "서달미",
+          "korean": "국내만 해도 연간 3천억 규모인데요, 해외까지 하면 훨씬 크죠.",
+          "romanization": "guk-nae-man hae-do yeon-gan sam-cheon-eok gyu-mo-in-de-yo, hae-oe-kka-ji ha-myeon hwol-ssin keu-jyo.",
+          "chinese": "光国内就有年均3000亿规模，加上海外就大多了嘛。",
+          "grammar_points": ["-만 해도 (光是...就)", "훨씬 크죠 (大得多吧/确认)"]
+        }
+      ],
+      "key_expressions": [
+        {"expression": "차별점이 있어요", "meaning": "有差异化的点", "register": "商务介绍"},
+        {"expression": "못 잡잖아요", "meaning": "抓不住嘛", "register": "口语说服"},
+        {"expression": "어느 정도로 보고 계세요", "meaning": "您预估多少", "register": "尊敬提问"},
+        {"expression": "국내만 해도", "meaning": "光国内就", "register": "强调规模"}
+      ],
+      "culture_note": "韩国投资面谈中，用数据说话很重要，但语气不能太强硬。-죠 结尾让陈述变柔和。"
+    },
+    {
+      "drama": "이태원 클라쓰 (Itaewon Class / 梨泰院Class)",
+      "genre": "创业/餐饮剧",
+      "scene": "团队讨论经营策略",
+      "context": "朴世路和团队讨论新店开业策略",
+      "difficulty": "intermediate",
+      "dialogue": [
+        {
+          "speaker": "박새로이 (老板)",
+          "korean": "이번 달 매출 목표 높게 잡자. 할 수 있어.",
+          "romanization": "i-beon dal mae-chul mok-pyo nop-ge jab-ja. hal su iss-eo.",
+          "chinese": "这个月销售目标定高点。我们能行。",
+          "grammar_points": ["-자 (提议/一起做)", "높게 잡다 (定得高)"]
+        },
+        {
+          "speaker": "조이서 (经理)",
+          "korean": "사장님, 근데 현실적으로 좀 무리 아닌가요? 지금 인력도 부족한데...",
+          "romanization": "sa-jang-nim, geun-de hyeon-sil-jeok-eu-ro jom mu-ri a-nin-ga-yo? ji-geum in-ryeok-do bu-jok-han-de...",
+          "chinese": "社长，但是现实点说不是有点勉强吗？现在人手也不够...",
+          "grammar_points": ["-아닌가요 (不是...吗/委婉质疑)", "근데 = 그런데 (但是/口语缩写)", "부족한데 (不够的状况下)"]
+        },
+        {
+          "speaker": "박새로이",
+          "korean": "부족하면 채우면 되지. 방법은 항상 있어.",
+          "romanization": "bu-jok-ha-myeon chae-u-myeon doe-ji. bang-beop-eun hang-sang iss-eo.",
+          "chinese": "不够就补嘛。方法总是有的。",
+          "grammar_points": ["-면 되지 (做就行了嘛)", "항상 (总是)"]
+        },
+        {
+          "speaker": "마현이 (厨师)",
+          "korean": "전 메뉴 개발에 집중할게요. 신메뉴 두 개 정도 추가하면 어떨까요?",
+          "romanization": "jeon me-nyu gae-bal-e jip-jung-hal-ge-yo. sin-me-nyu du gae jeong-do chu-ga-ha-myeon eo-tteol-kka-yo?",
+          "chinese": "我专注菜品开发。加两个新菜品怎么样？",
+          "grammar_points": ["-ㄹ게요 (我会/意志)", "어떨까요 (怎么样/提议)"]
+        },
+        {
+          "speaker": "박새로이",
+          "korean": "좋아! 그럼 각자 맡은 부분 확실하게 하고, 다음 주 다시 모이자.",
+          "romanization": "jo-a! geu-reom gak-ja mat-eun bu-bun hwak-sil-ha-ge ha-go, da-eum ju da-si mo-i-ja.",
+          "chinese": "好！那各自把负责的部分做扎实，下周再碰。",
+          "grammar_points": ["각자 (各自)", "확실하게 (扎实地)", "-자 (提议)"]
+        }
+      ],
+      "key_expressions": [
+        {"expression": "높게 잡자", "meaning": "定高点吧", "register": "团队内提议"},
+        {"expression": "현실적으로 좀 무리 아닌가요", "meaning": "现实点说不是有点勉强吗", "register": "委婉反对"},
+        {"expression": "채우면 되지", "meaning": "补上就行了嘛", "register": "自信回应"},
+        {"expression": "어떨까요", "meaning": "怎么样", "register": "温和提议"}
+      ],
+      "culture_note": "韩国创业团队中，上下级没有大企业那么严格，但基本尊重还是有的。提反对意见时用 -아닌가요 比较委婉。"
+    },
+    {
+      "drama": "김과장 (Chief Kim / 金科长)",
+      "genre": "职场喜剧",
+      "scene": "跨部门协调",
+      "context": "金科长协调两个部门的资源分配",
+      "difficulty": "intermediate",
+      "dialogue": [
+        {
+          "speaker": "김성룡 (金科长)",
+          "korean": "이 부장님, 이번 프로젝트 예산 좀 조정이 필요한데, 시간 되세요?",
+          "romanization": "i-bu-jang-nim, i-beon peu-ro-jek-teu ye-san jom jo-jeong-i pil-yo-han-de, si-gan doe-se-yo?",
+          "chinese": "李部长，这次项目预算需要调整一下，您有时间吗？",
+          "grammar_points": ["-한데 (温和引入)", "시간 되세요 (您有空吗/尊敬)"]
+        },
+        {
+          "speaker": "이 부장 (李部长)",
+          "korean": "무슨 일인데요? 짧게 말해 봐요.",
+          "romanization": "mu-seun il-in-de-yo? jjalb-ge mal-hae bwa-yo.",
+          "chinese": "什么事？简短说说。",
+          "grammar_points": ["무슨 일 (什么事)", "짧게 (简短地)", "-해 봐요 (试着说/口语)"]
+        },
+        {
+          "speaker": "김성룡",
+          "korean": "마케팅 쪽에서 추가 예산을 요청했는데, 우리 쪽이랑 겹치는 부분이 있더라고요.",
+          "romanization": "ma-ke-ting jjog-e-seo chu-ga ye-san-eul yo-cheong-haen-neun-de, u-ri jjog-i-rang gyeop-chi-neun bu-bun-i it-deo-ra-go-yo.",
+          "chinese": "市场部那边申请了追加预算，跟我们这边有重叠的部分来着。",
+          "grammar_points": ["-했는데 (过去+温和转折)", "-더라고요 (分享发现)"]
+        },
+        {
+          "speaker": "이 부장",
+          "korean": "그래요? 그럼 같이 조율해 봅시다. 마케팅 쪽 담당자도 불러요.",
+          "romanization": "geu-rae-yo? geu-reom ga-chi jo-yul-hae bop-si-da. ma-ke-ting jjog dam-dang-ja-do bul-leo-yo.",
+          "chinese": "是吗？那一起协调吧。也叫上市场部的负责人。",
+          "grammar_points": ["-봅시다 (一起做吧/正式提议)", "불러요 (叫来/口语)"]
+        },
+        {
+          "speaker": "김성룡",
+          "korean": "네, 제가 연락해 놓을게요. 내일 오전 어떠세요?",
+          "romanization": "ne, je-ga yeol-lak-hae no-eul-ge-yo. nae-il o-jeon eo-tteo-se-yo?",
+          "chinese": "好，我先联系好。明天上午怎么样？",
+          "grammar_points": ["-해 놓다 (提前做好)", "어떠세요 (怎么样/尊敬)"]
+        }
+      ],
+      "key_expressions": [
+        {"expression": "시간 되세요?", "meaning": "您有时间吗？", "register": "礼貌询问"},
+        {"expression": "겹치는 부분이 있더라고요", "meaning": "有重叠的部分来着", "register": "口语汇报"},
+        {"expression": "조율해 봅시다", "meaning": "一起协调吧", "register": "正式提议"},
+        {"expression": "연락해 놓을게요", "meaning": "我先联系好", "register": "口语承诺"}
+      ],
+      "culture_note": "韩国公司跨部门沟通时，先礼貌确认对方时间，再简洁说明情况。用 -더라고요 分享发现比直说 '겹쳐요' 更自然。"
+    },
+    {
+      "drama": "비밀의 숲 (Stranger / 秘密森林)",
+      "genre": "法律/职场剧",
+      "scene": "正式会议发言",
+      "context": "在正式会议中发表意见",
+      "difficulty": "advanced",
+      "dialogue": [
+        {
+          "speaker": "여진 검사 (检察官)",
+          "korean": "제 의견을 말씀드리자면, 현재 방향에 재고가 필요하다고 봅니다.",
+          "romanization": "je ui-gyeon-eul mal-sseum-deu-ri-ja-myeon, hyeon-jae bang-hyang-e jae-go-ga pil-yo-ha-da-go bom-ni-da.",
+          "chinese": "如果让我说一下意见的话，我认为当前方向需要重新考虑。",
+          "grammar_points": ["말씀드리자면 (如果我说/谦让)", "-다고 봅니다 (我认为)"]
+        },
+        {
+          "speaker": "부장 (部长)",
+          "korean": "구체적인 근거가 있으십니까?",
+          "romanization": "gu-che-jeok-in geun-geo-ga eu-seu-sim-ni-kka?",
+          "chinese": "有具体的根据吗？",
+          "grammar_points": ["-으십니까 (最高敬语疑问)", "구체적인 근거 (具体根据)"]
+        },
+        {
+          "speaker": "여진 검사",
+          "korean": "네, 데이터를 보시면 아시겠지만, 지난달 대비 효율이 30% 떨어졌습니다.",
+          "romanization": "ne, de-i-teo-reul bo-si-myeon a-si-get-ji-man, ji-nan-dal dae-bi hyo-yul-i sam-sip-peu-ro tteor-eo-jyeot-seum-ni-da.",
+          "chinese": "是的，看数据您也能看出来，跟上个月相比效率下降了30%。",
+          "grammar_points": ["보시면 아시겠지만 (您看就知道/尊敬+谦虚)", "대비 (对比/相比)"]
+        }
+      ],
+      "key_expressions": [
+        {"expression": "제 의견을 말씀드리자면", "meaning": "如果让我说意见的话", "register": "正式会议/谦让"},
+        {"expression": "-다고 봅니다", "meaning": "我认为", "register": "正式表达观点"},
+        {"expression": "보시면 아시겠지만", "meaning": "您看就知道", "register": "尊敬+引用数据"},
+        {"expression": "대비 효율이 떨어졌습니다", "meaning": "对比效率下降了", "register": "正式数据汇报"}
+      ],
+      "culture_note": "正式会议中用 합니다体，但 보시면 아시겠지만 这种搭配让发言更有层次感，不会太机械。"
+    },
+    {
+      "drama": "미생 (Misaeng / 未生)",
+      "genre": "职场现实剧",
+      "scene": "同事之间的午饭闲聊",
+      "context": "同事们中午吃饭时聊工作和生活",
+      "difficulty": "beginner",
+      "dialogue": [
+        {
+          "speaker": "안영이 (同事A)",
+          "korean": "아 진짜 오늘 미팅 때문에 점심도 못 먹을 뻔했어.",
+          "romanization": "a jin-jja o-neul mi-ting ttae-mun-e jeom-sim-do mot meog-eul ppeon-haess-eo.",
+          "chinese": "啊真的，今天因为会议差点连午饭都没吃上。",
+          "grammar_points": ["-ㄹ 뻔했어 (差点就)", "때문에 (因为)"]
+        },
+        {
+          "speaker": "장그래 (同事B)",
+          "korean": "미팅 어땠어? 잘 됐어?",
+          "romanization": "mi-ting eo-ttaess-eo? jal dwaess-eo?",
+          "chinese": "会议怎样？顺利吗？",
+          "grammar_points": ["어땠어 (怎么样了/过去)", "잘 됐어 (顺利了吗)"]
+        },
+        {
+          "speaker": "안영이",
+          "korean": "뭐, 그럭저럭이지. 클라이언트가 좀 까다로웠는데 어떻게든 맞췄어.",
+          "romanization": "mwo, geu-reok-jeo-reok-i-ji. keul-la-i-eon-teu-ga jom kka-da-ro-won-neun-de eo-tteok-e-deun mat-chwoss-eo.",
+          "chinese": "嗯，马马虎虎吧。客户有点挑剔但怎么着都对上了。",
+          "grammar_points": ["그럭저럭 (马马虎虎)", "어떻게든 (不管怎样)", "까다롭다 (挑剔)"]
+        },
+        {
+          "speaker": "장그래",
+          "korean": "고생했다. 커피 한잔 살게. 뭐 마실래?",
+          "romanization": "go-saeng-haet-da. keo-pi han-jan sal-ge. mwo ma-sil-lae?",
+          "chinese": "辛苦了。我请你一杯咖啡。想喝什么？",
+          "grammar_points": ["고생했다 (辛苦了/同辈)", "살게 (我请客)", "-ㄹ래 (想要/口语)"]
+        },
+        {
+          "speaker": "안영이",
+          "korean": "오~ 아이스 아메리카노! 역시 장그래~",
+          "romanization": "o~ a-i-seu a-me-ri-ka-no! yeok-si jang-geu-rae~",
+          "chinese": "哦~ 冰美式！不愧是张格莱~",
+          "grammar_points": ["역시 (果然/不愧是)", "~ 语尾感叹"]
+        }
+      ],
+      "key_expressions": [
+        {"expression": "-ㄹ 뻔했어", "meaning": "差点就", "register": "口语夸张"},
+        {"expression": "그럭저럭", "meaning": "马马虎虎", "register": "口语/同辈"},
+        {"expression": "어떻게든", "meaning": "不管怎样", "register": "口语决心"},
+        {"expression": "커피 한잔 살게", "meaning": "我请你一杯咖啡", "register": "同辈/友好"}
+      ],
+      "culture_note": "韩国同事关系亲近后会用반말，请咖啡是很常见的职场友好表示。"
+    },
+    {
+      "drama": "눈물의 여왕 (Queen of Tears / 泪之女王)",
+      "genre": "浪漫/商务剧",
+      "scene": "商务谈判中的温柔施压",
+      "context": "女主角作为企业继承人在商务谈判中展现手腕",
+      "difficulty": "advanced",
+      "dialogue": [
+        {
+          "speaker": "홍해인 (女主/继承人)",
+          "korean": "제안서 잘 봤는데요, 몇 가지 조건을 수정해 주셔야 할 것 같아요.",
+          "romanization": "je-an-seo jal bwat-neun-de-yo, myeot ga-ji jo-geon-eul su-jeong-hae ju-syeo-ya hal geot gat-a-yo.",
+          "chinese": "提案书我看过了，有几个条件需要您修改。",
+          "grammar_points": ["-았는데요 (轻柔地引入下一段话)", "-아야 할 것 같아요 (委婉说必须做)"]
+        },
+        {
+          "speaker": "거래처 임원 (合作方高管)",
+          "korean": "어떤 부분이 문제가 되는 건지 좀 구체적으로 말씀해 주시겠어요?",
+          "romanization": "eo-tteon bu-bun-i mun-je-ga doe-neun geon-ji jom gu-che-jeok-eu-ro mal-sseum-hae ju-si-get-eo-yo?",
+          "chinese": "能具体说一下哪些部分有问题吗？",
+          "grammar_points": ["-는 건지 (是什么样的/间接疑问)", "-해 주시겠어요 (能请您...吗/超礼貌)"]
+        },
+        {
+          "speaker": "홍해인",
+          "korean": "가격 부분이요. 솔직히 이 가격이면 다른 데서도 충분히 할 수 있거든요.",
+          "romanization": "ga-gyeok bu-bun-i-yo. sol-jik-hi i ga-gyeok-i-myeon da-reun de-seo-do chung-bun-hi hal su it-geo-deun-yo.",
+          "chinese": "价格部分。说实话这个价格的话别的地方也完全能做到。",
+          "grammar_points": ["-거든요 (给出理由/温柔施压)", "솔직히 (坦白说)"]
+        },
+        {
+          "speaker": "홍해인",
+          "korean": "그래도 저희가 먼저 연락드린 건 그만큼 함께하고 싶어서인데... 조금만 맞춰 주시면 안 될까요?",
+          "romanization": "geu-rae-do jeo-hui-ga meon-jeo yeol-lak-deu-rin geon geu-man-keum ham-kke-ha-go sip-eo-seo-in-de... jo-geum-man mat-chweo ju-si-myeon an dwel-kka-yo?",
+          "chinese": "不过我们先联系您，是因为那么想跟您合作... 稍微配合一下不行吗？",
+          "grammar_points": ["-서인데 (因为...所以/说明动机)", "안 될까요 (不行吗/超级委婉请求)"]
+        }
+      ],
+      "key_expressions": [
+        {"expression": "잘 봤는데요", "meaning": "看过了(但有话要说)", "register": "温柔引入后续"},
+        {"expression": "-거든요", "meaning": "是因为.../给你解释一下", "register": "温柔施压"},
+        {"expression": "안 될까요?", "meaning": "不行吗？", "register": "终极委婉请求"},
+        {"expression": "그만큼 함께하고 싶어서인데", "meaning": "是因为那么想合作", "register": "感性说服"}
+      ],
+      "culture_note": "韩国商务谈判中，直接说'不行'太生硬。用 -거든요 解释理由 + 안 될까요 请求让步，是很高级的谈判技巧。"
+    },
+    {
+      "drama": "스타트업 (Start-Up)",
+      "genre": "创业剧",
+      "scene": "团队成员意见不一致",
+      "context": "团队内部对产品方向有分歧",
+      "difficulty": "intermediate",
+      "dialogue": [
+        {
+          "speaker": "남도산 (CTO)",
+          "korean": "근데 이 기능 넣으면 일정이 밀릴 수밖에 없거든. 좀 현실적으로 생각해 봐야 하지 않아?",
+          "romanization": "geun-de i gi-neung neo-eu-myeon il-jeong-i mil-lil su-bak-e eop-geo-deun. jom hyeon-sil-jeok-eu-ro saeng-gak-hae bwa-ya ha-ji an-a?",
+          "chinese": "但是加这个功能的话日程没办法不延迟。不是应该现实点想一下吗？",
+          "grammar_points": ["-ㄹ 수밖에 없다 (没办法不)", "-지 않아? (不是吗？/反问确认)"]
+        },
+        {
+          "speaker": "서달미 (CEO)",
+          "korean": "그건 알겠는데... 사용자 입장에서 이 기능이 없으면 의미가 없잖아.",
+          "romanization": "geu-geon al-get-neun-de... sa-yong-ja ip-jang-e-seo i gi-neung-i eop-seu-myeon ui-mi-ga eop-jan-a.",
+          "chinese": "那个我知道... 但从用户角度来看没有这个功能就没意义嘛。",
+          "grammar_points": ["-겠는데 (理解但有异议)", "-잖아 (你也知道嘛/强调共识)"]
+        },
+        {
+          "speaker": "남도산",
+          "korean": "그러니까 내 말은, 우선순위를 정하자는 거야. 다 할 수는 없으니까.",
+          "romanization": "geu-reo-ni-kka nae mar-eun, u-seon-sun-wi-reul jeong-ha-ja-neun geo-ya. da hal su-neun eop-seu-ni-kka.",
+          "chinese": "所以我说的是，先定优先级。不可能全做。",
+          "grammar_points": ["그러니까 (所以说)", "-자는 거야 (是说要一起做...)", "-ㄹ 수는 없다 (不可能做)"]
+        },
+        {
+          "speaker": "서달미",
+          "korean": "알겠어. 그러면 이번 주까지 각자 리스트 뽑아 오고, 다 같이 정하자.",
+          "romanization": "al-get-eo. geu-reo-myeon i-beon ju-kka-ji gak-ja ri-seu-teu ppob-a o-go, da ga-chi jeong-ha-ja.",
+          "chinese": "知道了。那这周之前各自列出清单，大家一起定。",
+          "grammar_points": ["알겠어 (明白了/同辈承认)", "-아 오다 (做了带来)", "-자 (一起做/提议)"]
+        }
+      ],
+      "key_expressions": [
+        {"expression": "밀릴 수밖에 없거든", "meaning": "没法不延迟", "register": "团队内/强调必然"},
+        {"expression": "의미가 없잖아", "meaning": "没意义嘛", "register": "团队反驳"},
+        {"expression": "내 말은...거야", "meaning": "我说的是...", "register": "澄清自己的意思"},
+        {"expression": "리스트 뽑아 오고", "meaning": "列出清单带来", "register": "行动计划"}
+      ],
+      "culture_note": "韩国스타트업内部沟通比传统企业随性很多。同辈之间用반말讨论更直接高效，但吵完了还是要统一方向。"
+    }
+  ],
+
+  "quizzes": [
+    {
+      "id": "q001",
+      "topic": "vocabulary",
+      "difficulty": "beginner",
+      "type": "multiple_choice",
+      "question": "'会议' 的韩语是什么？",
+      "options": ["A. 회사", "B. 회의", "C. 회식", "D. 회원"],
+      "answer": "B",
+      "explanation": "회의(hoe-ui) = 会议。会社=회사, 聚餐=회식, 会员=회원。"
+    },
+    {
+      "id": "q002",
+      "topic": "vocabulary",
+      "difficulty": "beginner",
+      "type": "multiple_choice",
+      "question": "'명함' 是什么意思？",
+      "options": ["A. 名字", "B. 名牌", "C. 名片", "D. 名单"],
+      "answer": "C",
+      "explanation": "명함(myeong-ham) = 名片。명(名) + 함(函)。"
+    },
+    {
+      "id": "q003",
+      "topic": "vocabulary",
+      "difficulty": "intermediate",
+      "type": "fill_blank",
+      "question": "请将以下中文翻译为韩语：'请在周五之前提交报告。'",
+      "hint": "提示: 报告=보고서, 提交=제출하다, 周五=금요일",
+      "answer": "금요일까지 보고서를 제출해 주십시오.",
+      "explanation": "까지 = 到…为止, -해 주십시오 = 请…（正式请求）"
+    },
+    {
+      "id": "q004",
+      "topic": "grammar",
+      "difficulty": "beginner",
+      "type": "multiple_choice",
+      "question": "在正式商务会议中，应该使用哪种语体？",
+      "options": ["A. 해체 (반말)", "B. 해요체", "C. 합니다체", "D. 해라체"],
+      "answer": "C",
+      "explanation": "합니다체是最正式的语体，在商务会议、对客户、上级时必须使用。"
+    },
+    {
+      "id": "q005",
+      "topic": "grammar",
+      "difficulty": "intermediate",
+      "type": "fill_blank",
+      "question": "用 '-겠습니다' 完成句子：'我马上确认。' → '바로 ________.'",
+      "answer": "확인하겠습니다",
+      "explanation": "확인하다(确认) + 겠습니다(意志/计划) = 확인하겠습니다"
+    },
+    {
+      "id": "q006",
+      "topic": "formality",
+      "difficulty": "intermediate",
+      "type": "multiple_choice",
+      "question": "对客户说 '확인해 줄게' 合适吗？",
+      "options": ["A. 合适", "B. 不合适，应该用 '확인해 드리겠습니다'"],
+      "answer": "B",
+      "explanation": "'줄게' 是非敬语(반말)，对客户必须用尊敬语。正确说法：확인해 드리겠습니다。"
+    },
+    {
+      "id": "q007",
+      "topic": "email",
+      "difficulty": "beginner",
+      "type": "multiple_choice",
+      "question": "韩语商务邮件中，请求回复时应说什么？",
+      "options": ["A. 답장해", "B. 회신 부탁드립니다", "C. 빨리 답해", "D. 답장 줘"],
+      "answer": "B",
+      "explanation": "회신 부탁드립니다 = 请回复（正式邮件用语）。其他选项太随意。"
+    },
+    {
+      "id": "q008",
+      "topic": "vocabulary",
+      "difficulty": "intermediate",
+      "type": "multiple_choice",
+      "question": "'견적서' 是什么？",
+      "options": ["A. 发票", "B. 报价单", "C. 合同", "D. 收据"],
+      "answer": "B",
+      "explanation": "견적(gyeon-jeok) = 估价/报价, 서(书) = 文件。견적서 = 报价单。"
+    },
+    {
+      "id": "q009",
+      "topic": "conversation",
+      "difficulty": "beginner",
+      "type": "multiple_choice",
+      "question": "初次见面时最正式的问候是？",
+      "options": ["A. 안녕", "B. 안녕하세요", "C. 처음 뵙겠습니다", "D. 반가워"],
+      "answer": "C",
+      "explanation": "처음 뵙겠습니다(cheo-eum boep-get-seum-ni-da) = 初次见面（最正式）。뵙다 是 보다(见) 的谦让语。"
+    },
+    {
+      "id": "q010",
+      "topic": "conversation",
+      "difficulty": "intermediate",
+      "type": "fill_blank",
+      "question": "完成句子：下班时对同事说 '________.' (辛苦了)",
+      "answer": "수고하셨습니다",
+      "explanation": "수고하셨습니다(su-go-ha-syeot-seum-ni-da) 是对同事/上级说的'辛苦了'的正式表达。注意对下级可以说 수고했어요。"
+    },
+    {
+      "id": "q011",
+      "topic": "formality",
+      "difficulty": "advanced",
+      "type": "multiple_choice",
+      "question": "以下哪个是 '吃' 的最高敬语形式（用于描述上级的动作）？",
+      "options": ["A. 먹다", "B. 먹으시다", "C. 드시다", "D. 잡수시다"],
+      "answer": "D",
+      "explanation": "먹다 → 드시다(尊敬语) → 잡수시다(最高尊敬语)。描述社长等高层用 잡수시다。"
+    },
+    {
+      "id": "q012",
+      "topic": "grammar",
+      "difficulty": "advanced",
+      "type": "fill_blank",
+      "question": "用 '-기 바랍니다' 改写：'请确认附件。' → '첨부 파일을 ________.'",
+      "answer": "확인하시기 바랍니다",
+      "explanation": "확인하다 + (으)시 + 기 바랍니다 = 确认하시기 바랍니다。注意加了尊敬词缀 -시-。"
+    }
+  ]
+}

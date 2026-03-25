@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#c9a96e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Korean Biz Coach — Voice & Chat</title>
+  <link rel="stylesheet" href="/static/style.css?v=3">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/static/chat.html" class="nav-brand">
+      <span class="brand-icon">🇰🇷</span> KBCoach
+    </a>
+    <ul class="nav-links">
+      <li><a href="/static/chat.html" class="active">Chat</a></li>
+      <li><a href="/static/vocab.html">Vocabulary</a></li>
+      <li><a href="/static/progress.html">Progress</a></li>
+      <li>
+        <span class="nav-user">
+          <span class="avatar" id="userAvatar">?</span>
+          <span id="userNickname"></span>
+        </span>
+      </li>
+      <li><button id="logoutBtn">Logout</button></li>
+    </ul>
+  </nav>
+
+  <!-- Chat Layout -->
+  <div class="page-body">
+    <div class="chat-layout">
+      <!-- Sidebar -->
+      <aside class="chat-sidebar">
+        <button class="btn btn-full btn-sm" id="newThreadBtn" style="margin-bottom:1rem;">
+          ✨ New Chat
+        </button>
+
+        <!-- Voice / Text Mode Toggle -->
+        <div class="mode-toggle" style="margin-bottom:1rem;">
+          <button class="mode-btn active" id="textModeBtn" data-mode="text">💬 Text</button>
+          <button class="mode-btn" id="voiceModeBtn" data-mode="voice">🎙️ Voice</button>
+        </div>
+
+        <h3>Quick Topics</h3>
+        <button class="quick-action" data-msg="Teach me common Korean expressions for meetings">
+          <span class="qa-icon">🏢</span> Meeting Korean
+        </button>
+        <button class="quick-action" data-msg="Teach me how to write a business email in Korean">
+          <span class="qa-icon">📧</span> Business Email
+        </button>
+        <button class="quick-action" data-msg="Give me a Korean drama business dialogue practice">
+          <span class="qa-icon">🎬</span> K-Drama Dialogue
+        </button>
+        <button class="quick-action" data-msg="Teach me how to use -거든요, -잖아요, -더라고요 in business">
+          <span class="qa-icon">📝</span> Sentence Endings
+        </button>
+        <button class="quick-action" data-msg="Simulate a Korean job interview scenario">
+          <span class="qa-icon">👔</span> Interview Practice
+        </button>
+        <button class="quick-action" data-msg="Teach me the difference between 합니다체, 해요체, and 반말">
+          <span class="qa-icon">🎯</span> Formality Levels
+        </button>
+        <button class="quick-action" data-msg="Give me a Korean quiz!">
+          <span class="qa-icon">🧠</span> Korean Quiz
+        </button>
+        <button class="quick-action" data-msg="Teach me Korean phone call etiquette for business">
+          <span class="qa-icon">📞</span> Phone Etiquette
+        </button>
+
+        <h3 style="margin-top:1.2rem;">History</h3>
+        <div id="historyList" class="history-list">
+          <div class="history-empty">No history yet</div>
+        </div>
+      </aside>
+
+      <!-- Main Chat -->
+      <main class="chat-main">
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-welcome">
+            <div class="welcome-icon">🇰🇷</div>
+            <h2>안녕하세요! Welcome to Korean Biz Coach</h2>
+            <p>Your business Korean coach is ready. Choose <strong>Text</strong> or <strong>Voice</strong> mode to start!</p>
+            <p style="margin-top:0.5rem;color:var(--korean);">
+              🎙️ Voice mode: Real-time conversation with 수진 (Korean coach)<br>
+              💬 Text mode: Detailed lessons with tools & examples
+            </p>
+          </div>
+        </div>
+
+        <!-- Voice Panel (shown in voice mode) -->
+        <div class="voice-panel" id="voicePanel" style="display:none;">
+          <div class="voice-status" id="voiceStatus">
+            <div class="voice-avatar">수진</div>
+            <div class="voice-status-text" id="voiceStatusText">Press & hold to talk</div>
+            <div class="voice-waveform" id="voiceWaveform">
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+            </div>
+          </div>
+          <div class="voice-controls">
+            <select id="voiceLang" class="voice-lang-select">
+              <option value="ko-KR">한국어</option>
+              <option value="auto">Auto</option>
+              <option value="en-US">English</option>
+              <option value="zh-CN">中文</option>
+            </select>
+            <button class="voice-record-btn" id="voiceRecordBtn" title="Hold to talk">
+              <span class="mic-icon">🎤</span>
+            </button>
+            <button class="voice-stop-btn" id="voiceStopBtn" title="Stop audio" style="display:none;">⏹</button>
+          </div>
+        </div>
+
+        <!-- Text Input Bar (shown in text mode) -->
+        <div class="chat-input-bar" id="textInputBar">
+          <textarea id="chatInput" placeholder="Type what Korean you want to learn..." rows="1"></textarea>
+          <select id="inlineLangSelect" class="inline-lang-select" title="Voice language">
+            <option value="auto">Auto</option>
+            <option value="ko-KR">한국어</option>
+            <option value="en-US">English</option>
+            <option value="zh-CN">中文</option>
+          </select>
+          <button class="btn btn-icon voice-btn" id="inlineVoiceBtn" title="Voice input">🎤</button>
+          <button class="btn btn-icon" id="sendBtn" title="Send">➤</button>
+          <button class="btn btn-icon cancel-btn" id="cancelBtn" title="Cancel" style="display:none;">✕</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/static/app.js"></script>
+  <script>
+    // ── Auth Check ──
+    if (!Auth.token) { window.location.href = '/static/index.html'; }
+
+    // ── State ──
+    let currentThreadId = null;
+    let isWaiting = false;
+    let currentMode = 'text'; // 'text' or 'voice'
+    let wsVoice = null;       // WebSocket for voice
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let currentAudio = null;  // currently playing audio
+    let isRecording = false;
+    let audioStore = {};      // msgId → audio URL (data: or blob:) for replay
+    let msgCounter = 0;       // message counter for unique IDs
+    let lastRecordedBlobUrl = null; // stores user's last recorded audio for replay
+
+    // ── Load User Profile ──
+    (async () => {
+      try {
+        const profile = await Api.get('/api/auth/profile');
+        document.getElementById('userAvatar').textContent = (profile.nickname || profile.email)[0].toUpperCase();
+        document.getElementById('userNickname').textContent = profile.nickname || profile.email.split('@')[0];
+      } catch { /* ignore */ }
+    })();
+
+    // ── Logout ──
+    document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
+
+    // ── DOM Refs ──
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const inlineVoiceBtn = document.getElementById('inlineVoiceBtn');
+    const newThreadBtn = document.getElementById('newThreadBtn');
+    const voicePanel = document.getElementById('voicePanel');
+    const textInputBar = document.getElementById('textInputBar');
+    const voiceRecordBtn = document.getElementById('voiceRecordBtn');
+    const voiceStopBtn = document.getElementById('voiceStopBtn');
+    const voiceStatusText = document.getElementById('voiceStatusText');
+    const voiceWaveform = document.getElementById('voiceWaveform');
+    const cancelBtn = document.getElementById('cancelBtn');
+    let currentAbortController = null;
+
+    // ═══════════════════════════════════════════════════════
+    // Mode Toggle (Text ↔ Voice)
+    // ═══════════════════════════════════════════════════════
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentMode = btn.dataset.mode;
+
+        if (currentMode === 'voice') {
+          voicePanel.style.display = 'flex';
+          textInputBar.style.display = 'none';
+          connectVoiceWS();
+        } else {
+          voicePanel.style.display = 'none';
+          textInputBar.style.display = 'flex';
+          disconnectVoiceWS();
+        }
+      });
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // WebSocket Voice Connection
+    // ═══════════════════════════════════════════════════════
+    function connectVoiceWS() {
+      if (wsVoice && wsVoice.readyState === WebSocket.OPEN) return;
+
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${location.host}/ws/voice`;
+      wsVoice = new WebSocket(wsUrl);
+
+      wsVoice.binaryType = 'arraybuffer';
+
+      wsVoice.onopen = () => {
+        // Send init message with token
+        wsVoice.send(JSON.stringify({
+          type: 'start',
+          token: Auth.token,
+          language: document.getElementById('voiceLang').value,
+        }));
+        setVoiceStatus('connecting', 'Connecting...');
+      };
+
+      wsVoice.onmessage = (event) => {
+        if (event.data instanceof ArrayBuffer) {
+          // Binary: TTS audio
+          playAudioBuffer(event.data);
+          return;
+        }
+
+        // Text: JSON message
+        try {
+          const data = JSON.parse(event.data);
+          handleVoiceMessage(data);
+        } catch (e) {
+          console.error('WS parse error:', e);
+        }
+      };
+
+      wsVoice.onclose = (e) => {
+        console.log('Voice WS closed:', e.code, e.reason);
+        setVoiceStatus('disconnected', 'Disconnected. Switch to Voice mode to reconnect.');
+      };
+
+      wsVoice.onerror = (e) => {
+        console.error('Voice WS error:', e);
+        setVoiceStatus('error', 'Connection error');
+      };
+    }
+
+    function disconnectVoiceWS() {
+      if (wsVoice) {
+        wsVoice.close();
+        wsVoice = null;
+      }
+    }
+
+    function handleVoiceMessage(data) {
+      switch (data.type) {
+        case 'ready':
+          currentThreadId = data.thread_id;
+          setVoiceStatus('ready', 'Ready — press & hold to talk');
+          break;
+
+        case 'transcript':
+          if (data.text) {
+            const userMsgId = appendMessage('user', '🎤 ' + data.text);
+            // Attach recorded audio for replay
+            if (lastRecordedBlobUrl) {
+              audioStore[userMsgId] = lastRecordedBlobUrl;
+              addReplayToMessage(userMsgId);
+              lastRecordedBlobUrl = null;
+            }
+          } else if (data.message) {
+            setVoiceStatus('ready', data.message);
+          }
+          break;
+
+        case 'reply':
+          currentThreadId = data.thread_id;
+          appendMessage('assistant', data.text);
+          break;
+
+        case 'status':
+          if (data.status === 'processing') {
+            setVoiceStatus('processing', '수진 is thinking...');
+          } else if (data.status === 'speaking') {
+            setVoiceStatus('speaking', '수진 is speaking...');
+          } else if (data.status === 'ready') {
+            setVoiceStatus('ready', 'Ready — press & hold to talk');
+          }
+          break;
+
+        case 'error':
+          Toast.show(data.message, 'error');
+          setVoiceStatus('ready', 'Ready — press & hold to talk');
+          break;
+      }
+    }
+
+    function setVoiceStatus(state, text) {
+      voiceStatusText.textContent = text;
+      voiceWaveform.className = 'voice-waveform' + (state === 'speaking' ? ' active' : state === 'processing' ? ' pulse' : '');
+
+      const avatar = document.querySelector('.voice-avatar');
+      if (avatar) {
+        avatar.className = 'voice-avatar' + (state === 'speaking' ? ' speaking' : state === 'processing' ? ' thinking' : '');
+      }
+    }
+
+    function playAudioBuffer(arrayBuffer) {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
+      const url = URL.createObjectURL(blob);
+      currentAudio = new Audio(url);
+
+      // Store audio for replay on the last assistant message
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result; // full data URL
+        const lastAssistant = chatMessages.querySelector('.message.assistant:last-of-type');
+        if (lastAssistant && lastAssistant.id) {
+          audioStore[lastAssistant.id] = dataUrl;
+          addReplayToMessage(lastAssistant.id);
+        }
+      };
+      reader.readAsDataURL(blob);
+
+      currentAudio.onended = () => {
+        URL.revokeObjectURL(url);
+        currentAudio = null;
+        setVoiceStatus('ready', 'Ready — press & hold to talk');
+      };
+      currentAudio.play().catch(() => {});
+    }
+
+    // ── Stop currently playing audio ──
+    voiceStopBtn.addEventListener('click', () => {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      voiceStopBtn.style.display = 'none';
+      setVoiceStatus('ready', 'Ready — press & hold to talk');
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // Voice Recording (Push-to-talk)
+    // ═══════════════════════════════════════════════════════
+    async function startRecording() {
+      if (isRecording) return;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (e) => { audioChunks.push(e.data); };
+
+        mediaRecorder.onstop = async () => {
+          stream.getTracks().forEach(t => t.stop());
+          isRecording = false;
+          voiceRecordBtn.classList.remove('recording');
+          voiceRecordBtn.querySelector('.mic-icon').textContent = '🎤';
+
+          const blob = new Blob(audioChunks, { type: 'audio/webm' });
+          if (blob.size < 1000) {
+            setVoiceStatus('ready', 'Recording too short, try again');
+            return;
+          }
+
+          // Store user audio for replay
+          lastRecordedBlobUrl = URL.createObjectURL(blob);
+
+          setVoiceStatus('processing', 'Processing your voice...');
+
+          // Convert to WAV and send via WebSocket
+          const wavBase64 = await blobToWavBase64(blob);
+          const wavBytes = base64ToBytes(wavBase64);
+
+          // Send binary audio via WebSocket
+          if (wsVoice && wsVoice.readyState === WebSocket.OPEN) {
+            wsVoice.send(wavBytes);
+            wsVoice.send(JSON.stringify({ type: 'end_audio' }));
+          } else {
+            // Fallback to REST API
+            await sendVoiceREST(wavBase64);
+          }
+        };
+
+        mediaRecorder.start();
+        isRecording = true;
+        voiceRecordBtn.classList.add('recording');
+        voiceRecordBtn.querySelector('.mic-icon').textContent = '⏹';
+        setVoiceStatus('recording', 'Listening... release to send');
+      } catch (err) {
+        Toast.show('Cannot access microphone: ' + err.message, 'error');
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+    }
+
+    // Push-to-talk: mousedown/mouseup and touch
+    voiceRecordBtn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      if (isRecording) { stopRecording(); } else { startRecording(); }
+    });
+
+    voiceRecordBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      startRecording();
+    });
+
+    voiceRecordBtn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      stopRecording();
+    });
+
+    // ── Inline voice button (text mode) — toggle record ──
+    inlineVoiceBtn.addEventListener('click', async () => {
+      if (isRecording) {
+        stopRecording();
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+        audioChunks = [];
+        mediaRecorder.ondataavailable = (e) => { audioChunks.push(e.data); };
+
+        mediaRecorder.onstop = async () => {
+          stream.getTracks().forEach(t => t.stop());
+          isRecording = false;
+          inlineVoiceBtn.classList.remove('recording');
+          inlineVoiceBtn.textContent = '🎤';
+
+          const blob = new Blob(audioChunks, { type: 'audio/webm' });
+          if (blob.size < 1000) return;
+
+          // Store user audio blob URL for replay
+          const userAudioUrl = URL.createObjectURL(blob);
+
+          const welcome = chatMessages.querySelector('.chat-welcome');
+          if (welcome) welcome.remove();
+
+          const userMsgId = appendMessage('user', '🎤 [Voice Message]');
+          // Store and add replay button for user's own audio
+          audioStore[userMsgId] = userAudioUrl;
+          addReplayToMessage(userMsgId);
+
+          const typing = showTyping();
+
+          try {
+            const base64 = await blobToWavBase64(blob);
+            const lang = document.getElementById('inlineLangSelect')?.value || document.getElementById('voiceLang')?.value || 'ko-KR';
+            const data = await Api.post('/api/chat/voice', {
+              audio_base64: base64,
+              thread_id: currentThreadId,
+              language: lang,
+            });
+            currentThreadId = data.thread_id;
+            typing.remove();
+
+            // Update user message with transcript
+            const userMsgs = chatMessages.querySelectorAll('.message.user');
+            const lastUser = userMsgs[userMsgs.length - 1];
+            if (lastUser) lastUser.childNodes[0].textContent = '🎤 ' + data.user_transcript;
+
+            const replyMsgId = appendMessage('assistant', data.reply_text, data.reply_audio_base64);
+
+            if (data.reply_audio_base64) {
+              playAudioWithPlayer(replyMsgId, audioStore[replyMsgId]);
+            }
+          } catch (err) {
+            typing.remove();
+            appendMessage('assistant', '⚠️ Voice processing failed: ' + err.message);
+          }
+        };
+
+        mediaRecorder.start();
+        isRecording = true;
+        inlineVoiceBtn.classList.add('recording');
+        inlineVoiceBtn.textContent = '⏹';
+        Toast.show('Recording... click again to stop', 'info');
+      } catch (err) {
+        Toast.show('Cannot access microphone: ' + err.message, 'error');
+      }
+    });
+
+    // ── REST fallback for voice ──
+    async function sendVoiceREST(wavBase64) {
+      try {
+        const lang = document.getElementById('inlineLangSelect')?.value || document.getElementById('voiceLang')?.value || 'ko-KR';
+        const data = await Api.post('/api/chat/voice', {
+          audio_base64: wavBase64,
+          thread_id: currentThreadId,
+          language: lang,
+        });
+        currentThreadId = data.thread_id;
+
+        if (data.user_transcript) {
+          const userMsgId = appendMessage('user', '🎤 ' + data.user_transcript);
+          if (lastRecordedBlobUrl) {
+            audioStore[userMsgId] = lastRecordedBlobUrl;
+            addReplayToMessage(userMsgId);
+            lastRecordedBlobUrl = null;
+          }
+        }
+        appendMessage('assistant', data.reply_text, data.reply_audio_base64);
+
+        if (data.reply_audio_base64) {
+          const lastAst = chatMessages.querySelector('.message.assistant:last-of-type');
+          if (lastAst) playAudioWithPlayer(lastAst.id, audioStore[lastAst.id]);
+        }
+        setVoiceStatus('ready', 'Ready — press & hold to talk');
+      } catch (err) {
+        Toast.show('Voice failed: ' + err.message, 'error');
+        setVoiceStatus('ready', 'Ready — press & hold to talk');
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // Audio Utilities
+    // ═══════════════════════════════════════════════════════
+    function base64ToBytes(b64) {
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return bytes;
+    }
+
+    async function blobToWavBase64(blob) {
+      // Step 1: Decode WebM at the browser's native sample rate (reliable)
+      const tempCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const arrayBuf = await blob.arrayBuffer();
+      const audioBuf = await tempCtx.decodeAudioData(arrayBuf);
+      tempCtx.close();
+
+      // Step 2: Resample to 16kHz mono using OfflineAudioContext (reliable resampling)
+      const targetSR = 16000;
+      const numSamples = Math.ceil(audioBuf.duration * targetSR);
+      const offlineCtx = new OfflineAudioContext(1, numSamples, targetSR);
+      const source = offlineCtx.createBufferSource();
+      source.buffer = audioBuf;
+      source.connect(offlineCtx.destination);
+      source.start();
+      const renderedBuf = await offlineCtx.startRendering();
+
+      // Step 3: Convert Float32 PCM to Int16
+      const pcm = renderedBuf.getChannelData(0);
+      const int16 = new Int16Array(pcm.length);
+      for (let i = 0; i < pcm.length; i++) {
+        const s = Math.max(-1, Math.min(1, pcm[i]));
+        int16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+      }
+
+      // Step 4: Build WAV file
+      const sr = targetSR;
+      const wavBuf = new ArrayBuffer(44 + int16.length * 2);
+      const v = new DataView(wavBuf);
+      const writeStr = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+      writeStr(0, 'RIFF');
+      v.setUint32(4, 36 + int16.length * 2, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      v.setUint32(16, 16, true);
+      v.setUint16(20, 1, true);
+      v.setUint16(22, 1, true);
+      v.setUint32(24, sr, true);
+      v.setUint32(28, sr * 2, true);
+      v.setUint16(32, 2, true);
+      v.setUint16(34, 16, true);
+      writeStr(36, 'data');
+      v.setUint32(40, int16.length * 2, true);
+      for (let i = 0; i < int16.length; i++) v.setInt16(44 + i * 2, int16[i], true);
+
+      const bytes = new Uint8Array(wavBuf);
+      let bin = '';
+      for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      return btoa(bin);
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // Text Chat
+    // ═══════════════════════════════════════════════════════
+    chatInput.addEventListener('input', () => {
+      chatInput.style.height = 'auto';
+      chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+    });
+
+    async function sendMessage(text) {
+      if (!text.trim() || isWaiting) return;
+      isWaiting = true;
+      sendBtn.disabled = true;
+      sendBtn.style.display = 'none';
+      cancelBtn.style.display = '';
+
+      currentAbortController = new AbortController();
+
+      const welcome = chatMessages.querySelector('.chat-welcome');
+      if (welcome) welcome.remove();
+
+      appendMessage('user', text);
+      chatInput.value = '';
+      chatInput.style.height = 'auto';
+
+      const typing = showTyping();
+
+      try {
+        const data = await Api.post('/api/chat', {
+          message: text,
+          thread_id: currentThreadId,
+        }, { signal: currentAbortController.signal });
+        currentThreadId = data.thread_id;
+        typing.remove();
+        const replyMsgId = appendMessage('assistant', data.reply, data.reply_audio_base64);
+
+        // Auto-play TTS audio via the audio player
+        if (data.reply_audio_base64) {
+          playAudioWithPlayer(replyMsgId, audioStore[replyMsgId]);
+        }
+        loadHistory(); // refresh sidebar with latest conversation
+      } catch (err) {
+        typing.remove();
+        if (err.name === 'AbortError') {
+          appendMessage('assistant', '⏹ Request cancelled.');
+        } else {
+          appendMessage('assistant', '⚠️ Send failed: ' + err.message);
+        }
+      } finally {
+        isWaiting = false;
+        sendBtn.disabled = false;
+        sendBtn.style.display = '';
+        cancelBtn.style.display = 'none';
+        currentAbortController = null;
+        chatInput.focus();
+      }
+    }
+
+    cancelBtn.addEventListener('click', () => {
+      if (currentAbortController) currentAbortController.abort();
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // UI Helpers
+    // ═══════════════════════════════════════════════════════
+    function appendMessage(role, text, audioBase64) {
+      const msgId = 'msg_' + (++msgCounter);
+      const div = document.createElement('div');
+      div.className = `message ${role}`;
+      div.id = msgId;
+      if (role === 'assistant') {
+        div.innerHTML = renderMarkdown(text);
+        div.dataset.rawText = text;
+      } else {
+        div.textContent = text;
+      }
+      const time = document.createElement('div');
+      time.className = 'msg-time';
+      time.textContent = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      div.appendChild(time);
+
+      // Store audio if provided
+      if (audioBase64) {
+        audioStore[msgId] = 'data:audio/mpeg;base64,' + audioBase64;
+      }
+
+      // Add audio player for messages with audio (or assistant msgs for on-demand TTS)
+      if (role === 'assistant' || audioBase64) {
+        div.appendChild(createAudioPlayer(msgId));
+      }
+
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return msgId;
+    }
+
+    function showTyping() {
+      const typing = document.createElement('div');
+      typing.className = 'typing-indicator';
+      typing.innerHTML = '<span></span><span></span><span></span>';
+      chatMessages.appendChild(typing);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return typing;
+    }
+
+    function renderMarkdown(text) {
+      return text
+        .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+        .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // Audio Player (play/pause + seekable progress bar)
+    // ═══════════════════════════════════════════════════════
+    let activePlayerId = null; // msgId of currently playing audio player
+
+    function fmtTime(s) {
+      if (!s || !isFinite(s)) return '0:00';
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    function createAudioPlayer(msgId) {
+      const player = document.createElement('div');
+      player.className = 'audio-player';
+      player.dataset.msgId = msgId;
+      player.innerHTML = `
+        <button class="ap-play-btn" title="Play">&#9654;</button>
+        <span class="ap-time ap-current">0:00</span>
+        <div class="ap-track">
+          <div class="ap-progress"></div>
+          <input type="range" class="ap-seek" min="0" max="100" value="0" step="0.1">
+        </div>
+        <span class="ap-time ap-duration">0:00</span>
+      `;
+      const playBtn = player.querySelector('.ap-play-btn');
+      const seek = player.querySelector('.ap-seek');
+      const progress = player.querySelector('.ap-progress');
+      const curTime = player.querySelector('.ap-current');
+      const durTime = player.querySelector('.ap-duration');
+
+      playBtn.addEventListener('click', () => handlePlayPause(msgId));
+      seek.addEventListener('input', () => {
+        if (currentAudio && activePlayerId === msgId) {
+          const t = (seek.value / 100) * currentAudio.duration;
+          currentAudio.currentTime = t;
+          progress.style.width = seek.value + '%';
+          curTime.textContent = fmtTime(t);
+        }
+      });
+      return player;
+    }
+
+    function updatePlayerUI(msgId, audio) {
+      const div = document.getElementById(msgId);
+      if (!div) return;
+      const player = div.querySelector('.audio-player');
+      if (!player) return;
+      const playBtn = player.querySelector('.ap-play-btn');
+      const seek = player.querySelector('.ap-seek');
+      const progress = player.querySelector('.ap-progress');
+      const curTime = player.querySelector('.ap-current');
+      const durTime = player.querySelector('.ap-duration');
+
+      audio.addEventListener('loadedmetadata', () => {
+        durTime.textContent = fmtTime(audio.duration);
+      });
+      audio.addEventListener('timeupdate', () => {
+        if (!audio.duration) return;
+        const pct = (audio.currentTime / audio.duration) * 100;
+        progress.style.width = pct + '%';
+        seek.value = pct;
+        curTime.textContent = fmtTime(audio.currentTime);
+      });
+      audio.addEventListener('ended', () => {
+        playBtn.innerHTML = '&#9654;';
+        progress.style.width = '0%';
+        seek.value = 0;
+        curTime.textContent = '0:00';
+        currentAudio = null;
+        activePlayerId = null;
+      });
+      playBtn.innerHTML = '&#9646;&#9646;';
+    }
+
+    function stopCurrentPlayer() {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      if (activePlayerId) {
+        const oldDiv = document.getElementById(activePlayerId);
+        if (oldDiv) {
+          const btn = oldDiv.querySelector('.ap-play-btn');
+          if (btn) btn.innerHTML = '&#9654;';
+        }
+        activePlayerId = null;
+      }
+    }
+
+    function handlePlayPause(msgId) {
+      // Pause if same player is playing
+      if (activePlayerId === msgId && currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        const btn = document.getElementById(msgId)?.querySelector('.ap-play-btn');
+        if (btn) btn.innerHTML = '&#9654;';
+        return;
+      }
+      // Resume if same player is paused
+      if (activePlayerId === msgId && currentAudio && currentAudio.paused) {
+        currentAudio.play().catch(() => {});
+        const btn = document.getElementById(msgId)?.querySelector('.ap-play-btn');
+        if (btn) btn.innerHTML = '&#9646;&#9646;';
+        return;
+      }
+      // Play new audio
+      const src = audioStore[msgId];
+      if (src) {
+        playAudioWithPlayer(msgId, src);
+      } else {
+        fetchThenPlay(msgId);
+      }
+    }
+
+    function playAudioWithPlayer(msgId, src) {
+      stopCurrentPlayer();
+      activePlayerId = msgId;
+      currentAudio = new Audio(src);
+      updatePlayerUI(msgId, currentAudio);
+      currentAudio.play().catch(() => {});
+    }
+
+    async function fetchThenPlay(msgId) {
+      const div = document.getElementById(msgId);
+      if (!div || !div.dataset.rawText) return;
+      const btn = div.querySelector('.ap-play-btn');
+      if (btn) { btn.innerHTML = '&#8987;'; btn.disabled = true; }
+      try {
+        const data = await Api.post('/api/chat/tts', { text: div.dataset.rawText });
+        if (data.audio_base64) {
+          audioStore[msgId] = 'data:audio/mpeg;base64,' + data.audio_base64;
+          playAudioWithPlayer(msgId, audioStore[msgId]);
+        }
+      } catch (err) {
+        Toast.show('TTS failed: ' + err.message, 'error');
+      } finally {
+        if (btn) { btn.disabled = false; }
+      }
+    }
+
+    function replayAudio(msgId) {
+      const src = audioStore[msgId];
+      if (!src) return;
+      playAudioWithPlayer(msgId, src);
+    }
+
+    async function playOrFetchAudio(msgId) {
+      if (audioStore[msgId]) {
+        handlePlayPause(msgId);
+      } else {
+        fetchThenPlay(msgId);
+      }
+    }
+
+    function addReplayToMessage(msgId) {
+      const div = document.getElementById(msgId);
+      if (!div || div.querySelector('.audio-player')) return;
+      div.appendChild(createAudioPlayer(msgId));
+    }
+
+    // ── Event Listeners ──
+    sendBtn.addEventListener('click', () => sendMessage(chatInput.value));
+
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage(chatInput.value);
+      }
+    });
+
+    document.querySelectorAll('.quick-action').forEach(btn => {
+      btn.addEventListener('click', () => sendMessage(btn.dataset.msg));
+    });
+
+    newThreadBtn.addEventListener('click', async () => {
+      try {
+        const data = await Api.post('/api/chat/new-thread');
+        currentThreadId = data.thread_id;
+        chatMessages.innerHTML = `
+          <div class="chat-welcome">
+            <div class="welcome-icon">✨</div>
+            <h2>New Chat Created</h2>
+            <p>Start a new Korean learning topic!</p>
+          </div>`;
+        Toast.show('New chat created', 'success');
+        loadHistory(); // refresh sidebar
+
+        // If voice mode, also reset WS thread
+        if (wsVoice && wsVoice.readyState === WebSocket.OPEN) {
+          wsVoice.send(JSON.stringify({ type: 'new_thread' }));
+        }
+      } catch (err) {
+        Toast.show('Failed to create: ' + err.message, 'error');
+      }
+    });
+
+    // ── Language change (voice mode) ──
+    document.getElementById('voiceLang').addEventListener('change', (e) => {
+      if (wsVoice && wsVoice.readyState === WebSocket.OPEN) {
+        wsVoice.send(JSON.stringify({ type: 'set_language', language: e.target.value }));
+      }
+      // sync inline selector
+      document.getElementById('inlineLangSelect').value = e.target.value;
+    });
+
+    // ── Language change (text mode inline selector) ──
+    document.getElementById('inlineLangSelect').addEventListener('change', (e) => {
+      // sync voice panel selector
+      document.getElementById('voiceLang').value = e.target.value;
+      if (wsVoice && wsVoice.readyState === WebSocket.OPEN) {
+        wsVoice.send(JSON.stringify({ type: 'set_language', language: e.target.value }));
+      }
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // Conversation History
+    // ═══════════════════════════════════════════════════════
+    const historyList = document.getElementById('historyList');
+
+    async function loadHistory() {
+      try {
+        const convs = await Api.get('/api/chat/history');
+        if (!convs.length) {
+          historyList.innerHTML = '<div class="history-empty">No history yet</div>';
+          return;
+        }
+        historyList.innerHTML = '';
+        convs.forEach(c => {
+          const item = document.createElement('div');
+          item.className = 'history-item' + (c.thread_id === currentThreadId ? ' active' : '');
+          item.dataset.threadId = c.thread_id;
+          const title = document.createElement('div');
+          title.className = 'history-title';
+          title.textContent = c.title || 'Untitled';
+          const meta = document.createElement('div');
+          meta.className = 'history-meta';
+          const d = c.updated_at ? new Date(c.updated_at) : new Date();
+          meta.textContent = d.toLocaleDateString() + ' · ' + c.message_count + ' msgs';
+          const delBtn = document.createElement('button');
+          delBtn.className = 'history-del';
+          delBtn.textContent = '✕';
+          delBtn.title = 'Delete';
+          delBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (!confirm('Delete this conversation?')) return;
+            try {
+              await Api.del('/api/chat/history/' + c.thread_id);
+              loadHistory();
+            } catch (err) { Toast.show('Delete failed', 'error'); }
+          });
+          item.appendChild(title);
+          item.appendChild(meta);
+          item.appendChild(delBtn);
+          item.addEventListener('click', () => loadConversation(c.thread_id));
+          historyList.appendChild(item);
+        });
+      } catch (err) {
+        console.error('Failed to load history:', err);
+      }
+    }
+
+    async function loadConversation(threadId) {
+      try {
+        const data = await Api.get('/api/chat/history/' + threadId);
+        currentThreadId = threadId;
+        chatMessages.innerHTML = '';
+        audioStore = {};
+        msgCounter = 0;
+        (data.messages || []).forEach(m => {
+          appendMessage(m.role, m.content);
+        });
+        if (!data.messages || !data.messages.length) {
+          chatMessages.innerHTML = '<div class="chat-welcome"><div class="welcome-icon">💬</div><h2>' + (data.title || 'Chat') + '</h2></div>';
+        }
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        loadHistory(); // highlight active
+      } catch (err) {
+        Toast.show('Failed to load: ' + err.message, 'error');
+      }
+    }
+
+    // Load history on page load
+    loadHistory();
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
