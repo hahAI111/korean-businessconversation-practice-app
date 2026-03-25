@@ -18,7 +18,7 @@ Foundry Portal Agent 配置 (可选，提升体验):
 """
 
 import logging
-from typing import Optional
+from typing import Generator, Optional
 
 from openai import AzureOpenAI
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
@@ -207,6 +207,48 @@ class AgentService:
         except Exception as e:
             logger.error("Chat error: %s", e, exc_info=True)
             return f"[错误] Agent 调用失败: {type(e).__name__}: {e}"
+
+    def chat_stream(self, thread_id: str, user_message: str) -> Generator[str, None, str]:
+        """流式文字对话 — 逐步返回文本片段, 最终返回完整文本。"""
+        try:
+            self._ensure_client()
+            prev_id = self._last_response.get(thread_id)
+            kwargs: dict = {
+                "model": settings.MODEL_DEPLOYMENT,
+                "input": user_message,
+                "max_output_tokens": 800,
+                "stream": True,
+            }
+            if prev_id:
+                kwargs["previous_response_id"] = prev_id
+
+            if settings.TEXT_AGENT_NAME:
+                kwargs["extra_body"] = {
+                    "agent_reference": {
+                        "name": settings.TEXT_AGENT_NAME,
+                        "type": "agent_reference",
+                    }
+                }
+            else:
+                kwargs["instructions"] = TEXT_INSTRUCTIONS
+
+            full_text = ""
+            response_id = None
+            stream = self._client.responses.create(**kwargs)
+            for event in stream:
+                if hasattr(event, 'type'):
+                    if event.type == 'response.output_text.delta':
+                        full_text += event.delta
+                        yield event.delta
+                    elif event.type == 'response.completed':
+                        response_id = event.response.id
+            if response_id:
+                self._last_response[thread_id] = response_id
+            return full_text
+        except Exception as e:
+            logger.error("Chat stream error: %s", e, exc_info=True)
+            yield f"[错误] {type(e).__name__}: {e}"
+            return ""
 
     def voice_chat(self, thread_id: str, user_message: str) -> str:
         """语音对话 — 수진, 纯韩语短回复。"""

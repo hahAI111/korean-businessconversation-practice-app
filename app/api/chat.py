@@ -2,11 +2,14 @@
 对话 API —— 文字聊天 + 语音聊天
 """
 
+import asyncio
+import json
 import logging
 import traceback
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 
 from app.core.auth import get_current_user_id
 from app.schemas.schemas import ChatRequest, ChatResponse, TtsRequest, VoiceChatRequest, VoiceChatResponse
@@ -114,6 +117,85 @@ async def chat(body: ChatRequest, user_id: int = Depends(get_current_user_id)):
     except Exception as e:
         logger.error("Chat error: %s\n%s", e, traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"Chat error: {type(e).__name__}: {e}")
+
+
+@router.post("/stream")
+async def chat_stream(body: ChatRequest, user_id: int = Depends(get_current_user_id)):
+    """SSE streaming chat — 逐字返回回复。"""
+    try:
+        if not await cache_service.check_rate_limit(user_id):
+            raise HTTPException(status_code=429, detail="Too many requests")
+
+        thread_id = body.thread_id
+        if not thread_id:
+            thread_id = await cache_service.get_thread_id(user_id)
+        if not thread_id:
+            thread_id = agent_service.create_thread()
+            await cache_service.set_thread_id(user_id, thread_id)
+
+        async def event_generator():
+            # Send thread_id first
+            yield f"data: {json.dumps({'type': 'meta', 'thread_id': thread_id})}\n\n"
+
+            full_reply = ""
+            try:
+                gen = agent_service.chat_stream(thread_id, body.message)
+                # Run sync generator in a thread, pushing chunks via a queue
+                queue: asyncio.Queue = asyncio.Queue()
+
+                def _run_gen():
+                    try:
+                        for chunk in gen:
+                            queue.put_nowait(chunk)
+                        queue.put_nowait(None)  # sentinel
+                    except Exception as e:
+                        queue.put_nowait(e)
+
+                asyncio.get_event_loop().run_in_executor(None, _run_gen)
+
+                while True:
+                    item = await queue.get()
+                    if item is None:
+                        break
+                    if isinstance(item, Exception):
+                        yield f"data: {json.dumps({'type': 'error', 'text': str(item)})}\n\n"
+                        break
+                    full_reply += item
+                    yield f"data: {json.dumps({'type': 'delta', 'text': item})}\n\n"
+            except Exception as e:
+                logger.error("Stream error: %s", e, exc_info=True)
+                yield f"data: {json.dumps({'type': 'error', 'text': str(e)})}\n\n"
+
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
+
+            # Background saves
+            try:
+                await cache_service.record_study_session(user_id, 1)
+            except Exception:
+                pass
+            try:
+                await _save_messages(user_id, thread_id, body.message, full_reply)
+            except Exception:
+                pass
+            try:
+                await cosmos_service.log_event(user_id, "chat_message", {
+                    "thread_id": thread_id,
+                    "user_msg_len": len(body.message),
+                    "reply_len": len(full_reply),
+                })
+            except Exception:
+                pass
+
+        return StreamingResponse(
+            event_generator(),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Chat stream error: %s\n%s", e, traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/tts")
