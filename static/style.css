@@ -556,6 +556,31 @@ body {
 }
 #logoutBtn:hover { color: var(--danger); }
 
+/* ── Sidebar User Section (mobile only) ── */
+.sidebar-user {
+  display: none;
+  align-items: center; gap: 0.6rem;
+  margin-top: auto;
+  padding: 0.8rem 0; 
+  border-top: 1px solid var(--border);
+}
+.sidebar-user .avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--primary); display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; color: var(--white); font-weight: 700;
+  flex-shrink: 0;
+}
+.sidebar-nickname {
+  color: var(--success); font-size: 0.85rem; font-weight: 600;
+  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sidebar-logout-btn {
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-muted); cursor: pointer; font-size: 0.8rem;
+  padding: 0.3rem 0.6rem; transition: all 0.2s;
+}
+.sidebar-logout-btn:hover { color: var(--danger); border-color: var(--danger); }
+
 /* ── Sidebar Overlay — hidden by default ── */
 .sidebar-overlay {
   display: none;
@@ -568,12 +593,13 @@ body {
 /* ── Responsive ────────────────────────────────────── */
 @media (max-width: 768px) {
   .navbar { padding: 0.5rem 3%; }
-  .nav-links { gap: 0.5rem; }
-  .nav-links a { font-size: 0.75rem; padding: 0.2rem 0; }
+  .nav-links { gap: 0.6rem; }
+  .nav-links a { font-size: 0.78rem; padding: 0.2rem 0; }
   .brand-text { display: none; }
   .brand-icon { cursor: pointer; font-size: 1.8rem !important; }
-  .nav-user #userNickname { display: none; }
-  #logoutBtn { font-size: 1.1rem; padding: 0.2rem; }
+  .nav-user { display: none !important; }
+  #logoutBtn { display: none !important; }
+  .sidebar-user { display: flex !important; }
 
   .chat-sidebar {
     display: flex;
