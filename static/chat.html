@@ -15,9 +15,8 @@
   <!-- Navbar -->
   <nav class="navbar">
     <a href="/static/chat.html" class="nav-brand">
-      <span class="brand-icon">🇰🇷</span> KBCoach
+      <span class="brand-icon" id="sidebarToggle">🇰🇷</span> <span class="brand-text">KBCoach</span>
     </a>
-    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Menu">☰</button>
     <ul class="nav-links">
       <li><a href="/static/chat.html" class="active">Chat</a></li>
       <li><a href="/static/vocab.html">Vocabulary</a></li>
@@ -28,7 +27,7 @@
           <span id="userNickname"></span>
         </span>
       </li>
-      <li><button id="logoutBtn">Logout</button></li>
+      <li><button id="logoutBtn" title="Logout">🚪</button></li>
     </ul>
   </nav>
 
@@ -166,9 +165,14 @@
       sidebarOverlay.classList.remove('active');
     }
     if (sidebarToggle) {
-      sidebarToggle.addEventListener('click', () => {
-        chatSidebar.classList.toggle('open');
-        sidebarOverlay.classList.toggle('active');
+      sidebarToggle.addEventListener('click', (e) => {
+        // Only toggle sidebar on mobile
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          e.stopPropagation();
+          chatSidebar.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        }
       });
       sidebarOverlay.addEventListener('click', closeSidebar);
     }

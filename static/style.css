@@ -73,12 +73,6 @@ body {
   font-size: 0.75rem; color: var(--white); font-weight: 700;
 }
 
-#logoutBtn {
-  background: none; border: none; color: var(--text-muted);
-  cursor: pointer; font-size: 0.85rem; transition: color 0.3s;
-}
-#logoutBtn:hover { color: var(--danger); }
-
 /* ── Buttons ───────────────────────────────────────── */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
@@ -555,14 +549,12 @@ body {
   color: var(--text-muted);
 }
 
-/* ── Sidebar Toggle (hamburger) — hidden on desktop ── */
-.sidebar-toggle {
-  display: none;
-  background: none; border: none;
-  color: var(--primary); font-size: 1.5rem;
-  cursor: pointer; padding: 0.2rem 0.5rem;
-  line-height: 1;
+/* ── Logout icon styling ── */
+#logoutBtn {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 0.85rem; transition: color 0.3s;
 }
+#logoutBtn:hover { color: var(--danger); }
 
 /* ── Sidebar Overlay — hidden by default ── */
 .sidebar-overlay {
@@ -575,11 +567,13 @@ body {
 
 /* ── Responsive ────────────────────────────────────── */
 @media (max-width: 768px) {
-  .navbar { padding: 0.6rem 3%; }
-  .nav-links { gap: 0.8rem; }
-  .nav-links a { font-size: 0.8rem; }
-
-  .sidebar-toggle { display: block; }
+  .navbar { padding: 0.5rem 3%; }
+  .nav-links { gap: 0.5rem; }
+  .nav-links a { font-size: 0.75rem; padding: 0.2rem 0; }
+  .brand-text { display: none; }
+  .brand-icon { cursor: pointer; font-size: 1.8rem !important; }
+  .nav-user #userNickname { display: none; }
+  #logoutBtn { font-size: 1.1rem; padding: 0.2rem; }
 
   .chat-sidebar {
     display: flex;
