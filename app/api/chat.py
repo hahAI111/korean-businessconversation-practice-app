@@ -5,6 +5,7 @@
 import asyncio
 import json
 import logging
+import queue as thread_queue
 import traceback
 from datetime import datetime, timezone
 
@@ -138,33 +139,33 @@ async def chat_stream(body: ChatRequest, user_id: int = Depends(get_current_user
             yield f"data: {json.dumps({'type': 'meta', 'thread_id': thread_id})}\n\n"
 
             full_reply = ""
-            try:
-                gen = agent_service.chat_stream(thread_id, body.message)
-                # Run sync generator in a thread, pushing chunks via a queue
-                queue: asyncio.Queue = asyncio.Queue()
+            q = thread_queue.Queue()
 
-                def _run_gen():
-                    try:
-                        for chunk in gen:
-                            queue.put_nowait(chunk)
-                        queue.put_nowait(None)  # sentinel
-                    except Exception as e:
-                        queue.put_nowait(e)
+            def _produce():
+                try:
+                    for chunk in agent_service.chat_stream(thread_id, body.message):
+                        q.put(('delta', chunk))
+                    q.put(('done', None))
+                except Exception as e:
+                    q.put(('error', str(e)))
 
-                asyncio.get_event_loop().run_in_executor(None, _run_gen)
+            loop = asyncio.get_running_loop()
+            loop.run_in_executor(None, _produce)
 
-                while True:
-                    item = await queue.get()
-                    if item is None:
-                        break
-                    if isinstance(item, Exception):
-                        yield f"data: {json.dumps({'type': 'error', 'text': str(item)})}\n\n"
-                        break
-                    full_reply += item
-                    yield f"data: {json.dumps({'type': 'delta', 'text': item})}\n\n"
-            except Exception as e:
-                logger.error("Stream error: %s", e, exc_info=True)
-                yield f"data: {json.dumps({'type': 'error', 'text': str(e)})}\n\n"
+            while True:
+                # Poll thread-safe queue without blocking event loop
+                while q.empty():
+                    await asyncio.sleep(0.02)
+
+                kind, data = q.get_nowait()
+                if kind == 'delta':
+                    full_reply += data
+                    yield f"data: {json.dumps({'type': 'delta', 'text': data})}\n\n"
+                elif kind == 'error':
+                    yield f"data: {json.dumps({'type': 'error', 'text': data})}\n\n"
+                    break
+                elif kind == 'done':
+                    break
 
             yield f"data: {json.dumps({'type': 'done'})}\n\n"
 
