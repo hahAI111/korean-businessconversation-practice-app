@@ -81,7 +81,8 @@ This project includes detailed documentation for every component. Each document 
 | 🗄️ [docs/DATABASE.md](docs/DATABASE.md) | **Data architecture** — Dual DB strategy, all tables/columns, Redis cache keys, data flow / 데이터 아키텍처 — 듀얼 DB 전략, 모든 테이블/컬럼, Redis 캐시 키, 데이터 흐름 |
 | 🌐 [docs/NETWORK.md](docs/NETWORK.md) | **Communication & deployment** — API endpoints, WebSocket protocol, auth system, Azure infrastructure / 통신 & 배포 — API 엔드포인트, WebSocket 프로토콜, 인증 시스템, Azure 인프라 |
 | 🔧 [docs/BMAD.md](docs/BMAD.md) | **BMAD methodology** — How BMAD v6.2 was used to build this project, agents, workflows, artifacts / BMAD 방법론 — BMAD v6.2를 활용한 프로젝트 구축 방법, 에이전트, 워크플로우, 산출물 |
-| 📋 [bmad-docs/PRD.md](bmad-docs/PRD.md) | Product Requirements Document / 제품 요구사항 문서 |
+| � [docs/OPERATIONS.md](docs/OPERATIONS.md) | **Operations & deployment** — Start/stop, where it runs, showcase vs production repo, CI/CD setup / 운영 & 배포 — 시작/중지, 실행 위치, 전시 vs 프로덕션 repo, CI/CD 설정 |
+| �📋 [bmad-docs/PRD.md](bmad-docs/PRD.md) | Product Requirements Document / 제품 요구사항 문서 |
 | 🏛️ [bmad-docs/ARCHITECTURE.md](bmad-docs/ARCHITECTURE.md) | BMAD Architect's architecture design / BMAD 아키텍트의 아키텍처 설계 |
 | 📖 [bmad-docs/STORIES.md](bmad-docs/STORIES.md) | User stories breakdown / 사용자 스토리 분류 |
 | ⚙️ [bmad-docs/TECH_STACK.md](bmad-docs/TECH_STACK.md) | Technology standards / 기술 표준 |
