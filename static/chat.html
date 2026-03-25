@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Korean Biz Coach — Voice & Chat</title>
-  <link rel="stylesheet" href="/static/style.css?v=3">
+  <link rel="stylesheet" href="/static/style.css?v=4">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
 </head>
@@ -17,6 +17,7 @@
     <a href="/static/chat.html" class="nav-brand">
       <span class="brand-icon">🇰🇷</span> KBCoach
     </a>
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Menu">☰</button>
     <ul class="nav-links">
       <li><a href="/static/chat.html" class="active">Chat</a></li>
       <li><a href="/static/vocab.html">Vocabulary</a></li>
@@ -33,9 +34,10 @@
 
   <!-- Chat Layout -->
   <div class="page-body">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="chat-layout">
       <!-- Sidebar -->
-      <aside class="chat-sidebar">
+      <aside class="chat-sidebar" id="chatSidebar">
         <button class="btn btn-full btn-sm" id="newThreadBtn" style="margin-bottom:1rem;">
           ✨ New Chat
         </button>
@@ -154,6 +156,22 @@
     let audioStore = {};      // msgId → audio URL (data: or blob:) for replay
     let msgCounter = 0;       // message counter for unique IDs
     let lastRecordedBlobUrl = null; // stores user's last recorded audio for replay
+
+    // ── Mobile Sidebar Toggle ──
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const chatSidebar = document.getElementById('chatSidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    function closeSidebar() {
+      chatSidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('active');
+    }
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        chatSidebar.classList.toggle('open');
+        sidebarOverlay.classList.toggle('active');
+      });
+      sidebarOverlay.addEventListener('click', closeSidebar);
+    }
 
     // ── Load User Profile ──
     (async () => {
@@ -880,7 +898,10 @@
     });
 
     document.querySelectorAll('.quick-action').forEach(btn => {
-      btn.addEventListener('click', () => sendMessage(btn.dataset.msg));
+      btn.addEventListener('click', () => {
+        sendMessage(btn.dataset.msg);
+        closeSidebar();
+      });
     });
 
     newThreadBtn.addEventListener('click', async () => {

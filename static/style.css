@@ -555,20 +555,50 @@ body {
   color: var(--text-muted);
 }
 
+/* ── Sidebar Toggle (hamburger) — hidden on desktop ── */
+.sidebar-toggle {
+  display: none;
+  background: none; border: none;
+  color: var(--primary); font-size: 1.5rem;
+  cursor: pointer; padding: 0.2rem 0.5rem;
+  line-height: 1;
+}
+
+/* ── Sidebar Overlay — hidden by default ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 998;
+}
+.sidebar-overlay.active { display: block; }
+
 /* ── Responsive ────────────────────────────────────── */
 @media (max-width: 768px) {
   .navbar { padding: 0.6rem 3%; }
   .nav-links { gap: 0.8rem; }
   .nav-links a { font-size: 0.8rem; }
 
-  .chat-sidebar { display: none; }
+  .sidebar-toggle { display: block; }
+
+  .chat-sidebar {
+    display: flex;
+    position: fixed;
+    top: 0; left: 0;
+    width: 280px; height: 100vh;
+    z-index: 999;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    padding-top: 1.2rem;
+  }
+  .chat-sidebar.open {
+    transform: translateX(0);
+  }
+
   .chat-layout { flex-direction: column; }
-
   .message { max-width: 90%; }
-
   .vocab-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
-
   .vocab-header { flex-direction: column; align-items: flex-start; }
 }
 
