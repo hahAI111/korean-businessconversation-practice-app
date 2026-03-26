@@ -43,12 +43,9 @@ class Settings(BaseSettings):
     ENTRA_TENANT_ID: str = ""
     ENTRA_CLIENT_ID: str = ""
 
-    # ── Email (SMTP for verification codes) ──
-    SMTP_HOST: str = ""
-    SMTP_PORT: int = 587
-    SMTP_USER: str = ""
-    SMTP_PASSWORD: str = ""
-    SMTP_FROM: str = "noreply@korean-biz-coach.com"
+    # ── Email (Azure Communication Services) ──
+    ACS_EMAIL_CONNECTION_STRING: str = ""
+    ACS_EMAIL_SENDER: str = "DoNotReply@0aaa3a22-935a-45c2-b2b7-f65fb8160a61.azurecomm.net"
 
     # ── App ──
     APP_NAME: str = "Korean Biz Coach"

@@ -18,7 +18,9 @@ redis>=5.0
 # ── Auth ──
 PyJWT>=2.9
 bcrypt>=4.2
-aiosmtplib>=3.0
+
+# ── Azure Communication Services (Email) ──
+azure-communication-email>=1.0.0
 
 # ── Azure AI (AzureOpenAI + Responses API) ──
 openai>=1.70.0

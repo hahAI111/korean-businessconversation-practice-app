@@ -73,41 +73,36 @@ async def verify_code(email: str, code: str) -> bool:
 _memory_codes: dict[str, str] = {}
 
 
-# ── Email sending ──
+# ── Email sending (Azure Communication Services) ──
 async def _send_email(email: str, code: str) -> bool:
-    """Send verification code via SMTP. Falls back to logging if SMTP not configured."""
-    if not settings.SMTP_HOST:
+    """Send verification code via Azure Communication Services Email SDK.
+    Falls back to logging if ACS_EMAIL_CONNECTION_STRING not configured."""
+    if not settings.ACS_EMAIL_CONNECTION_STRING:
         logger.info("📧 [DEV MODE] Verification code for %s: %s", email, code)
         return True
 
     try:
-        import aiosmtplib
-        from email.message import EmailMessage
+        from azure.communication.email import EmailClient
 
-        msg = EmailMessage()
-        msg["Subject"] = f"Korean Biz Coach — Verification Code: {code}"
-        msg["From"] = settings.SMTP_FROM
-        msg["To"] = email
-        msg.set_content(
-            f"Your verification code is: {code}\n\n"
-            f"This code expires in 5 minutes.\n"
-            f"If you didn't request this, please ignore this email.\n\n"
-            f"— Korean Biz Coach"
-        )
-
-        await aiosmtplib.send(
-            msg,
-            hostname=settings.SMTP_HOST,
-            port=settings.SMTP_PORT,
-            username=settings.SMTP_USER,
-            password=settings.SMTP_PASSWORD,
-            use_tls=settings.SMTP_PORT == 465,
-            start_tls=settings.SMTP_PORT == 587,
-        )
-        logger.info("Verification email sent to %s", email)
+        client = EmailClient.from_connection_string(settings.ACS_EMAIL_CONNECTION_STRING)
+        message = {
+            "senderAddress": settings.ACS_EMAIL_SENDER,
+            "recipients": {"to": [{"address": email}]},
+            "content": {
+                "subject": f"Korean Biz Coach — Verification Code: {code}",
+                "plainText": (
+                    f"Your verification code is: {code}\n\n"
+                    f"This code expires in 5 minutes.\n"
+                    f"If you didn't request this, please ignore this email.\n\n"
+                    f"— Korean Biz Coach"
+                ),
+            },
+        }
+        poller = client.begin_send(message)
+        result = poller.result()
+        logger.info("Verification email sent to %s (id=%s)", email, result.get("id", "?"))
         return True
     except Exception as e:
         logger.error("Failed to send email to %s: %s", email, e)
-        # Still log the code so dev/testing isn't blocked
         logger.info("📧 [FALLBACK] Verification code for %s: %s", email, code)
         return True
