@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.api import auth, chat, pronunciation, progress, vocab, voice_ws
+from app.api import admin, auth, chat, pronunciation, progress, vocab, voice_ws
 from app.core.config import get_settings
 from app.core.cosmos import close_cosmos, init_cosmos, is_mock as cosmos_is_mock
 from app.core.database import Base, engine
@@ -58,6 +58,7 @@ app.add_middleware(
 )
 
 # 路由
+app.include_router(admin.router)
 app.include_router(auth.router)
 app.include_router(chat.router)
 app.include_router(voice_ws.router)
