@@ -39,6 +39,10 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 1440  # 24h
 
+    # ── Microsoft Entra ID (optional, enables "Sign in with Microsoft") ──
+    ENTRA_TENANT_ID: str = ""
+    ENTRA_CLIENT_ID: str = ""
+
     # ── App ──
     APP_NAME: str = "Korean Biz Coach"
     DEBUG: bool = False

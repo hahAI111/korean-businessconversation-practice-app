@@ -1,5 +1,5 @@
 """
-认证 API —— 注册 / 登录
+认证 API —— 注册 / 登录 / Microsoft 登录
 """
 
 import bcrypt
@@ -7,10 +7,16 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import create_access_token, get_current_user_id
+from app.core.auth import create_access_token, get_current_user_id, validate_microsoft_id_token
 from app.core.database import get_db
 from app.models.models import User
-from app.schemas.schemas import TokenResponse, UserLogin, UserProfile, UserRegister
+from app.schemas.schemas import (
+    MicrosoftAuthRequest,
+    TokenResponse,
+    UserLogin,
+    UserProfile,
+    UserRegister,
+)
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -42,6 +48,35 @@ async def login(body: UserLogin, db: AsyncSession = Depends(get_db)):
     user = result.scalar_one_or_none()
     if not user or not bcrypt.checkpw(body.password.encode(), user.hashed_password.encode()):
         raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    token = create_access_token(user.id)
+    return TokenResponse(access_token=token, user_id=user.id)
+
+
+@router.post("/microsoft", response_model=TokenResponse)
+async def microsoft_login(body: MicrosoftAuthRequest, db: AsyncSession = Depends(get_db)):
+    """Microsoft Entra ID 登录 — 验证 Microsoft ID token，自动注册/登录"""
+    claims = await validate_microsoft_id_token(body.id_token)
+
+    email = claims.get("preferred_username") or claims.get("email", "")
+    if not email:
+        raise HTTPException(status_code=400, detail="No email in Microsoft token")
+
+    # Find existing user by email, or create new one
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+
+    if not user:
+        nickname = claims.get("name", email.split("@")[0])
+        user = User(
+            email=email,
+            hashed_password="",  # Microsoft-only account, no password
+            nickname=nickname,
+            korean_level="beginner",
+        )
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
 
     token = create_access_token(user.id)
     return TokenResponse(access_token=token, user_id=user.id)

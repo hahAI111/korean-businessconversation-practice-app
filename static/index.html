@@ -20,6 +20,21 @@
 
       <div id="authError" class="auth-error"></div>
 
+      <!-- Microsoft Login Button -->
+      <button id="msLoginBtn" class="btn btn-microsoft" style="display:none;">
+        <svg width="20" height="20" viewBox="0 0 21 21" style="margin-right:8px;vertical-align:middle;">
+          <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+          <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+          <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+          <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+        </svg>
+        Sign in with Microsoft
+      </button>
+
+      <div id="divider" class="auth-divider" style="display:none;">
+        <span>or</span>
+      </div>
+
       <!-- Login Form -->
       <form id="loginForm">
         <div class="form-group">
@@ -65,12 +80,82 @@
     </div>
   </div>
 
+  <!-- MSAL.js CDN -->
+  <script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
   <script>
     // If already logged in, redirect to chat
     if (localStorage.getItem('token')) {
       window.location.href = '/static/chat.html';
     }
 
+    // ── MSAL.js Configuration ──
+    const ENTRA_CLIENT_ID = 'c72b2342-8384-445b-85b1-a48893630519';
+    const ENTRA_TENANT_ID = '16b3c013-d300-468d-ac64-7eda0820b6d3';
+    const REDIRECT_URI = window.location.origin;
+
+    let msalInstance = null;
+    try {
+      msalInstance = new msal.PublicClientApplication({
+        auth: {
+          clientId: ENTRA_CLIENT_ID,
+          authority: `https://login.microsoftonline.com/${ENTRA_TENANT_ID}`,
+          redirectUri: REDIRECT_URI,
+        },
+        cache: { cacheLocation: 'sessionStorage' },
+      });
+      // Show Microsoft button only if MSAL loaded
+      document.getElementById('msLoginBtn').style.display = 'block';
+      document.getElementById('divider').style.display = 'block';
+
+      // Handle redirect callback
+      msalInstance.handleRedirectPromise().then(response => {
+        if (response && response.idToken) {
+          handleMicrosoftToken(response.idToken);
+        }
+      });
+    } catch (e) {
+      console.warn('MSAL init failed, Microsoft login disabled:', e);
+    }
+
+    async function handleMicrosoftToken(idToken) {
+      const authError = document.getElementById('authError');
+      const btn = document.getElementById('msLoginBtn');
+      btn.disabled = true; btn.textContent = 'Signing in...';
+      try {
+        const res = await fetch('/api/auth/microsoft', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_token: idToken }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Microsoft login failed');
+        localStorage.setItem('token', data.access_token);
+        localStorage.setItem('userId', data.user_id);
+        window.location.href = '/static/chat.html';
+      } catch (err) {
+        authError.textContent = err.message;
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 21 21" style="margin-right:8px;vertical-align:middle;"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg> Sign in with Microsoft';
+      }
+    }
+
+    document.getElementById('msLoginBtn').addEventListener('click', async () => {
+      if (!msalInstance) return;
+      try {
+        const response = await msalInstance.loginPopup({
+          scopes: ['openid', 'profile', 'email'],
+        });
+        if (response.idToken) {
+          handleMicrosoftToken(response.idToken);
+        }
+      } catch (err) {
+        if (err.errorCode !== 'user_cancelled') {
+          document.getElementById('authError').textContent = err.message;
+        }
+      }
+    });
+
+    // ── Existing email/password auth ──
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const toggleAuth = document.getElementById('toggleAuth');
