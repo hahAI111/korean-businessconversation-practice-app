@@ -8,9 +8,14 @@ from pydantic import BaseModel, EmailStr
 
 
 # ── Auth ──
+class SendCodeRequest(BaseModel):
+    email: EmailStr
+
+
 class UserRegister(BaseModel):
     email: EmailStr
     password: str
+    verification_code: str
     nickname: str = ""
     korean_level: str = "beginner"
 

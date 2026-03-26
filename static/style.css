@@ -186,6 +186,13 @@ body {
   content: ''; flex: 1; border-bottom: 1px solid var(--border);
 }
 .auth-divider span { padding: 0 0.75rem; }
+.btn-send-code {
+  white-space: nowrap; padding: 0.5rem 1rem; font-size: 0.85rem;
+  background: var(--primary); color: var(--bg-dark); border: none;
+  border-radius: 6px; font-weight: 600; cursor: pointer; min-width: 90px;
+}
+.btn-send-code:hover { opacity: 0.9; }
+.btn-send-code:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── Chat Page ─────────────────────────────────────── */
 .chat-layout {

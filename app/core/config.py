@@ -43,6 +43,13 @@ class Settings(BaseSettings):
     ENTRA_TENANT_ID: str = ""
     ENTRA_CLIENT_ID: str = ""
 
+    # ── Email (SMTP for verification codes) ──
+    SMTP_HOST: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM: str = "noreply@korean-biz-coach.com"
+
     # ── App ──
     APP_NAME: str = "Korean Biz Coach"
     DEBUG: bool = False

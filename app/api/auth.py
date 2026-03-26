@@ -1,5 +1,5 @@
 """
-认证 API —— 注册 / 登录 / Microsoft 登录
+认证 API —— 注册（含邮箱验证码） / 登录 / Microsoft 登录
 """
 
 import bcrypt
@@ -12,13 +12,29 @@ from app.core.database import get_db
 from app.models.models import User
 from app.schemas.schemas import (
     MicrosoftAuthRequest,
+    SendCodeRequest,
     TokenResponse,
     UserLogin,
     UserProfile,
     UserRegister,
 )
+from app.services.email_service import send_verification_code, verify_code
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
+
+
+@router.post("/send-code")
+async def send_code(body: SendCodeRequest, db: AsyncSession = Depends(get_db)):
+    """发送邮箱验证码（注册前调用）"""
+    # Check if email already registered
+    existing = await db.execute(select(User).where(User.email == body.email))
+    if existing.scalar_one_or_none():
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    ok = await send_verification_code(body.email)
+    if not ok:
+        raise HTTPException(status_code=429, detail="Please wait 60 seconds before requesting a new code")
+    return {"message": "Verification code sent"}
 
 
 @router.post("/register", response_model=TokenResponse)
@@ -26,6 +42,10 @@ async def register(body: UserRegister, db: AsyncSession = Depends(get_db)):
     existing = await db.execute(select(User).where(User.email == body.email))
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Verify the code
+    if not await verify_code(body.email, body.verification_code):
+        raise HTTPException(status_code=400, detail="Invalid or expired verification code")
 
     hashed = bcrypt.hashpw(body.password.encode(), bcrypt.gensalt()).decode()
     user = User(
