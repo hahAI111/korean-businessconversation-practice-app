@@ -222,6 +222,7 @@ class AgentService:
             if prev_id:
                 kwargs["previous_response_id"] = prev_id
 
+            # 尝试 agent_reference, 失败则 fallback 到 instructions
             if settings.TEXT_AGENT_NAME:
                 kwargs["extra_body"] = {
                     "agent_reference": {
@@ -229,12 +230,22 @@ class AgentService:
                         "type": "agent_reference",
                     }
                 }
+                try:
+                    stream = self._client.responses.create(**kwargs)
+                except Exception as e:
+                    logger.warning(
+                        "agent_reference '%s' stream failed, falling back to instructions: %s",
+                        settings.TEXT_AGENT_NAME, e,
+                    )
+                    kwargs.pop("extra_body", None)
+                    kwargs["instructions"] = TEXT_INSTRUCTIONS
+                    stream = self._client.responses.create(**kwargs)
             else:
                 kwargs["instructions"] = TEXT_INSTRUCTIONS
+                stream = self._client.responses.create(**kwargs)
 
             full_text = ""
             response_id = None
-            stream = self._client.responses.create(**kwargs)
             for event in stream:
                 if hasattr(event, 'type'):
                     if event.type == 'response.output_text.delta':
