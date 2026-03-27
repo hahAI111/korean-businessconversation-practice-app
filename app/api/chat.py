@@ -318,35 +318,34 @@ async def speech_check():
 
 @router.get("/agent-check")
 async def agent_check():
-    """Diagnose AzureOpenAI + Responses API connectivity on App Service."""
+    """Diagnose AIProjectClient + Responses API connectivity on App Service."""
     import os
     info = {}
     try:
-        from openai import AzureOpenAI
-        from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+        from azure.ai.projects import AIProjectClient
+        from azure.identity import DefaultAzureCredential
         endpoint = os.environ.get("AZURE_AI_ENDPOINT", "NOT SET")
         info["endpoint"] = endpoint
-        # Extract root endpoint
-        ep = endpoint.rstrip("/")
-        if "/api/" in ep:
-            ep = ep.split("/api/")[0]
-        info["azure_endpoint"] = ep
         credential = DefaultAzureCredential()
-        token_provider = get_bearer_token_provider(credential, "https://cognitiveservices.azure.com/.default")
-        # Test token provider
-        token = token_provider()
-        info["token_length"] = len(token) if token else 0
-        # Create client
-        client = AzureOpenAI(
-            azure_endpoint=ep,
-            azure_ad_token_provider=token_provider,
-            api_version="2025-03-01-preview",
-        )
+        project_client = AIProjectClient(endpoint=endpoint, credential=credential)
+        client = project_client.get_openai_client()
         info["base_url"] = str(client.base_url)
-        # Quick test
+        # Quick test with instructions (no agent_reference)
         r = client.responses.create(model="gpt-5.2", input="say hi", instructions="reply: ok")
         info["response_id"] = r.id
         info["output"] = r.output_text[:100]
+        # Test agent_reference if configured
+        agent_name = os.environ.get("TEXT_AGENT_NAME", "")
+        if agent_name:
+            try:
+                r2 = client.responses.create(
+                    model="gpt-5.2", input="test", max_output_tokens=50,
+                    extra_body={"agent_reference": {"name": agent_name, "type": "agent_reference"}},
+                )
+                info["agent_reference"] = "ok"
+                info["agent_output"] = r2.output_text[:100]
+            except Exception as ae:
+                info["agent_reference"] = f"error: {ae}"
         info["status"] = "ok"
         client.close()
     except Exception as e:

@@ -1,27 +1,24 @@
 """
-Agent 服务 —— AzureOpenAI + Responses API
+Agent 服务 —— AIProjectClient + Responses API (agent_reference)
 
 架构:
-  - AzureOpenAI (cognitiveservices.azure.com scope) → responses API
-  - 两种模式 (自动切换):
-    a. agent_reference: Portal 中预配置 Agent + MCP 工具 (推荐)
-    b. instructions: 直接在代码中提供指令 (无需 Portal 配置, 立即可用)
+  - AIProjectClient (ai.azure.com scope) → get_openai_client() → responses API
+  - agent_reference 模式: Portal 预配置 Agent + MCP 工具 (推荐)
+  - fallback 模式: 直接在代码中提供 instructions (无需 Portal Agent)
   - conversation 通过 previous_response_id 链式维护上下文
 
-Foundry Portal Agent 配置 (可选，提升体验):
-  1. Build → Agents → Create Agent
-  2. 设置模型 (gpt-5.2)、名称、指令
-  3. Tools → Add → MCP:
-     a. 语料: Server URL = https://<app-service>/mcp/sse
-     b. 语音: Catalog → Azure Speech MCP Server
-  4. 保存 Agent 名称到 .env 的 TEXT_AGENT_NAME / VOICE_AGENT_NAME
+Portal Agent 配置:
+  1. agents.create_version() 创建 Agent (korean-biz-coach / sujin-voice)
+  2. 每个 Agent 绑定 MCP Server: https://<app-service>/mcp/sse
+  3. .env 设置 TEXT_AGENT_NAME / VOICE_AGENT_NAME
 """
 
 import logging
 from typing import Generator, Optional
 
-from openai import AzureOpenAI
-from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+from openai import OpenAI
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
 
 from app.core.config import get_settings
 
@@ -106,42 +103,31 @@ User: "저는 어제 회사에 갔습니다" (too formal for daily chat)
 
 
 class AgentService:
-    """通过 AzureOpenAI 直接调用 Responses API。
+    """通过 AIProjectClient + OpenAI 调用 Responses API (支持 agent_reference)。
 
-    使用 cognitiveservices.azure.com scope 认证 (兼容 Managed Identity)。
+    使用 ai.azure.com scope 认证 (兼容 Managed Identity)。
 
-    支持两种模式:
-    1. agent_reference — Portal 中有预配置 Agent (带 MCP 工具)
-    2. instructions — 直接在代码中提供指令 (立即可用)
+    支持两种模式 (自动切换):
+    1. agent_reference — Portal 预配置 Agent + MCP 工具
+    2. instructions — 代码内置指令 (fallback)
 
     通过 previous_response_id 维护对话上下文。
     """
 
     def __init__(self):
-        self._client: AzureOpenAI | None = None
+        self._client: OpenAI | None = None
         # thread_id → last_response_id 映射, 用于对话上下文
         self._last_response: dict[str, str] = {}
 
     def _ensure_client(self):
         if self._client is None:
             credential = DefaultAzureCredential()
-            token_provider = get_bearer_token_provider(
-                credential, "https://cognitiveservices.azure.com/.default"
+            project_client = AIProjectClient(
+                endpoint=settings.AZURE_AI_ENDPOINT,
+                credential=credential,
             )
-            # 从 AZURE_AI_ENDPOINT 提取 azure_endpoint
-            # 支持两种格式:
-            #   https://xxx.services.ai.azure.com
-            #   https://xxx.services.ai.azure.com/api/projects/proj-default
-            endpoint = settings.AZURE_AI_ENDPOINT.rstrip("/")
-            # 取根域名部分作为 azure_endpoint
-            if "/api/" in endpoint:
-                endpoint = endpoint.split("/api/")[0]
-            self._client = AzureOpenAI(
-                azure_endpoint=endpoint,
-                azure_ad_token_provider=token_provider,
-                api_version="2025-03-01-preview",
-            )
-            logger.info("AzureOpenAI client initialized: %s", endpoint)
+            self._client = project_client.get_openai_client()
+            logger.info("AIProjectClient OpenAI initialized: %s", settings.AZURE_AI_ENDPOINT)
 
     def create_thread(self) -> str:
         """创建新对话线程标识。"""
