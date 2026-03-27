@@ -82,10 +82,13 @@ jobs:
         uses: azure/cli@v2
         with:
           inlineScript: |
-            az webapp deployment source config-zip \
+            az webapp deploy \
               --resource-group myappservices \
               --name korean-biz-coach \
-              --src deploy.zip
+              --src-path deploy.zip \
+              --type zip \
+              --async false \
+              --timeout 1800
 
       - name: Set App Settings
         uses: azure/cli@v2
