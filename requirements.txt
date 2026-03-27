@@ -19,9 +19,6 @@ redis>=5.0
 PyJWT>=2.9
 bcrypt>=4.2
 
-# ── Azure Communication Services (Email) ──
-azure-communication-email>=1.0.0
-
 # ── Azure AI (AzureOpenAI + Responses API) ──
 openai>=1.70.0
 azure-identity>=1.19.0
