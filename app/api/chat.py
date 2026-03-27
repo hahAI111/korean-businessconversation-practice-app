@@ -360,10 +360,12 @@ async def agent_check():
 @router.get("/redis-check")
 async def redis_check():
     """Check Redis connectivity and auth mode."""
-    from app.core.redis import get_redis, get_auth_mode
-    info = {"auth_mode": get_auth_mode()}
+    from app.core.redis import get_redis, get_diagnostics
+    info = get_diagnostics()
     try:
         r = await get_redis()
+        # Re-read auth_mode AFTER connection attempt (may have changed from not-connected)
+        info.update(get_diagnostics())
         if r is None:
             info["status"] = "memory-fallback"
             info["warning"] = "Redis unavailable — cache is in-memory only (not persistent)"

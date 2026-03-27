@@ -110,10 +110,11 @@ az webapp show -g myappservices -n korean-biz-coach --query state -o tsv
 │  └── /home/site/wwwroot/startup.sh ← Startup script / 시작   │
 │                                                               │
 │  Startup flow / 시작 흐름 / 启动流程:                         │
-│  1. Oryx extracts build output / Oryx 빌드 출력 추출          │
-│  2. Activate antenv virtual environment / antenv 활성화       │
-│  3. uvicorn app.main:app --workers 2 --port 8000              │
-│  4. Ready in ~4 minutes / 약 4분 후 준비 완료 / 约4分钟就绪   │
+│  1. Install system deps (zstd, ffmpeg) / 시스템 의존성 설치   │
+│  2. Extract build output if needed / 빌드 출력 추출           │
+│  3. Activate antenv virtual environment / antenv 활성화       │
+│  4. uvicorn app.main:app --workers 2 --port 8000              │
+│  5. Ready in ~4 minutes / 약 4분 후 준비 완료 / 约4分钟就绪   │
 └───────────────────────────────────────────────────────────────┘
 
 Connected services / 연결된 서비스 / 连接的服务:

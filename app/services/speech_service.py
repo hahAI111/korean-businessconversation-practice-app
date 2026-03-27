@@ -133,7 +133,9 @@ def _convert_to_wav(audio_bytes: bytes) -> bytes:
         print("[CONVERT] ffmpeg not found, trying Python resample", flush=True)
         if is_wav:
             return _resample_wav_python(audio_bytes)
-        print("[CONVERT] Non-WAV without ffmpeg, returning raw", flush=True)
+        print("[CONVERT] WARNING: Non-WAV input (likely WebM) without ffmpeg — "
+              "install ffmpeg for proper audio conversion. Returning raw bytes, "
+              "STT may fail or produce empty results.", flush=True)
         return audio_bytes
     except subprocess.CalledProcessError as e:
         err_msg = e.stderr[:500].decode(errors='replace') if e.stderr else str(e)

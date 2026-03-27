@@ -6,13 +6,18 @@ echo "[STARTUP] Checking environment..."
 echo "[STARTUP] Contents of /home/site/wwwroot:"
 ls -la /home/site/wwwroot/
 
+# 安装系统依赖（zstd 解压 + ffmpeg 语音转码）
+echo "[STARTUP] Installing system dependencies..."
+apt-get update -qq && apt-get install -y -qq zstd ffmpeg > /dev/null 2>&1 || true
+
 # 如果 antenv 不存在但 output.tar.zst 存在，解压它
 if [ ! -d "antenv" ] && [ -f "output.tar.zst" ]; then
     echo "[STARTUP] Extracting compressed build output..."
-    apt-get update -qq && apt-get install -y -qq zstd > /dev/null 2>&1 || true
     tar --zstd -xf output.tar.zst
     echo "[STARTUP] Extraction complete."
 fi
+
+echo "[STARTUP] ffmpeg: $(which ffmpeg 2>/dev/null || echo 'not found')"
 
 # 验证 antenv 存在
 if [ ! -d "antenv" ]; then

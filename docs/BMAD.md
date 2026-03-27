@@ -1,394 +1,545 @@
-# 🔧 BMAD Methodology / BMAD 방법론
+# 🔧 BMAD 방법론 / BMAD Methodology
 
-> How BMAD (Build Measure Analyze Decide) v6.2 was used to plan, design, and build this project.
+> **최종 수정: 2026-03-27 | Last Updated: 2026-03-27**
 >
-> BMAD (Build Measure Analyze Decide) v6.2를 사용하여 이 프로젝트를 어떻게 계획, 설계, 구축했는지.
+> BMAD (Build Measure Analyze Decide) v6.2.2 프레임워크를 사용하여 이 프로젝트를 계획, 설계, 구축한 전체 과정을 기록합니다.
+>
+> This document records how the BMAD (Build Measure Analyze Decide) v6.2.2 framework was used to plan, design, and build this project.
 
 ---
 
-## Table of Contents / 목차
+## 목차 / Table of Contents
 
-1. [What is BMAD? / BMAD란?](#1-what-is-bmad--bmad란)
-2. [BMAD vs Runtime Code / BMAD vs 런타임 코드](#2-bmad-vs-runtime-code--bmad-vs-런타임-코드)
-3. [9 Agent Personas / 9개 에이전트 페르소나](#3-9-agent-personas--9개-에이전트-페르소나)
-4. [Workflow Phases / 워크플로우 단계](#4-workflow-phases--워크플로우-단계)
-5. [How We Used BMAD / BMAD 활용 방법](#5-how-we-used-bmad--bmad-활용-방법)
-6. [Output Artifacts / 산출물](#6-output-artifacts--산출물)
-7. [Framework Structure / 프레임워크 구조](#7-framework-structure--프레임워크-구조)
+1. [BMAD란? / What is BMAD?](#1-bmad란--what-is-bmad)
+2. [BMAD vs 런타임 코드 / BMAD vs Runtime Code](#2-bmad-vs-런타임-코드--bmad-vs-runtime-code)
+3. [9개 에이전트 / 9 Agent Personas](#3-9개-에이전트--9-agent-personas)
+4. [워크플로우 4단계 / 4 Workflow Phases](#4-워크플로우-4단계--4-workflow-phases)
+5. [실제 적용: 7단계 전체 실행 / Real Execution: 7-Step Full Workflow](#5-실제-적용-7단계-전체-실행--real-execution-7-step-full-workflow)
+6. [스프린트 이력 / Sprint History](#6-스프린트-이력--sprint-history)
+7. [44개 스킬 참조 / 44 Skills Reference](#7-44개-스킬-참조--44-skills-reference)
+8. [산출물 / Output Artifacts](#8-산출물--output-artifacts)
+9. [프레임워크 구조 / Framework Structure](#9-프레임워크-구조--framework-structure)
+10. [BMAD 호출 방법 / How to Invoke BMAD](#10-bmad-호출-방법--how-to-invoke-bmad)
 
 ---
 
-## 1. What is BMAD? / BMAD란?
+## 1. BMAD란? / What is BMAD?
 
-**BMAD (Build Measure Analyze Decide)** is an AI-powered agile development methodology framework (v6.2) that uses **9 specialized AI agent personas** to guide a software project through structured phases — from initial analysis to code review.
+**BMAD**는 **9개의 전문 AI 에이전트 페르소나**와 **44개의 스킬**을 사용하여 소프트웨어 프로젝트를 구조적으로 진행하는 AI 기반 애자일 개발 프레임워크입니다 (v6.2.2).
 
-**BMAD**는 **9개의 전문 AI 에이전트 페르소나**를 사용하여 초기 분석부터 코드 리뷰까지 구조화된 단계를 통해 소프트웨어 프로젝트를 안내하는 AI 기반 애자일 개발 방법론 프레임워크(v6.2)입니다.
+**BMAD** is an AI-powered agile development framework (v6.2.2) that uses **9 specialized AI agent personas** and **44 skills** to guide software projects through structured phases.
 
-### Key Concept / 핵심 개념
+### 핵심 개념 / Key Concept
 
-Instead of one developer doing everything, BMAD breaks the work into **specialized roles**, each with specific expertise and responsibilities — like a virtual development team.
+한 명의 개발자가 모든 것을 하는 대신, BMAD는 작업을 **전문화된 역할**로 나눕니다 — 가상의 개발 팀처럼.
 
-한 명의 개발자가 모든 것을 하는 대신, BMAD는 작업을 **전문화된 역할**로 나누며, 각각 특정 전문성과 책임을 가집니다 — 가상의 개발 팀처럼.
+Instead of one developer doing everything, BMAD breaks work into **specialized roles** — like a virtual development team.
 
 ```
-Traditional / 전통적:                  BMAD:
+기존 방식:                          BMAD 방식:
 ┌──────────────────┐            ┌──────────────────────────────────────┐
-│  One Developer   │            │  PM → Architect → Dev → QA          │
-│  does everything │            │  PM:       PRD & requirements       │
-│  한 개발자가      │            │  Architect: System design            │
-│  모든 것을 함     │            │  Dev:      Implementation            │
-│                  │            │  QA:       Code review               │
-│  = unstructured  │            │  = structured, documented            │
-│  = 비구조화       │            │  = 구조화, 문서화                     │
+│  개발자 1명이      │            │  분석가 → PM → 아키텍트 → 개발 → QA  │
+│  모두 처리         │            │  Mary:    프로젝트 분석               │
+│                  │            │  John:    PRD & 요구사항              │
+│  = 비구조화        │            │  Winston: 시스템 설계                │
+│                  │            │  Bob:     스프린트 계획               │
+│  Traditional:    │            │  Barry:   코드 구현                  │
+│  One dev does    │            │  Quinn:   코드 리뷰                  │
+│  everything      │            │  Paige:   문서 작성                  │
+│  = unstructured  │            │  = 구조화, 문서화 / structured        │
 └──────────────────┘            └──────────────────────────────────────┘
 ```
 
 ---
 
-## 2. BMAD vs Runtime Code / BMAD vs 런타임 코드
+## 2. BMAD vs 런타임 코드 / BMAD vs Runtime Code
 
-**Important distinction / 중요한 구분**: BMAD is a **development process** tool, NOT runtime code. Nothing in `_bmad/` runs when the app is deployed.
+**중요한 구분**: BMAD는 **개발 프로세스** 도구이지 런타임 코드가 아닙니다. `_bmad/` 안의 어떤 것도 앱 배포 시 실행되지 않습니다.
 
-**중요한 구분**: BMAD는 **개발 프로세스** 도구이지, 런타임 코드가 아닙니다. `_bmad/` 안의 어떤 것도 앱이 배포될 때 실행되지 않습니다.
+**Important**: BMAD is a **development process** tool, NOT runtime code. Nothing in `_bmad/` executes when the app is deployed.
 
-| Aspect / 측면 | BMAD Framework (`_bmad/`) | App Code (`app/`) |
+| 측면 / Aspect | BMAD 프레임워크 (`_bmad/`) | 앱 코드 (`app/`) |
 |---|---|---|
-| **When used / 사용 시점** | During development / 개발 중 | At runtime / 런타임 |
-| **Purpose / 용도** | Plan, design, review / 계획, 설계, 리뷰 | Serve users / 사용자 서비스 |
-| **Users / 사용자** | Developers + AI assistants / 개발자 + AI 어시스턴트 | End users / 최종 사용자 |
-| **Executes / 실행** | In IDE (VS Code Copilot) / IDE에서 | On Azure App Service / Azure에서 |
-| **Output / 출력** | Documents (PRD, Architecture) / 문서 | API responses / API 응답 |
+| **사용 시점 / When** | 개발 중 / During development | 런타임 / At runtime |
+| **용도 / Purpose** | 계획, 설계, 리뷰 / Plan, design, review | 사용자 서비스 / Serve users |
+| **사용자 / Users** | 개발자 + AI 어시스턴트 / Developers + AI | 최종 사용자 / End users |
+| **실행 환경 / Runs in** | IDE (VS Code Copilot) | Azure App Service |
+| **출력 / Output** | 문서 (PRD, Architecture) / Docs | API 응답 / API responses |
 
-### How BMAD connects to the codebase / BMAD와 코드베이스의 연결
+### BMAD → 코드베이스 연결 / BMAD → Codebase Connection
 
 ```
-_bmad/ (Development Process / 개발 프로세스)
+_bmad/ (개발 프로세스 / Development Process)
   │
-  │  PM Agent writes PRD
-  │  PM 에이전트가 PRD 작성
-  │        ↓
-  │  Architect designs system
-  │  아키텍트가 시스템 설계
-  │        ↓
-  │  Dev implements code
-  │  개발자가 코드 구현
-  │        ↓
-  │  QA reviews code
-  │  QA가 코드 리뷰
+  │  분석가 Mary    → project-context
+  │  PM John       → PRD.md + STORIES.md
+  │  아키텍트 Winston → ARCHITECTURE.md + TECH_STACK.md
+  │  SM Bob        → Sprint 계획 + Story 상태
+  │  개발자 Barry   → 코드 구현
+  │  QA Quinn      → 코드 리뷰
+  │  작가 Paige    → docs/ 문서
   │
-  └──────► bmad-docs/          ← Output documents / 산출 문서
-           ├── PRD.md
-           ├── ARCHITECTURE.md
-           ├── STORIES.md
-           └── TECH_STACK.md
-                    │
-                    │  Guides implementation
-                    │  구현 안내
-                    ↓
-           app/                 ← Actual code / 실제 코드
-           ├── api/
-           ├── services/
-           ├── models/
-           └── ...
+  └──► bmad-docs/          ← 계획 산출물 / Planning artifacts
+       ├── PRD.md           (BMAD 프론트매터 포함)
+       ├── ARCHITECTURE.md  (BMAD frontmatter)
+       ├── STORIES.md       (BMAD frontmatter)
+       └── TECH_STACK.md    (BMAD frontmatter)
+                │
+                │  구현 안내 / Guides implementation
+                ↓
+       app/                 ← 실제 코드 / Runtime code
+       ├── api/     (25+ 엔드포인트)
+       ├── services/ (5개 서비스)
+       ├── models/   (6개 테이블)
+       └── ...
 ```
 
 ---
 
-## 3. 9 Agent Personas / 9개 에이전트 페르소나
+## 3. 9개 에이전트 / 9 Agent Personas
 
-Each BMAD agent is a specialized AI persona with defined expertise, responsibilities, and output formats.
+각 에이전트는 정의된 전문성, 책임, 출력 형식을 가진 전문 AI 페르소나입니다.
 
-각 BMAD 에이전트는 정의된 전문성, 책임, 출력 형식을 가진 전문 AI 페르소나입니다.
+Each agent is a specialized AI persona with defined expertise, responsibilities, and output formats.
 
-| # | Agent / 에이전트 | Role / 역할 | What they do / 하는 일 |
-|---|---|---|---|
-| 1 | **Analyst** / 분석가 | Business Analyst / 비즈니스 분석가 | Analyzes requirements, user needs, market context. Creates project context. / 요구사항, 사용자 요구, 시장 컨텍스트 분석 |
-| 2 | **PM** | Product Manager / 제품 관리자 | Writes PRD (Product Requirements Document), defines features, personas, success criteria / PRD 작성, 기능, 페르소나, 성공 기준 정의 |
-| 3 | **Architect** / 아키텍트 | System Architect / 시스템 아키텍트 | Designs system architecture, selects tech stack, defines component interactions / 시스템 아키텍처 설계, 기술 스택 선택 |
-| 4 | **Dev** / 개발자 | Developer / 개발자 | Implements features following architecture and stories. Writes actual code / 아키텍처와 스토리에 따라 기능 구현. 실제 코드 작성 |
-| 5 | **QA** | Quality Analyst / 품질 분석가 | Reviews code for bugs, security, performance. Creates test plans / 버그, 보안, 성능 코드 리뷰. 테스트 계획 생성 |
-| 6 | **SM** | Scrum Master / 스크럼 마스터 | Manages sprint workflow, breaks stories into tasks, tracks progress / 스프린트 워크플로우 관리, 스토리를 태스크로 분류 |
-| 7 | **UX Designer** / UX 디자이너 | UX/UI Designer | Designs user experience, wireframes, interaction patterns / 사용자 경험, 와이어프레임, 인터렉션 패턴 설계 |
-| 8 | **Tech Writer** / 기술 작가 | Technical Writer / 기술 작가 | Creates documentation, API docs, user guides / 문서 작성, API 문서, 사용자 가이드 |
-| 9 | **Quick-Flow Solo Dev** / 퀵플로우 솔로 개발자 | Full-Stack Solo Developer / 풀스택 솔로 개발자 | Streamlined workflow for solo developers — combines PM+Architect+Dev+QA into one accelerated flow / 솔로 개발자를 위한 간소화 워크플로우 |
+| # | 에이전트 / Agent | 이름 / Name | 역할 / Role | 본 프로젝트 사용 / Used |
+|---|---|---|---|---|
+| 1 | **분석가 / Analyst** | Mary | 프로젝트 컨텍스트, 요구사항 분석 / Project context, requirements analysis | ✅ Phase 0 |
+| 2 | **PM** | John | PRD 작성, 기능 정의, 인수 기준 / PRD, features, acceptance criteria | ✅ PRD.md |
+| 3 | **아키텍트 / Architect** | Winston | 시스템 설계, 기술 스택 / Architecture, tech stack decisions | ✅ ARCHITECTURE.md |
+| 4 | **개발자 / Developer** | Amelia | Story 기반 코드 구현 (정식) / Formal story-driven implementation | ✅ Sprint 1-3 |
+| 5 | **QA** | Quinn | 코드 리뷰, 보안/성능/호환성 검사 / Code review, security/perf checks | ✅ 리뷰 |
+| 6 | **스크럼 마스터 / SM** | Bob | 스프린트 계획, Story 추적 / Sprint planning, story tracking | ✅ STORIES.md |
+| 7 | **UX 디자이너** | Sally | 사용자 경험 설계 / User experience design | ✅ UI 설계 |
+| 8 | **기술 작가 / Tech Writer** | Paige | 문서 작성 / Documentation | ✅ docs/ |
+| 9 | **퀵플로우 개발자 / Quick-Flow Dev** | Barry | 빠른 사양→구현 (솔로) / Rapid spec→implementation | ✅ Sprint 4 |
 
-### Agent Configuration Files / 에이전트 설정 파일
+### Barry vs Amelia (개발자 차이점 / Developer Difference)
 
-Each agent has two files:
-
-각 에이전트에는 두 개의 파일이 있습니다:
-
-```
-_bmad/bmm/agents/
-├── pm.md                         # Agent definition / 에이전트 정의
-│   └── Personality, expertise, responsibilities, output format
-│       성격, 전문성, 책임, 출력 형식
-│
-_bmad/_config/agents/
-├── bmm-pm.customize.yaml         # Project customization / 프로젝트 맞춤 설정
-│   └── Project-specific overrides, constraints, preferences
-│       프로젝트별 오버라이드, 제약, 선호
-```
+| 비교 / Compare | **Barry** (퀵플로우) | **Amelia** (정식 개발) |
+|---|---|---|
+| 속도 / Speed | 빠름 / Fast | 체계적 / Methodical |
+| 입력 / Input | 자유로운 요청 / Free-form request | 정식 Story 파일 필요 / Formal story spec file |
+| 용도 / Use for | 작은 기능, 버그 수정, 빠른 변경 / Small features, bug fixes | 대형 기능, 새로운 시스템 / Large features, new systems |
+| Sprint 4 사용 / Used in Sprint 4 | ✅ P0 K-drama Cosmos 마이그레이션 | — |
 
 ---
 
-## 4. Workflow Phases / 워크플로우 단계
+## 4. 워크플로우 4단계 / 4 Workflow Phases
 
-BMAD organizes development into **4 workflow categories** with a structured flow:
+BMAD는 개발을 4개의 워크플로우 단계로 구성합니다.
 
-BMAD는 개발을 구조화된 흐름을 가진 **4개의 워크플로우 카테고리**로 구성합니다:
+BMAD organizes development into 4 workflow phases.
 
 ```
 Phase 0               Phase 1              Phase 2              Phase 3
-분석                   계획                  설계                  구현
-────────────────────────────────────────────────────────────────────────
-                                                                
-┌──────────┐     ┌──────────┐     ┌──────────────┐     ┌──────────┐
-│ Analysis │────►│ Planning │────►│ Solutioning  │────►│ Implement│
-│ 분석      │     │ 계획      │     │ 설계/해결    │     │ 구현   │
-│          │     │          │     │              │     │          │
-│ Analyst  │     │ PM       │     │ Architect    │     │ Dev + QA │
-│ 분석가    │     │          │     │ 아키텍트     │     │ 개발+QA │
-│          │     │          │     │              │     │          │
-│ Output:  │     │ Output:  │     │ Output:      │     │ Output:  │
-│ project- │     │ PRD.md   │     │ ARCH.md      │     │ Code +   │
-│ context  │     │          │     │ TECH_STACK   │     │ Tests    │
-│          │     │ STORIES  │     │              │     │ 코드+테스트│
-└──────────┘     └──────────┘     └──────────────┘     └──────────┘
-```
+분석 / Analysis        계획 / Planning       설계 / Solutioning    구현 / Implementation
+─────────────────────────────────────────────────────────────────────────────
 
-### Phase 0: Analysis / 분석
-
-**Agent / 에이전트**: Analyst / 분석가
-**Task / 태스크**: Create `project-context.md`
-
-Analyzes the project idea, identifies target users, defines scope, and creates the foundational context document that all other phases reference.
-
-프로젝트 아이디어를 분석하고, 대상 사용자를 식별하고, 범위를 정의하고, 다른 모든 단계에서 참조하는 기반 컨텍스트 문서를 생성합니다.
-
-### Phase 1: Planning / 계획
-
-**Agent / 에이전트**: PM (Product Manager)
-**Tasks / 태스크**: Create PRD, define user stories
-
-The PM writes a comprehensive PRD covering vision, personas, features, acceptance criteria, and non-functional requirements. Then breaks features into implementable user stories.
-
-PM이 비전, 페르소나, 기능, 인수 기준, 비기능 요구사항을 포함하는 종합 PRD를 작성합니다. 그런 다음 기능을 구현 가능한 사용자 스토리로 분류합니다.
-
-### Phase 2: Solutioning / 설계
-
-**Agent / 에이전트**: Architect / 아키텍트
-**Tasks / 태스크**: System architecture, tech stack selection
-
-The Architect designs the complete system — component diagrams, data flows, authentication strategy, API design, and technology selection with rationale.
-
-아키텍트가 완전한 시스템을 설계합니다 — 컴포넌트 다이어그램, 데이터 흐름, 인증 전략, API 설계, 근거가 있는 기술 선택.
-
-### Phase 3: Implementation / 구현
-
-**Agent / 에이전트**: Dev (Developer) + QA
-**Tasks / 태스크**: Code implementation + code review
-
-Developer implements features following the architecture and stories. QA reviews the code for correctness, security, and performance.
-
-개발자가 아키텍처와 스토리에 따라 기능을 구현합니다. QA가 정확성, 보안, 성능에 대해 코드를 리뷰합니다.
-
----
-
-## 5. How We Used BMAD / BMAD 활용 방법
-
-Here's the exact BMAD workflow we followed to build Korean Biz Coach:
-
-Korean Biz Coach를 구축하기 위해 따른 정확한 BMAD 워크플로우입니다:
-
-### Step 1: Analyst → project-context.md / 분석가 → 프로젝트 컨텍스트
-
-```
-Input / 입력:  "Build a real-time voice Korean teaching app with AI"
-              "AI를 활용한 실시간 음성 한국어 교육 앱 구축"
-
-Analyst work / 분석가 작업:
-  - Identified target audience: Chinese/English speakers learning business Korean
-    대상: 비즈니스 한국어를 배우는 중국어/영어 화자
-  - Defined core value: Real-time voice conversation, not textbook exercises
-    핵심 가치: 교과서 연습이 아닌 실시간 음성 대화
-  - Scoped MVP: Voice chat + text chat + vocabulary + progress
-    MVP 범위: 음성 대화 + 텍스트 대화 + 단어장 + 진도
-
-Output / 출력: project-context.md
-```
-
-### Step 2: PM → PRD.md + STORIES.md / PM → PRD + 스토리
-
-```
-PM work / PM 작업:
-  - Vision statement / 비전 선언
-  - 3 user personas / 3개 사용자 페르소나
-  - 15+ feature descriptions / 15개 이상 기능 설명
-  - Acceptance criteria for each feature / 각 기능의 인수 기준
-  - Non-functional: <3s response, 50+ concurrent users
-    비기능: 3초 미만 응답, 50명 이상 동시 사용자
-  - User stories breakdown / 사용자 스토리 분류
-
-Output / 출력: bmad-docs/PRD.md, bmad-docs/STORIES.md
-```
-
-### Step 3: Architect → ARCHITECTURE.md + TECH_STACK.md / 아키텍트
-
-```
-Architect work / 아키텍트 작업:
-  - Designed dual database strategy (PostgreSQL + Cosmos DB)
-    듀얼 DB 전략 설계
-  - Selected FastAPI for WebSocket + async support
-    WebSocket + 비동기 지원을 위해 FastAPI 선택
-  - Designed 4-layer authentication system
-    4계층 인증 시스템 설계
-  - Defined VNet topology for security
-    보안을 위한 VNet 토폴로지 정의
-  - Specified SSML configuration for natural voice
-    자연스러운 음성을 위한 SSML 설정 지정
-
-Output / 출력: bmad-docs/ARCHITECTURE.md, bmad-docs/TECH_STACK.md
-```
-
-### Step 4: Dev (Barry Quick-Flow) → Code / 개발자 → 코드
-
-```
-Dev work / 개발 작업:
-  - Implemented all API endpoints / 모든 API 엔드포인트 구현
-  - Built WebSocket voice pipeline / WebSocket 음성 파이프라인 구축
-  - Created 9 MCP tools / 9개 MCP 도구 생성
-  - Built frontend (4 pages + PWA) / 프론트엔드 구축 (4페이지 + PWA)
-  - Integrated all Azure services / 모든 Azure 서비스 통합
-  - Performance optimization (async, pooling, fire-and-forget)
-    성능 최적화 (비동기, 풀링, fire-and-forget)
-
-Output / 출력: app/, mcp_server/, static/, data/
-```
-
-### Step 5: QA → Code Review / QA → 코드 리뷰
-
-```
-QA work / QA 작업:
-  - Security review (JWT validation, input sanitization)
-    보안 리뷰 (JWT 검증, 입력 살균)
-  - Performance review (connection pooling, async patterns)
-    성능 리뷰 (연결 풀링, 비동기 패턴)
-  - Error handling review (fallback strategies)
-    오류 처리 리뷰 (대체 전략)
-  - Test coverage assessment / 테스트 커버리지 평가
-
-Output / 출력: Code improvements, test_app.py
-              코드 개선, test_app.py
+┌──────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│ Mary     │────►│ John + Bob   │────►│ Winston      │────►│ Barry/Amelia │
+│ 분석가    │     │ PM + SM      │     │ 아키텍트      │     │ + Quinn (QA) │
+│          │     │              │     │              │     │ + Paige (작가)│
+│ 출력:     │     │ 출력:         │     │ 출력:         │     │ 출력:         │
+│ project- │     │ PRD.md       │     │ ARCH.md      │     │ 코드 + 테스트  │
+│ context  │     │ STORIES.md   │     │ TECH_STACK   │     │ + 문서        │
+│          │     │              │     │   .md        │     │              │
+│ Output:  │     │ Output:      │     │ Output:      │     │ Output:      │
+│ context  │     │ PRD+Stories  │     │ Arch+Tech    │     │ Code+Docs    │
+└──────────┘     └──────────────┘     └──────────────┘     └──────────────┘
 ```
 
 ---
 
-## 6. Output Artifacts / 산출물
+## 5. 실제 적용: 7단계 전체 실행 / Real Execution: 7-Step Full Workflow
 
-The BMAD workflow produced these key documents — all in `bmad-docs/`:
+2026년 3월 27일, 이 프로젝트에서 **BMAD 7단계를 모두 순서대로 실행**했습니다. 아래는 각 에이전트가 실제로 수행한 작업 기록입니다.
 
-BMAD 워크플로우가 생성한 핵심 문서들 — 모두 `bmad-docs/`에:
+On March 27, 2026, we executed **all 7 BMAD steps in sequence** on this project. Below is the actual record of what each agent did.
 
-| Document / 문서 | Lines | Content Summary / 내용 요약 |
+### ① PM John — 스프린트 분석 / Sprint Analysis
+
+```
+입력:  Sprint 4 계획 요청
+작업:  PRD 기반 Sprint 4 우선순위 분석
+결과:  5개 항목 P0~P4 우선순위 정렬
+
+Input:  Sprint 4 planning request
+Work:   PRD-based Sprint 4 priority analysis
+Output: 5 items prioritized P0–P4
+  P0: K-drama Cosmos DB 마이그레이션
+  P1: Admin CSV export
+  P2: 발음 피드백 강화 / Pronunciation feedback
+  P3: 진도 대시보드 개선 / Progress dashboard
+  P4: 모바일 음성 UI / Mobile voice UI
+```
+
+### ② Architect Winston — 아키텍처 검증 / Architecture Validation
+
+```
+작업:  Sprint 4 모든 항목이 기존 아키텍처에 맞는지 검증
+결과:  ✅ 전부 기존 설계 범위 내 — 새 인프라 불필요
+
+Work:  Validated all Sprint 4 items fit existing architecture
+Result: ✅ All within existing design — no new infrastructure needed
+```
+
+### ③ SM Bob — 스프린트 계획 / Sprint Planning
+
+```
+작업:  전체 10개 Epic, 25+ Story 상태 정리
+출력:  _bmad-output/implementation-artifacts/sprint-status.yaml
+  - Epic 1~4, 6~10: done ✅
+  - Epic 5: in-progress (Story 5.3 대기)
+  - Sprint 4: 5개 Story 배정
+
+Work:  Full status of 10 epics, 25+ stories
+Output: sprint-status.yaml
+  - Epics 1-4, 6-10: done ✅
+  - Epic 5: in-progress (Story 5.3 pending)
+  - Sprint 4: 5 stories assigned
+```
+
+### ④ Barry (퀵플로우 개발) — P0 구현 / P0 Implementation
+
+```
+작업 1: scripts/seed_drama_cosmos.py 작성
+  - business_korean.json → Cosmos DB drama_content 컨테이너 시딩
+  - uuid5 결정적 ID (upsert 안전)
+  - 8개 드라마 대화 문서
+
+작업 2: mcp_server/server.py 수정
+  - get_drama_dialogue() → async 변환
+  - Cosmos DB 우선 조회 → JSON 파일 폴백
+  - 두 가지 필드명 호환 (drama / drama_name)
+
+Work 1: Created scripts/seed_drama_cosmos.py
+  - Seeds drama_dialogues from JSON to Cosmos DB
+  - Deterministic uuid5 IDs for safe upsert
+  - 8 drama dialogue documents
+
+Work 2: Modified mcp_server/server.py
+  - get_drama_dialogue() → converted to async
+  - Cosmos DB first → JSON file fallback
+  - Compatible with both field names (drama / drama_name)
+```
+
+### ⑤ QA Quinn — 코드 리뷰 / Code Review
+
+```
+검토 파일 6개:
+  ✅ startup.sh        — ffmpeg 설치 (멱등, || true)
+  ✅ app/core/redis.py  — 자격 증명 마스킹 (_mask_url)
+  ✅ app/api/chat.py    — 진단 엔드포인트
+  ✅ speech_service.py  — 폴백 경고 개선
+  ✅ mcp_server/server.py — async Cosmos + JSON 폴백
+  ✅ seed_drama_cosmos.py — 결정적 uuid5, 정리 완료
+
+보안 검사:
+  ✅ 로그에 비밀번호 노출 없음 (_mask_url)
+  ✅ SQL 인젝션 위험 없음 (파라미터화 쿼리)
+  ✅ 시스템 호출에 사용자 입력 직접 전달 없음
+
+Reviewed 6 files:
+  ✅ startup.sh       — ffmpeg install (idempotent, || true)
+  ✅ app/core/redis.py — credential masking (_mask_url)
+  ✅ app/api/chat.py   — diagnostics endpoint
+  ✅ speech_service.py — fallback warning improvement
+  ✅ mcp_server/server.py — async Cosmos + JSON fallback
+  ✅ seed_drama_cosmos.py — deterministic uuid5, proper cleanup
+
+Security:
+  ✅ No credentials in logs
+  ✅ No SQL injection risk (parameterized queries)
+  ✅ No user input in system calls
+```
+
+### ⑥ Tech Writer Paige — 문서 업데이트 / Documentation Update
+
+```
+업데이트 파일:
+  - docs/CODEBASE.md: MCP 도구 7번 Cosmos DB 설명 추가
+  - docs/CODEBASE.md: seed_drama_cosmos.py 스크립트 추가
+  - docs/CODEBASE.md: startup.sh ffmpeg 설명 갱신
+
+Updated files:
+  - docs/CODEBASE.md: MCP tool 7 Cosmos DB note added
+  - docs/CODEBASE.md: seed_drama_cosmos.py script added
+  - docs/CODEBASE.md: startup.sh ffmpeg description updated
+```
+
+### ⑦ 구현 준비 검증 / Implementation Readiness Check
+
+```
+검증 결과 (5개 기준):
+  A. 기능 커버리지    ⚠️ PASS (PRD 3.2 텍스트 채팅에 공식 Story 없음)
+  B. 아키텍처 커버리지 ✅ PASS (전체 대응)
+  C. 기술 일관성      ✅ PASS (4개 문서 일치)
+  D. Story 완성도    ⚠️ PASS (27개 정식 Story 완료, Sprint 4 항목은 약식)
+  E. 스프린트 상태    ✅ Sprint 4 진행 중 (P0 완료)
+
+Validation results (5 criteria):
+  A. Feature Coverage    ⚠️ PASS (PRD 3.2 Text Chat has no formal story)
+  B. Architecture Coverage ✅ PASS (full alignment)
+  C. Technology Consistency ✅ PASS (all 4 docs agree)
+  D. Story Completeness   ⚠️ PASS (27 formal stories done; Sprint 4 items informal)
+  E. Sprint Status        ✅ Sprint 4 in progress (P0 complete)
+```
+
+---
+
+## 6. 스프린트 이력 / Sprint History
+
+| 스프린트 / Sprint | 이름 / Name | 내용 / Content | 상태 / Status |
+|---|---|---|---|
+| **Sprint 1** | 핵심 음성 + 채팅 / Core Voice + Chat | WebSocket 음성, AI 에이전트, 프론트엔드 UI / WebSocket voice, AI agent, Frontend | ✅ 완료 / Done |
+| **Sprint 2** | Cosmos DB 통합 / Integration | 코어 레이어, 대화 마이그, 학습 이벤트 / Core layer, conversation migration, events | ✅ 완료 / Done |
+| **Sprint 3** | 인증 + 관리자 / Auth + Admin | 이메일 인증, Entra ID, 관리자 대시보드, Redis 진단 / Email verification, Entra ID, admin, Redis | ✅ 완료 / Done |
+| **Sprint 4** | 콘텐츠 + 폴리시 / Content & Polish | K-drama Cosmos (P0 ✅), CSV 내보내기, 발음, 모바일 / K-drama Cosmos (P0 ✅), CSV, pronunciation, mobile | 🚀 진행 중 / In Progress |
+
+### 스프린트별 Epic 현황 / Epic Status by Sprint
+
+| Epic | 이름 / Name | 스프린트 / Sprint | 상태 / Status |
+|---|---|---|---|
+| Epic 1 | 음성 / Voice | 1 | ✅ done (4 stories) |
+| Epic 2 | 교육 콘텐츠 / Teaching Content | 1 | ✅ done (3 stories) |
+| Epic 3 | Azure 인프라 / Infrastructure | 1-2 | ✅ done (2 stories) |
+| Epic 4 | 학습 관리 / Learning Management | 2 | ✅ done (4 stories) |
+| Epic 5 | Cosmos DB | 2, 4 | ✅ done (4 stories — 5.3 Sprint 4에서 완료) |
+| Epic 6 | 인증 / Authentication | 3 | ✅ done (4 stories) |
+| Epic 7 | 관리자 / Admin | 3 | ✅ done (2 stories) |
+| Epic 8 | MCP 도구 / Tools | 2 | ✅ done (1 story) |
+| Epic 9 | PWA | 3 | ✅ done (1 story) |
+| Epic 10 | 프로덕션 탄력성 / Resilience | 4 | ✅ done (2 stories) |
+
+---
+
+## 7. 44개 스킬 참조 / 44 Skills Reference
+
+BMAD v6.2.2에는 VS Code Copilot Chat에서 호출할 수 있는 **44개의 재사용 가능한 스킬**이 포함됩니다. 스킬 파일은 `.github/skills/`에 있습니다.
+
+BMAD v6.2.2 includes **44 reusable skills** invokable in VS Code Copilot Chat. Files in `.github/skills/`.
+
+### 분석 스킬 / Analysis Skills
+| 스킬 / Skill | 트리거 / Trigger | 설명 / Description |
+|-------|---------|-------------|
+| `bmad-document-project` | "document this project" | 브라운필드 프로젝트 AI 컨텍스트 생성 / Scan project for AI context |
+| `bmad-domain-research` | "domain research for [topic]" | 도메인/산업 연구 / Domain/industry research |
+| `bmad-market-research` | "market research" | 경쟁/고객 분석 / Competition and customer analysis |
+| `bmad-technical-research` | "technical research" | 기술/아키텍처 연구 / Technology research |
+| `bmad-generate-project-context` | "generate project context" | project-context.md 생성 / Create project-context.md |
+
+### 계획 스킬 / Planning Skills
+| 스킬 / Skill | 트리거 / Trigger | 설명 / Description |
+|-------|---------|-------------|
+| `bmad-create-prd` | "create PRD" | 제품 요구사항 문서 작성 / Create PRD |
+| `bmad-edit-prd` | "edit this PRD" | 기존 PRD 수정 / Modify existing PRD |
+| `bmad-validate-prd` | "validate this PRD" | PRD 검증 / Check PRD against standards |
+| `bmad-product-brief` | "create product brief" | 제품 브리프 작성 / Create/update product briefs |
+| `bmad-create-epics-and-stories` | "create epics and stories" | 요구사항 → Story 분해 / Break requirements into stories |
+| `bmad-create-story` | "create story [id]" | 개별 Story 파일 생성 / Create individual story file |
+
+### 설계 스킬 / Solutioning Skills
+| 스킬 / Skill | 트리거 / Trigger | 설명 / Description |
+|-------|---------|-------------|
+| `bmad-create-architecture` | "create architecture" | 시스템 아키텍처 설계 / Design system architecture |
+| `bmad-create-ux-design` | "create UX design" | UX 패턴 및 사양 계획 / Plan UX patterns and specs |
+| `bmad-check-implementation-readiness` | "check readiness" | 사양 완성도 검증 / Validate all specs complete |
+
+### 구현 스킬 / Implementation Skills
+| 스킬 / Skill | 트리거 / Trigger | 설명 / Description |
+|-------|---------|-------------|
+| `bmad-quick-dev` | "build/fix/add [feature]" | 빠른 사양 → 코드 / Rapid spec → code |
+| `bmad-dev-story` | "dev story [file]" | Story 파일 기반 구현 / Story-driven implementation |
+| `bmad-code-review` | "review this code" | 3중 적대적 코드 리뷰 / 3-layer adversarial review |
+| `bmad-qa-generate-e2e-tests` | "create qa tests" | E2E 테스트 생성 / Generate end-to-end tests |
+
+### 스프린트 관리 / Sprint Management
+| 스킬 / Skill | 트리거 / Trigger | 설명 / Description |
+|-------|---------|-------------|
+| `bmad-sprint-planning` | "run sprint planning" | Epic에서 스프린트 계획 생성 / Generate sprint plan |
+| `bmad-sprint-status` | "check sprint status" | 스프린트 상태 요약 + 리스크 / Summarize + surface risks |
+| `bmad-correct-course` | "correct course" | 스프린트 중 방향 수정 / Manage sprint changes |
+| `bmad-retrospective` | "run retrospective" | Epic 후 회고 / Post-epic lessons learned |
+
+### 리뷰 & 편집 / Review & Editing
+| 스킬 / Skill | 트리거 / Trigger | 설명 / Description |
+|-------|---------|-------------|
+| `bmad-review-adversarial-general` | "critical review" | 냉소적 적대적 리뷰 / Cynical adversarial review |
+| `bmad-review-edge-case-hunter` | "edge case analysis" | 경계 조건 감사 / Boundary condition audit |
+| `bmad-editorial-review-prose` | "review prose" | 문체 편집 / Copy-editing for communication |
+| `bmad-editorial-review-structure` | "structural review" | 구조 재편 / Document reorganization |
+
+### 유틸리티 / Utility Skills
+| 스킬 / Skill | 트리거 / Trigger | 설명 / Description |
+|-------|---------|-------------|
+| `bmad-brainstorming` | "help me brainstorm" | 창의적 아이디어 세션 / Creative ideation sessions |
+| `bmad-advanced-elicitation` | (개선 요청) | LLM 출력 품질 향상 / Improve LLM output |
+| `bmad-distillator` | "distill documents" | 무손실 압축 / Lossless compression |
+| `bmad-shard-doc` | "shard document" | 대형 문서 분할 / Split large docs |
+| `bmad-index-docs` | "create docs index" | index.md 생성 / Generate index.md |
+| `bmad-party-mode` | "party mode" | 멀티 에이전트 그룹 토론 / Multi-agent discussion |
+| `bmad-help` | "what should I do next" | 다음 행동 추천 / Recommend next action |
+| `bmad-init` | (자동) | BMAD 설정 초기화 / Initialize configuration |
+
+---
+
+## 8. 산출물 / Output Artifacts
+
+### 계획 산출물 (bmad-docs/) / Planning Artifacts
+
+| 문서 / Document | 에이전트 / Agent | 내용 요약 / Summary |
 |---|---|---|
-| **PRD.md** | 700+ | Complete product spec: vision, personas, features, acceptance criteria, non-functional requirements / 완전한 제품 사양 |
-| **ARCHITECTURE.md** | 600+ | System design: diagrams, components, auth, data flows, deployment / 시스템 설계 |
-| **STORIES.md** | 300+ | User stories: feature breakdown into implementable chunks / 사용자 스토리 |
-| **TECH_STACK.md** | 150+ | Technology decisions with rationale / 기술 결정 및 근거 |
+| **PRD.md** | PM John | 비전, 2 페르소나, 10개 기능, 인증 전략, API 요약 / Vision, 2 personas, 10 features, auth, API |
+| **ARCHITECTURE.md** | Architect Winston | 10개 섹션: 컨텍스트, 인증, 음성, DB, 캐시, 이메일, 관리자 / 10 sections: context, auth, voice, DB, cache, email, admin |
+| **STORIES.md** | SM Bob | 10 Epic, 25+ Story, 인수 기준 포함, 4 스프린트 이력 / 10 epics, 25+ stories with ACs, 4 sprint history |
+| **TECH_STACK.md** | Architect Winston | 런타임, Azure 서비스, 시스템 의존성, 코드 규칙 / Runtime, Azure services, system deps, conventions |
 
-These documents serve as:
-이 문서들의 역할:
-- **Living specification** / 살아있는 사양서 — always updated as the project evolves / 프로젝트 발전에 따라 항상 업데이트
-- **Onboarding guide** / 온보딩 가이드 — new developers can understand the entire system / 새 개발자가 전체 시스템 이해
-- **Decision log** / 의사결정 기록 — why each technology and design choice was made / 각 기술 및 설계 선택의 이유
+모든 BMAD 산출물에는 **프론트매터 메타데이터**가 포함됩니다.
+
+All BMAD artifacts include **frontmatter metadata**:
+
+```yaml
+---
+stepsCompleted: [완료된 워크플로우 단계 목록]
+inputDocuments: [참조한 소스 문서]
+workflowType: 'prd' | 'architecture' | 'epics-and-stories'
+bmadAgent: 'Agent Name'
+bmadVersion: '6.2.2'
+lastUpdated: '2026-03-27'
+---
+```
+
+### 구현 산출물 (_bmad-output/) / Implementation Artifacts
+
+| 문서 / Document | 용도 / Purpose |
+|---|---|
+| `sprint-status.yaml` | 전체 스프린트 추적 (10 Epic, 25+ Story 상태) / Full sprint tracking |
+
+### 프로젝트 문서 (docs/) / Project Documentation
+
+| 문서 / Document | 에이전트 / Agent | 내용 / Content |
+|---|---|---|
+| `BMAD.md` | Paige (기술 작가) | 이 문서 — BMAD 방법론 / This file — BMAD methodology |
+| `CODEBASE.md` | Paige | 파일 트리 + 엔드포인트 / File tree + endpoints |
+| `AI_ENGINE.md` | Paige | AI Foundry + MCP 도구 / AI Foundry + MCP tools |
+| `DATABASE.md` | Paige | PostgreSQL + Cosmos DB |
+| `NETWORK.md` | Paige | VNet + 프라이빗 엔드포인트 / Private endpoints |
+| `OPERATIONS.md` | Paige | 배포 + 시작 / Deployment + startup |
+| `SECURITY.md` | Paige | 인증 + OWASP / Auth + OWASP |
+| `ADMIN_API_REFERENCE.md` | Paige | 관리자 API 문서 / Admin API docs |
+| `ADMIN_DASHBOARD.md` | Paige | 대시보드 UI 문서 / Dashboard UI docs |
+| `DEVELOPMENT_JOURNAL.md` | Paige | 개발 일지 / Development history |
 
 ---
 
-## 7. Framework Structure / 프레임워크 구조
-
-### Directory Layout / 디렉토리 레이아웃
+## 9. 프레임워크 구조 / Framework Structure
 
 ```
-_bmad/                              # BMAD Framework root / BMAD 프레임워크 루트
+_bmad/                              # BMAD 프레임워크 루트 (v6.2.2) / Framework root
 │
-├── _config/                        # Configuration / 설정
-│   ├── manifest.yaml               # Framework manifest (version, modules)
-│   │                               # 프레임워크 매니페스트 (버전, 모듈)
-│   ├── agent-manifest.csv          # All available agents / 사용 가능한 모든 에이전트
-│   ├── skill-manifest.csv          # All available skills / 사용 가능한 모든 스킬
-│   ├── task-manifest.csv           # All available tasks / 사용 가능한 모든 태스크
-│   ├── workflow-manifest.csv       # All available workflows / 사용 가능한 모든 워크플로우
-│   ├── tool-manifest.csv           # All available tools / 사용 가능한 모든 도구
-│   ├── files-manifest.csv          # File references / 파일 참조
-│   ├── bmad-help.csv               # Help index / 도움말 인덱스
-│   └── agents/                     # Agent customizations / 에이전트 맞춤 설정
-│       ├── bmm-pm.customize.yaml
-│       ├── bmm-architect.customize.yaml
-│       ├── bmm-dev.customize.yaml
-│       ├── bmm-qa.customize.yaml
-│       ├── bmm-sm.customize.yaml
-│       ├── bmm-analyst.customize.yaml
-│       ├── bmm-ux-designer.customize.yaml
-│       ├── bmm-tech-writer.customize.yaml
-│       └── bmm-quick-flow-solo-dev.customize.yaml
+├── _config/                        # 설정 / Configuration
+│   ├── manifest.yaml               # 프레임워크 매니페스트 / Framework manifest
+│   ├── agent-manifest.csv          # 9개 에이전트 / All 9 agents
+│   ├── skill-manifest.csv          # 44개 스킬 / All 44 skills
+│   ├── workflow-manifest.csv       # 워크플로우 정의 / Workflow definitions
+│   ├── files-manifest.csv          # 파일 참조 / File references
+│   ├── bmad-help.csv              # 도움말 색인 / Help index
+│   └── agents/                    # 에이전트 커스터마이징 (.yaml) / Agent customizations
 │
-├── _memory/                        # Persistent context / 영구 컨텍스트
-│   ├── config.yaml                 # Memory configuration / 메모리 설정
-│   └── tech-writer-sidecar/        # Tech writer context / 기술 작가 컨텍스트
-│       └── documentation-standards.md
+├── _memory/                       # 영구 컨텍스트 / Persistent context
+│   ├── config.yaml
+│   └── tech-writer-sidecar/       # 기술 작가 표준 / Tech writer standards
 │
-├── core/                           # Core BMAD modules / 핵심 BMAD 모듈
-│   ├── config.yaml                 # Core module config / 핵심 모듈 설정
-│   ├── module-help.csv             # Help index / 도움말 인덱스
-│   ├── skills/                     # Shared skills / 공유 스킬
-│   └── tasks/                      # Shared tasks / 공유 태스크
+├── core/                          # 코어 BMAD 모듈 / Core modules
+│   ├── config.yaml
+│   ├── skills/                    # 공유 스킬 / Shared skills
+│   └── tasks/                     # 공유 태스크 / Shared tasks
 │
-└── bmm/                            # Business Method Module / 비즈니스 방법 모듈
-    ├── config.yaml                 # BMM config / BMM 설정
-    │   └── project: korean-biz-agent
-    │       level: intermediate
-    │       planning_artifacts: bmad-docs/
+└── bmm/                           # 비즈니스 메소드 모듈 / Business Method Module
+    ├── config.yaml                # 프로젝트 설정 / Project config:
+    │     project_name: korean-biz-agent
+    │     user_name: Aimee
+    │     communication_language: English
+    │     document_output_language: English
+    │     user_skill_level: intermediate
     │
-    ├── agents/                     # 9 agent persona definitions / 9개 에이전트 정의
-    │   ├── analyst.md              # Business Analyst / 비즈니스 분석가
-    │   ├── pm.md                   # Product Manager / 제품 관리자
-    │   ├── architect.md            # System Architect / 시스템 아키텍트
-    │   ├── dev.md                  # Developer / 개발자
-    │   ├── qa.md                   # Quality Analyst / 품질 분석가
-    │   ├── sm.md                   # Scrum Master / 스크럼 마스터
-    │   ├── quick-flow-solo-dev.md  # Solo developer shortcut / 솔로 개발자 단축
-    │   └── tech-writer/            # Tech Writer / 기술 작가
-    │       └── tech-writer.md
-    │
-    ├── workflows/                  # Workflow definitions / 워크플로우 정의
-    │   ├── 1-analysis/             # Phase 0: Analysis / 분석
-    │   ├── 2-plan-workflows/       # Phase 1: Planning / 계획
-    │   ├── 3-solutioning/          # Phase 2: Design / 설계
-    │   └── 4-implementation/       # Phase 3: Build / 구축
-    │
-    ├── teams/                      # Team compositions / 팀 구성
-    └── data/                       # Project-specific data / 프로젝트별 데이터
+    ├── agents/                    # 9개 에이전트 정의 (.md) / Agent definitions
+    └── workflows/                 # 4단계 워크플로우 / Phase workflows
+        ├── 1-analysis/            # 분석 / Analysis
+        ├── 2-plan-workflows/      # 계획 / Planning
+        ├── 3-solutioning/         # 설계 / Solutioning
+        └── 4-implementation/      # 구현 / Implementation
 ```
-
-### Key Files Explained / 주요 파일 설명
-
-| File / 파일 | Purpose / 용도 |
-|---|---|
-| `bmm/config.yaml` | Configures BMAD for this specific project (name, level, output folder) / 이 프로젝트를 위한 BMAD 설정 |
-| `bmm/agents/*.md` | Each file defines an agent's personality, expertise, and responsibilities / 각 파일이 에이전트의 성격, 전문성, 책임을 정의 |
-| `_config/agents/*.customize.yaml` | Project-specific overrides for each agent / 각 에이전트의 프로젝트별 오버라이드 |
-| `bmm/workflows/` | Step-by-step workflow instructions for each phase / 각 단계의 단계별 워크플로우 지침 |
-| `_memory/` | Persistent context that agents can reference across sessions / 세션 간 에이전트가 참조할 수 있는 영구 컨텍스트 |
 
 ---
 
-## Navigation / 탐색
+## 10. BMAD 호출 방법 / How to Invoke BMAD
 
-| Next / 다음 | Document / 문서 |
+### VS Code Copilot Chat에서 / In VS Code Copilot Chat
+
+BMAD 스킬은 `.github/skills/`에 VS Code Copilot 스킬로 설치되어 있습니다.
+
+BMAD skills are installed as VS Code Copilot skills in `.github/skills/`.
+
+```
+# 에이전트 호출 / Agent invocation
+"Talk to John"          → PM (PRD 작성/편집 / PRD creation/editing)
+"Talk to Winston"       → 아키텍트 (시스템 설계 / system design)
+"Talk to Bob"           → 스크럼 마스터 (스프린트 계획 / sprint planning)
+"Talk to Barry"         → 퀵플로우 개발 (빠른 구현 / rapid implementation)
+"Talk to Quinn"         → QA (코드 리뷰 / code review)
+"Talk to Paige"         → 기술 작가 (문서 / documentation)
+"Talk to Amelia"        → 개발자 (Story 기반 구현 / story-driven dev)
+"Talk to Sally"         → UX 디자이너 (UI 설계 / UI design)
+"Talk to Mary"          → 분석가 (요구사항 분석 / requirements analysis)
+
+# 스킬 호출 / Skill invocation
+"create PRD"                   → bmad-create-prd
+"create architecture"          → bmad-create-architecture
+"create epics and stories"     → bmad-create-epics-and-stories
+"run sprint planning"          → bmad-sprint-planning
+"check sprint status"          → bmad-sprint-status
+"review this code"             → bmad-code-review (3중 적대적 리뷰 / 3-layer review)
+"document this project"        → bmad-document-project
+"what should I do next"        → bmad-help (다음 행동 추천 / recommend next)
+"party mode"                   → 멀티 에이전트 그룹 토론 / Multi-agent discussion
+"check implementation readiness" → 구현 준비 검증 / Validate specs
+```
+
+### 마이크로 파일 아키텍처 / Step-File Architecture
+
+BMAD 워크플로우는 **마이크로 파일 아키텍처**를 사용합니다 — 각 단계가 별도 마크다운 파일로 순차 로딩됩니다.
+
+BMAD workflows use **micro-file architecture** — each step is a separate markdown file loaded sequentially.
+
+```
+bmad-create-prd/
+├── SKILL.md           # 스킬 정의 / Skill definition
+├── workflow.md        # 진입점 (설정 로드, 단계 라우팅) / Entry point
+├── steps-c/           # 생성 모드 단계 / Create mode steps
+│   ├── step-01-init.md
+│   ├── step-02-discovery.md
+│   └── ...
+└── templates/
+    └── prd-template.md  # 프론트매터 포함 출력 템플릿 / Output template
+```
+
+**규칙 / Rules**: 한 번에 한 단계 → 완료 후 다음 로딩 → 프론트매터에 상태 저장 → 사용자 승인 기반 진행
+
+One step at a time → Complete before next → State in frontmatter → User approval for progression
+
+---
+
+## 탐색 / Navigation
+
+| 다음 / Next | 문서 / Document |
 |---|---|
-| Main overview / 메인 개요 | → [README.md](../README.md) |
-| How the AI works / AI 작동 방식 | → [docs/AI_ENGINE.md](AI_ENGINE.md) |
-| Database & storage / 데이터베이스 & 저장소 | → [docs/DATABASE.md](DATABASE.md) |
-| Network & deployment / 네트워크 & 배포 | → [docs/NETWORK.md](NETWORK.md) |
-| All files explained / 모든 파일 설명 | → [docs/CODEBASE.md](CODEBASE.md) |
+| 메인 README / Main README | → [README.md](../README.md) |
+| AI 작동 방식 / How AI works | → [AI_ENGINE.md](AI_ENGINE.md) |
+| 데이터베이스 / Database | → [DATABASE.md](DATABASE.md) |
+| 네트워크 / Network | → [NETWORK.md](NETWORK.md) |
+| 코드베이스 / Codebase | → [CODEBASE.md](CODEBASE.md) |
+| 보안 / Security | → [SECURITY.md](SECURITY.md) |
+| 운영 / Operations | → [OPERATIONS.md](OPERATIONS.md) |
+| 개발 일지 / Dev Journal | → [DEVELOPMENT_JOURNAL.md](DEVELOPMENT_JOURNAL.md) |

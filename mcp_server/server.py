@@ -14,10 +14,13 @@
 """
 
 import json
+import logging
 import os
 import random
 
 from fastmcp import FastMCP
+
+logger = logging.getLogger(__name__)
 
 # ── FastMCP 实例 ──────────────────────────────────────────────
 mcp = FastMCP(
@@ -323,7 +326,7 @@ def quiz_me(topic: str = "vocabulary", difficulty: str = "intermediate") -> str:
 # Tool 7 ─ 韩剧职场对话
 # ══════════════════════════════════════════════════════════════
 @mcp.tool()
-def get_drama_dialogue(
+async def get_drama_dialogue(
     drama: str = "", difficulty: str = "intermediate"
 ) -> str:
     """获取韩剧中的职场/商务对话片段，用于练习自然口语。
@@ -335,8 +338,22 @@ def get_drama_dialogue(
     :return: 韩剧对话场景 JSON（含对白、语法点、关键表达、文化注释）
     :rtype: str
     """
-    data = _load_data()
-    dialogues = data.get("drama_dialogues", [])
+    dialogues: list[dict] = []
+
+    # ── 优先从 Cosmos DB 获取 ──
+    try:
+        from app.services.cosmos_service import list_dramas
+        cosmos_docs = await list_dramas(drama_id=None)
+        if cosmos_docs:
+            dialogues = cosmos_docs
+            logger.info("get_drama_dialogue: loaded %d docs from Cosmos DB", len(dialogues))
+    except Exception as exc:
+        logger.warning("get_drama_dialogue: Cosmos DB unavailable (%s), falling back to JSON", exc)
+
+    # ── JSON 文件兜底 ──
+    if not dialogues:
+        data = _load_data()
+        dialogues = data.get("drama_dialogues", [])
 
     if not dialogues:
         return json.dumps(
@@ -350,7 +367,7 @@ def get_drama_dialogue(
     if query:
         filtered = [
             d for d in dialogues
-            if query in d.get("drama", "").lower()
+            if query in d.get("drama", d.get("drama_name", "")).lower()
             or query in d.get("scene", "").lower()
             or query in d.get("context", "").lower()
         ]
