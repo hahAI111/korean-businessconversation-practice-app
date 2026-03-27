@@ -2,10 +2,14 @@
 认证 API —— 注册（含邮箱验证码） / 登录 / Microsoft 登录
 """
 
+import logging
+
 import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+logger = logging.getLogger(__name__)
 
 from app.core.auth import create_access_token, get_current_user_id, validate_microsoft_id_token
 from app.core.database import get_db
@@ -64,7 +68,11 @@ async def register(body: UserRegister, db: AsyncSession = Depends(get_db)):
 
 @router.post("/login", response_model=TokenResponse)
 async def login(body: UserLogin, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(User).where(User.email == body.email))
+    try:
+        result = await db.execute(select(User).where(User.email == body.email))
+    except Exception as e:
+        logger.error("Database error during login: %s", e)
+        raise HTTPException(status_code=503, detail="Database unavailable, please try again later")
     user = result.scalar_one_or_none()
     if not user or not bcrypt.checkpw(body.password.encode(), user.hashed_password.encode()):
         raise HTTPException(status_code=401, detail="Invalid credentials")

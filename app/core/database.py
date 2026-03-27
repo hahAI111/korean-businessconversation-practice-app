@@ -20,7 +20,9 @@ if _is_postgres:
     _kwargs = {
         "pool_size": 10,
         "max_overflow": 20,
-        "connect_args": {"ssl": _ssl_ctx},
+        "pool_timeout": 10,
+        "pool_pre_ping": True,
+        "connect_args": {"ssl": _ssl_ctx, "timeout": 10},
     }
 
 engine = create_async_engine(settings.DATABASE_URL, echo=settings.DEBUG, **_kwargs)
