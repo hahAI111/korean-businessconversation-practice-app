@@ -85,9 +85,9 @@ async def root():
 # ── 语料 MCP Server（Korean Business Teacher Tools, 供 Foundry Agent 远程访问）──
 try:
     from mcp_server.server import mcp as _mcp_server
-    app.mount("/mcp", _mcp_server.http_app(transport="sse"))
+    app.mount("/mcp", _mcp_server.http_app(path="/", transport="streamable-http", stateless_http=True))
     import logging as _log
-    _log.getLogger(__name__).info("MCP server mounted at /mcp (SSE transport)")
+    _log.getLogger(__name__).info("MCP server mounted at /mcp/ (streamable-http, stateless)")
 except Exception as _e:
     import logging as _log
     _log.getLogger(__name__).warning("Failed to mount MCP server: %s", _e)
