@@ -322,7 +322,7 @@ class AgentService:
             return f"[错误] Agent 调用失败: {type(e).__name__}: {e}"
 
     def chat_stream(self, thread_id: str, user_message: str) -> Generator[str, None, str]:
-        """流式文字对话 — LLM + MCP tools, 流式输出。"""
+        """流式文字对话 — LLM + MCP tools, 流式输出 (支持多轮工具调用)。"""
         try:
             self._ensure_client()
             prev_id = self._last_response.get(thread_id)
@@ -337,37 +337,42 @@ class AgentService:
             if prev_id:
                 kwargs["previous_response_id"] = prev_id
 
-            stream = self._client.responses.create(**kwargs)
-
             full_text = ""
             response_id = None
-            pending_calls = {}
 
-            for event in stream:
-                if not hasattr(event, 'type'):
-                    continue
+            # 多轮工具调用循环 (最多 5 轮, 与 _call_with_tools 一致)
+            for round_num in range(5):
+                stream = self._client.responses.create(**kwargs)
+                pending_calls = {}
 
-                if event.type == 'response.output_text.delta':
-                    full_text += event.delta
-                    yield event.delta
+                for event in stream:
+                    if not hasattr(event, 'type'):
+                        continue
 
-                elif event.type == 'response.output_item.done':
-                    item = event.item
-                    if item.type == 'function_call':
-                        pending_calls[item.call_id] = {
-                            "name": item.name,
-                            "arguments": item.arguments,
-                        }
+                    if event.type == 'response.output_text.delta':
+                        full_text += event.delta
+                        yield event.delta
 
-                elif event.type == 'response.completed':
-                    response_id = event.response.id
+                    elif event.type == 'response.output_item.done':
+                        item = event.item
+                        if item.type == 'function_call':
+                            pending_calls[item.call_id] = {
+                                "name": item.name,
+                                "arguments": item.arguments,
+                            }
 
-            # 有 pending function calls 时, 通过 MCP Client 执行后继续流式
-            if pending_calls and response_id:
+                    elif event.type == 'response.completed':
+                        response_id = event.response.id
+
+                # 无 pending function calls → 完成
+                if not pending_calls or not response_id:
+                    break
+
+                # 执行 MCP 工具并准备下一轮
                 tool_results = []
                 for call_id, call_info in pending_calls.items():
                     args = json.loads(call_info["arguments"]) if isinstance(call_info["arguments"], str) else call_info["arguments"]
-                    logger.info("🔧 Stream MCP tool: %s(%s)", call_info["name"], json.dumps(args, ensure_ascii=False)[:200])
+                    logger.info("🔧 Stream MCP tool (round %d): %s(%s)", round_num + 1, call_info["name"], json.dumps(args, ensure_ascii=False)[:200])
                     output = _execute_mcp_tool(call_info["name"], args)
                     tool_results.append({
                         "type": "function_call_output",
@@ -376,22 +381,15 @@ class AgentService:
                     })
                     logger.info("🔧 Stream MCP result: %s → %s", call_info["name"], output[:200])
 
-                stream2 = self._client.responses.create(
-                    model=settings.MODEL_DEPLOYMENT,
-                    input=tool_results,
-                    previous_response_id=response_id,
-                    instructions=TEXT_INSTRUCTIONS,
-                    tools=mcp_tools,
-                    stream=True,
-                )
-                for event in stream2:
-                    if not hasattr(event, 'type'):
-                        continue
-                    if event.type == 'response.output_text.delta':
-                        full_text += event.delta
-                        yield event.delta
-                    elif event.type == 'response.completed':
-                        response_id = event.response.id
+                # 下一轮: 提交工具结果, 继续流式
+                kwargs = {
+                    "model": settings.MODEL_DEPLOYMENT,
+                    "input": tool_results,
+                    "previous_response_id": response_id,
+                    "instructions": TEXT_INSTRUCTIONS,
+                    "tools": mcp_tools,
+                    "stream": True,
+                }
 
             if response_id:
                 self._last_response[thread_id] = response_id
