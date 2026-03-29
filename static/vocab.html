@@ -21,7 +21,28 @@
       <li><a href="/static/chat.html">Chat</a></li>
       <li><a href="/static/vocab.html" class="active">Vocabulary</a></li>
       <li><a href="/static/progress.html">Progress</a></li>
-      <li><button id="logoutBtn">Logout</button></li>
+      <li>
+        <div class="profile-dropdown" id="profileDropdown">
+          <button class="profile-trigger" id="profileTrigger">
+            <span class="avatar" id="userAvatar">?</span>
+            <span class="profile-name" id="userNickname"></span>
+            <span class="profile-chevron">▾</span>
+          </button>
+          <div class="profile-menu" id="profileMenu">
+            <div class="profile-menu-header">
+              <span class="avatar avatar-lg" id="menuAvatar">?</span>
+              <div class="profile-menu-info">
+                <span class="profile-menu-name" id="menuNickname"></span>
+                <span class="profile-menu-email" id="menuEmail"></span>
+              </div>
+            </div>
+            <div class="profile-menu-divider"></div>
+            <button class="profile-menu-item" id="logoutBtn">
+              <span class="profile-menu-icon">🚪</span> Logout
+            </button>
+          </div>
+        </div>
+      </li>
     </ul>
   </nav>
 
@@ -90,7 +111,25 @@
   <script>
     if (!Auth.token) { window.location.href = '/static/index.html'; }
 
+    // ── Profile Dropdown ──
     document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
+    const profileTrigger = document.getElementById('profileTrigger');
+    const profileMenu = document.getElementById('profileMenu');
+    profileTrigger.addEventListener('click', (e) => { e.stopPropagation(); profileMenu.classList.toggle('open'); });
+    document.addEventListener('click', () => profileMenu.classList.remove('open'));
+    profileMenu.addEventListener('click', (e) => e.stopPropagation());
+    (async () => {
+      try {
+        const p = await Api.get('/api/auth/profile');
+        const ini = (p.nickname || p.email)[0].toUpperCase();
+        const nm = p.nickname || p.email.split('@')[0];
+        document.getElementById('userAvatar').textContent = ini;
+        document.getElementById('userNickname').textContent = nm;
+        document.getElementById('menuAvatar').textContent = ini;
+        document.getElementById('menuNickname').textContent = nm;
+        document.getElementById('menuEmail').textContent = p.email || '';
+      } catch { /* ignore */ }
+    })();
 
     const vocabGrid = document.getElementById('vocabGrid');
     const emptyState = document.getElementById('emptyState');

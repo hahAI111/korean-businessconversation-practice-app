@@ -97,6 +97,11 @@ async def root():
     return RedirectResponse(url="/static/index.html")
 
 
+@app.get("/admin")
+async def admin_redirect():
+    return RedirectResponse(url="/static/admin_dashboard.html")
+
+
 # ── 语料 MCP Server（Korean Business Teacher Tools, 供 Foundry Agent 远程访问）──
 if _mcp_http_app is not None:
     app.mount("/mcp", _mcp_http_app)

@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     COSMOS_ENDPOINT: str = ""
     COSMOS_DATABASE: str = "korean_biz"
 
+    # ── MCP Server (deployed URL for Portal Agent registration) ──
+    MCP_SERVER_URL: str = "https://korean-biz-coach.azurewebsites.net/mcp"
+
     # ── PostgreSQL ──
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/korean_biz"
 
@@ -38,6 +41,9 @@ class Settings(BaseSettings):
     JWT_SECRET: str = "change-me-in-production"
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 1440  # 24h
+
+    # ── Admin Dashboard ──
+    ADMIN_SECRET: str = "Harry007!"
 
     # ── Microsoft Entra ID (optional, enables "Sign in with Microsoft") ──
     ENTRA_TENANT_ID: str = ""

@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Korean Biz Coach — Voice & Chat</title>
-  <link rel="stylesheet" href="/static/style.css?v=6">
+  <link rel="stylesheet" href="/static/style.css?v=7">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
 </head>
@@ -22,12 +22,27 @@
       <li><a href="/static/vocab.html">Vocabulary</a></li>
       <li><a href="/static/progress.html">Progress</a></li>
       <li>
-        <span class="nav-user">
-          <span class="avatar" id="userAvatar">?</span>
-          <span id="userNickname"></span>
-        </span>
+        <div class="profile-dropdown" id="profileDropdown">
+          <button class="profile-trigger" id="profileTrigger">
+            <span class="avatar" id="userAvatar">?</span>
+            <span class="profile-name" id="userNickname"></span>
+            <span class="profile-chevron">▾</span>
+          </button>
+          <div class="profile-menu" id="profileMenu">
+            <div class="profile-menu-header">
+              <span class="avatar avatar-lg" id="menuAvatar">?</span>
+              <div class="profile-menu-info">
+                <span class="profile-menu-name" id="menuNickname"></span>
+                <span class="profile-menu-email" id="menuEmail"></span>
+              </div>
+            </div>
+            <div class="profile-menu-divider"></div>
+            <button class="profile-menu-item" id="logoutBtn">
+              <span class="profile-menu-icon">🚪</span> Logout
+            </button>
+          </div>
+        </div>
       </li>
-      <li><button id="logoutBtn" title="Logout">🚪</button></li>
     </ul>
   </nav>
 
@@ -190,13 +205,29 @@
         const profile = await Api.get('/api/auth/profile');
         const initial = (profile.nickname || profile.email)[0].toUpperCase();
         const name = profile.nickname || profile.email.split('@')[0];
+        const email = profile.email || '';
         document.getElementById('userAvatar').textContent = initial;
         document.getElementById('userNickname').textContent = name;
+        document.getElementById('menuAvatar').textContent = initial;
+        document.getElementById('menuNickname').textContent = name;
+        document.getElementById('menuEmail').textContent = email;
         // Sync to sidebar
         document.getElementById('sidebarAvatar').textContent = initial;
         document.getElementById('sidebarNickname').textContent = name;
       } catch { /* ignore */ }
     })();
+
+    // ── Profile Dropdown Toggle ──
+    const profileTrigger = document.getElementById('profileTrigger');
+    const profileMenu = document.getElementById('profileMenu');
+    if (profileTrigger) {
+      profileTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileMenu.classList.toggle('open');
+      });
+      document.addEventListener('click', () => profileMenu.classList.remove('open'));
+      profileMenu.addEventListener('click', (e) => e.stopPropagation());
+    }
 
     // ── Logout ──
     document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());

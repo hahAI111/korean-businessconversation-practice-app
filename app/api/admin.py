@@ -24,7 +24,7 @@ settings = get_settings()
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 # ── Admin 鉴权 ──
-ADMIN_SECRET = settings.JWT_SECRET  # 复用 JWT_SECRET 作为 admin key
+ADMIN_SECRET = settings.ADMIN_SECRET
 
 async def verify_admin(x_admin_key: str = Header(...)):
     if x_admin_key != ADMIN_SECRET:

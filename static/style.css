@@ -63,15 +63,7 @@ body {
 .nav-links a:hover, .nav-links a.active {
   color: var(--primary); border-bottom-color: var(--primary);
 }
-.nav-user {
-  display: flex; align-items: center; gap: 0.5rem;
-  color: var(--success); font-size: 0.85rem; font-weight: 600;
-}
-.nav-user .avatar {
-  width: 28px; height: 28px; border-radius: 50%;
-  background: var(--primary); display: flex; align-items: center; justify-content: center;
-  font-size: 0.75rem; color: var(--white); font-weight: 700;
-}
+/* .nav-user replaced by .profile-dropdown above */
 
 /* ── Buttons ───────────────────────────────────────── */
 .btn {
@@ -572,12 +564,79 @@ body {
   color: var(--text-muted);
 }
 
-/* ── Logout icon styling ── */
-#logoutBtn {
-  background: none; border: none; color: var(--text-muted);
-  cursor: pointer; font-size: 0.85rem; transition: color 0.3s;
+/* ── Profile Dropdown ── */
+.profile-dropdown { position: relative; }
+.profile-trigger {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: none; border: 1px solid transparent; border-radius: 8px;
+  color: var(--text); cursor: pointer; padding: 0.3rem 0.6rem;
+  transition: all 0.2s;
 }
-#logoutBtn:hover { color: var(--danger); }
+.profile-trigger:hover {
+  background: var(--bg-card); border-color: var(--border);
+}
+.profile-trigger .avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--primary); display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; color: var(--white); font-weight: 700;
+}
+.profile-name {
+  font-size: 0.85rem; font-weight: 600; color: var(--success);
+  max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.profile-chevron {
+  font-size: 0.65rem; color: var(--text-muted);
+  transition: transform 0.2s;
+}
+.profile-menu.open ~ .profile-trigger .profile-chevron,
+.profile-trigger:has(~ .profile-menu.open) .profile-chevron { transform: rotate(180deg); }
+
+.profile-menu {
+  display: none; position: absolute; right: 0; top: calc(100% + 6px);
+  min-width: 220px; background: var(--bg-card);
+  border: 1px solid var(--border-hover); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  z-index: 200; overflow: hidden;
+  animation: dropdownFadeIn 0.15s ease;
+}
+.profile-menu.open { display: block; }
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.profile-menu-header {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.9rem 1rem;
+}
+.profile-menu-header .avatar-lg {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--primary); display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; color: var(--white); font-weight: 700; flex-shrink: 0;
+}
+.profile-menu-info { display: flex; flex-direction: column; overflow: hidden; }
+.profile-menu-name {
+  font-size: 0.85rem; font-weight: 700; color: var(--white);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.profile-menu-email {
+  font-size: 0.75rem; color: var(--text-muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.profile-menu-divider {
+  height: 1px; background: var(--border); margin: 0;
+}
+.profile-menu-item {
+  display: flex; align-items: center; gap: 0.6rem; width: 100%;
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 0.85rem; padding: 0.7rem 1rem;
+  transition: all 0.15s; text-align: left;
+}
+.profile-menu-item:hover {
+  background: rgba(232, 89, 78, 0.1); color: var(--danger);
+}
+.profile-menu-icon { font-size: 1rem; }
 
 /* ── Sidebar User Section (mobile only) ── */
 .sidebar-user {
@@ -620,8 +679,7 @@ body {
   .nav-links a { font-size: 0.78rem; padding: 0.2rem 0; }
   .brand-text { display: none; }
   .brand-icon { cursor: pointer; font-size: 1.8rem !important; }
-  .nav-user { display: none !important; }
-  #logoutBtn { display: none !important; }
+  .profile-dropdown { display: none !important; }
   .sidebar-user { display: flex !important; }
 
   .chat-sidebar {

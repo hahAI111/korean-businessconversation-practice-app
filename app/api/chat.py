@@ -324,28 +324,32 @@ async def agent_check():
     try:
         from azure.ai.projects import AIProjectClient
         from azure.identity import DefaultAzureCredential
-        endpoint = os.environ.get("AZURE_AI_ENDPOINT", "NOT SET")
+        from app.core.config import get_settings
+        s = get_settings()
+        endpoint = s.AZURE_AI_ENDPOINT
+        model = s.MODEL_DEPLOYMENT
         info["endpoint"] = endpoint
+        info["model"] = model
         credential = DefaultAzureCredential()
         project_client = AIProjectClient(endpoint=endpoint, credential=credential)
         client = project_client.get_openai_client()
         info["base_url"] = str(client.base_url)
         # Quick test with instructions (no agent_reference)
-        r = client.responses.create(model="gpt-5.2", input="say hi", instructions="reply: ok")
+        r = client.responses.create(model=model, input="say hi", instructions="reply: ok")
         info["response_id"] = r.id
         info["output"] = r.output_text[:100]
-        # Test agent_reference if configured
-        agent_name = os.environ.get("TEXT_AGENT_NAME", "")
+        # Test voice agent_reference
+        agent_name = s.VOICE_AGENT_NAME
         if agent_name:
             try:
                 r2 = client.responses.create(
-                    model="gpt-5.2", input="test", max_output_tokens=50,
+                    model=model, input="test",
                     extra_body={"agent_reference": {"name": agent_name, "type": "agent_reference"}},
                 )
-                info["agent_reference"] = "ok"
-                info["agent_output"] = r2.output_text[:100]
+                info["voice_agent_ref"] = "ok"
+                info["voice_output"] = r2.output_text[:100]
             except Exception as ae:
-                info["agent_reference"] = f"error: {ae}"
+                info["voice_agent_ref"] = f"error: {ae}"
         info["status"] = "ok"
         client.close()
     except Exception as e:

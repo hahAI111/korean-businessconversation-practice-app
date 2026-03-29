@@ -1,24 +1,34 @@
 """
-Agent 服务 —— AIProjectClient + Responses API (agent_reference)
+Agent 服务 —— LLM + Agent + MCP 架构
 
 架构:
-  - AIProjectClient (ai.azure.com scope) → get_openai_client() → responses API
-  - agent_reference 模式: Portal 预配置 Agent + MCP 工具 (推荐)
-  - fallback 模式: 直接在代码中提供 instructions (无需 Portal Agent)
-  - conversation 通过 previous_response_id 链式维护上下文
+  MCP Server (mcp_server/server.py):
+    - 9 个韩语教学工具, 通过 MCP 协议暴露
+    - 本地 HTTP 挂载在 /mcp, 供外部 Agent 访问
 
-Portal Agent 配置:
-  1. agents.create_version() 创建 Agent (korean-biz-coach / sujin-voice)
-  2. 每个 Agent 绑定 MCP Server: https://<app-service>/mcp/sse
-  3. .env 设置 TEXT_AGENT_NAME / VOICE_AGENT_NAME
+  Agent Service (本模块):
+    - 通过 fastmcp.Client 连接 MCP Server, 动态发现工具
+    - 将 MCP 工具 schema 转换为 OpenAI function tool 格式
+    - LLM 返回 function_call → MCP Client 执行 → 结果回传 → LLM 生成最终回复
+
+  korean-biz-coach (文字对话):
+    - instructions + MCP tools, 中文教学, 详细讲解
+
+  sujin-voice (语音对话):
+    - instructions + MCP tools, 韩语为主, 简短回复, TTS 友好
+
+  对话上下文通过 previous_response_id 链式维护。
 """
 
+import asyncio
+import json
 import logging
-from typing import Generator, Optional
+from typing import Generator
 
 from openai import OpenAI
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
+from fastmcp import Client as MCPClient
 
 from app.core.config import get_settings
 
@@ -27,7 +37,92 @@ settings = get_settings()
 
 
 # ──────────────────────────────────────────────────────────────
-# 直接 instructions (无需 Portal Agent, 立即可用)
+# MCP Client — 动态发现和执行 MCP Server 工具
+# ──────────────────────────────────────────────────────────────
+
+def _get_mcp_server():
+    """获取 FastMCP server 实例（in-process 连接）。"""
+    from mcp_server.server import mcp
+    return mcp
+
+
+def _mcp_tool_to_openai(tool) -> dict:
+    """将 MCP tool schema 转换为 OpenAI function tool 格式。"""
+    input_schema = tool.inputSchema if hasattr(tool, "inputSchema") else {}
+    schema = dict(input_schema) if input_schema else {"type": "object", "properties": {}}
+    schema.pop("title", None)
+    for prop in schema.get("properties", {}).values():
+        if isinstance(prop, dict):
+            prop.pop("title", None)
+    return {
+        "type": "function",
+        "name": tool.name,
+        "description": tool.description or "",
+        "parameters": schema,
+    }
+
+
+def _discover_tools() -> list[dict]:
+    """通过 MCP 协议连接 Server, 发现所有可用工具, 返回 OpenAI 格式。"""
+    async def _list():
+        async with MCPClient(_get_mcp_server()) as client:
+            tools = await client.list_tools()
+            return [_mcp_tool_to_openai(t) for t in tools]
+    return asyncio.run(_list())
+
+
+def _execute_mcp_tool(name: str, arguments: dict) -> str:
+    """通过 MCP 协议执行工具调用, 返回文本结果。"""
+    async def _call():
+        async with MCPClient(_get_mcp_server()) as client:
+            result = await client.call_tool(name, arguments)
+            if isinstance(result, str):
+                return result
+            if isinstance(result, list):
+                parts = []
+                for item in result:
+                    if isinstance(item, str):
+                        parts.append(item)
+                    elif hasattr(item, "text"):
+                        parts.append(item.text)
+                    else:
+                        parts.append(str(item))
+                return "\n".join(parts) if parts else json.dumps({"result": "empty"})
+            if hasattr(result, "content"):
+                parts = []
+                for item in result.content:
+                    if isinstance(item, str):
+                        parts.append(item)
+                    elif hasattr(item, "text"):
+                        parts.append(item.text)
+                    else:
+                        parts.append(str(item))
+                return "\n".join(parts) if parts else json.dumps({"result": "empty"})
+            return str(result)
+    try:
+        return asyncio.run(_call())
+    except Exception as e:
+        logger.error("MCP tool %s execution error: %s", name, e, exc_info=True)
+        return json.dumps({"error": str(e)})
+
+
+# 工具缓存 — 首次使用时从 MCP Server 动态发现
+_cached_tools: list[dict] | None = None
+
+
+def _get_mcp_tools() -> list[dict]:
+    """获取 MCP 工具列表（带缓存, 首次调用时自动发现）。"""
+    global _cached_tools
+    if _cached_tools is None:
+        _cached_tools = _discover_tools()
+        logger.info("🔌 MCP tools discovered: %d tools", len(_cached_tools))
+        for t in _cached_tools:
+            logger.info("  🔧 %s: %s", t["name"], t["description"][:60])
+    return _cached_tools
+
+
+# ──────────────────────────────────────────────────────────────
+# Agent Instructions
 # ──────────────────────────────────────────────────────────────
 
 TEXT_INSTRUCTIONS = """
@@ -39,6 +134,20 @@ TEXT_INSTRUCTIONS = """
 - 说明适用场合（对上级/同事/客户）
 - 用韩剧台词当例句
 - 教不同语气等级（합니다体/해요体/반말）
+
+## 工具使用指南 (MUST USE):
+你有专业韩语教学工具（通过 MCP Server 提供）。请根据用户请求调用对应工具：
+- 用户问词汇/单词 → 调用 lookup_vocabulary
+- 用户问语法/句式 → 调用 get_grammar_pattern
+- 用户想模拟场景/练习 → 调用 generate_business_scenario
+- 用户要邮件模板 → 调用 get_email_template
+- 用户贴韩语句子检查 → 调用 check_formality
+- 用户想测验/考试 → 调用 quiz_me
+- 用户想看韩剧台词 → 调用 get_drama_dialogue
+- 用户问语尾/어미 → 调用 get_sentence_endings
+- 用户想对话练习 → 调用 practice_conversation
+
+先调用工具获取数据，再结合工具返回的内容生成教学回复。
 
 对话格式：
 [场景] 팀장님께 보고
@@ -58,6 +167,10 @@ You are a Korean conversation partner named 수진 (Sujin). You are a warm, prof
 - Speak NATURALLY like a real Korean businesswoman — not a textbook.
 - Keep responses SHORT: 1-3 Korean sentences + English translation. This is real-time voice conversation.
 - NEVER use markdown, emojis, bullet points, or formatting.
+
+## 工具使用指南:
+你有专业韩语教学工具（通过 MCP Server 提供）。当用户问到词汇、语法、语尾等需要查询的内容时，
+调用相应工具获取准确数据。但回复必须保持简短（1-3句韩语 + 英语翻译），适合语音输出。
 
 ## 핵심: 지도(地道) 한국어 사용 — 세 번 강조!
 1. 지도(地道)! 2. 지도(地道)! 3. 지도(地道)!
@@ -103,20 +216,16 @@ User: "저는 어제 회사에 갔습니다" (too formal for daily chat)
 
 
 class AgentService:
-    """通过 AIProjectClient + OpenAI 调用 Responses API (支持 agent_reference)。
+    """LLM + Agent + MCP 架构:
 
-    使用 ai.azure.com scope 认证 (兼容 Managed Identity)。
+    Agent Service 通过 MCP Client 连接 MCP Server, 动态发现工具。
+    LLM 决定调用哪个工具, Agent 通过 MCP 协议执行, 结果回传给 LLM。
 
-    支持两种模式 (自动切换):
-    1. agent_reference — Portal 预配置 Agent + MCP 工具
-    2. instructions — 代码内置指令 (fallback)
-
-    通过 previous_response_id 维护对话上下文。
+    支持文字和语音两种模式, 共享 MCP 工具集。
     """
 
     def __init__(self):
         self._client: OpenAI | None = None
-        # thread_id → last_response_id 映射, 用于对话上下文
         self._last_response: dict[str, str] = {}
 
     def _ensure_client(self):
@@ -133,112 +242,157 @@ class AgentService:
         """创建新对话线程标识。"""
         self._ensure_client()
         import uuid
-        thread_id = f"thread_{uuid.uuid4().hex[:16]}"
-        return thread_id
+        return f"thread_{uuid.uuid4().hex[:16]}"
 
-    def _call_agent(
-        self,
-        thread_id: str,
-        user_message: str,
-        agent_name: Optional[str],
-        instructions: str,
-        max_tokens: int = 800,
+    def _handle_tool_calls(self, response) -> list | None:
+        """处理 LLM 的 function_call, 通过 MCP Client 执行工具。"""
+        tool_calls = []
+        for item in response.output:
+            if item.type == "function_call":
+                tool_calls.append(item)
+
+        if not tool_calls:
+            return None
+
+        results = []
+        for call in tool_calls:
+            args = json.loads(call.arguments) if isinstance(call.arguments, str) else call.arguments
+            logger.info("🔧 MCP tool call: %s(%s)", call.name, json.dumps(args, ensure_ascii=False)[:200])
+            output = _execute_mcp_tool(call.name, args)
+            results.append({
+                "type": "function_call_output",
+                "call_id": call.call_id,
+                "output": output,
+            })
+            logger.info("🔧 MCP tool result: %s → %s", call.name, output[:200])
+
+        return results
+
+    def _call_with_tools(
+        self, thread_id: str, user_message: str,
+        instructions: str, tools: list,
     ) -> str:
-        """统一的 Agent 调用方法。优先用 agent_reference, 失败则 fallback 到 instructions。"""
+        """LLM + MCP tools 模式。模型返回 function_call → MCP Client 执行 → 结果回传。"""
         self._ensure_client()
-
         prev_id = self._last_response.get(thread_id)
+
         kwargs: dict = {
             "model": settings.MODEL_DEPLOYMENT,
             "input": user_message,
-            "max_output_tokens": max_tokens,
+            "instructions": instructions,
+            "tools": tools,
         }
         if prev_id:
             kwargs["previous_response_id"] = prev_id
 
-        # 尝试 agent_reference 模式
-        if agent_name:
-            try:
-                kwargs["extra_body"] = {
-                    "agent_reference": {
-                        "name": agent_name,
-                        "type": "agent_reference",
-                    }
-                }
-                resp = self._client.responses.create(**kwargs)
-                self._last_response[thread_id] = resp.id
-                return resp.output_text
-            except Exception as e:
-                logger.warning(
-                    "agent_reference '%s' failed, falling back to instructions: %s",
-                    agent_name, e,
-                )
-                kwargs.pop("extra_body", None)
-
-        # Fallback: 直接用 instructions
-        kwargs["instructions"] = instructions
         resp = self._client.responses.create(**kwargs)
+
+        # 工具调用循环 (最多 5 轮)
+        for _ in range(5):
+            tool_results = self._handle_tool_calls(resp)
+            if not tool_results:
+                break
+            resp = self._client.responses.create(
+                model=settings.MODEL_DEPLOYMENT,
+                input=tool_results,
+                previous_response_id=resp.id,
+                instructions=instructions,
+                tools=tools,
+            )
+
         self._last_response[thread_id] = resp.id
-        return resp.output_text
+        text = resp.output_text
+        if not text:
+            logger.warning("Empty output_text, output types: %s", [i.type for i in resp.output])
+        return text
+
+    # ── 公开接口 ──
 
     def chat(self, thread_id: str, user_message: str) -> str:
-        """文字对话 — 商务韩语教练。"""
+        """文字对话 — 商务韩语教练 + MCP 工具。"""
         try:
-            return self._call_agent(
+            return self._call_with_tools(
                 thread_id=thread_id,
                 user_message=user_message,
-                agent_name=settings.TEXT_AGENT_NAME,
                 instructions=TEXT_INSTRUCTIONS,
+                tools=_get_mcp_tools(),
             )
         except Exception as e:
             logger.error("Chat error: %s", e, exc_info=True)
             return f"[错误] Agent 调用失败: {type(e).__name__}: {e}"
 
     def chat_stream(self, thread_id: str, user_message: str) -> Generator[str, None, str]:
-        """流式文字对话 — 逐步返回文本片段, 最终返回完整文本。"""
+        """流式文字对话 — LLM + MCP tools, 流式输出。"""
         try:
             self._ensure_client()
             prev_id = self._last_response.get(thread_id)
+            mcp_tools = _get_mcp_tools()
             kwargs: dict = {
                 "model": settings.MODEL_DEPLOYMENT,
                 "input": user_message,
-                "max_output_tokens": 800,
+                "instructions": TEXT_INSTRUCTIONS,
+                "tools": mcp_tools,
                 "stream": True,
             }
             if prev_id:
                 kwargs["previous_response_id"] = prev_id
 
-            # 尝试 agent_reference, 失败则 fallback 到 instructions
-            if settings.TEXT_AGENT_NAME:
-                kwargs["extra_body"] = {
-                    "agent_reference": {
-                        "name": settings.TEXT_AGENT_NAME,
-                        "type": "agent_reference",
-                    }
-                }
-                try:
-                    stream = self._client.responses.create(**kwargs)
-                except Exception as e:
-                    logger.warning(
-                        "agent_reference '%s' stream failed, falling back to instructions: %s",
-                        settings.TEXT_AGENT_NAME, e,
-                    )
-                    kwargs.pop("extra_body", None)
-                    kwargs["instructions"] = TEXT_INSTRUCTIONS
-                    stream = self._client.responses.create(**kwargs)
-            else:
-                kwargs["instructions"] = TEXT_INSTRUCTIONS
-                stream = self._client.responses.create(**kwargs)
+            stream = self._client.responses.create(**kwargs)
 
             full_text = ""
             response_id = None
+            pending_calls = {}
+
             for event in stream:
-                if hasattr(event, 'type'):
+                if not hasattr(event, 'type'):
+                    continue
+
+                if event.type == 'response.output_text.delta':
+                    full_text += event.delta
+                    yield event.delta
+
+                elif event.type == 'response.output_item.done':
+                    item = event.item
+                    if item.type == 'function_call':
+                        pending_calls[item.call_id] = {
+                            "name": item.name,
+                            "arguments": item.arguments,
+                        }
+
+                elif event.type == 'response.completed':
+                    response_id = event.response.id
+
+            # 有 pending function calls 时, 通过 MCP Client 执行后继续流式
+            if pending_calls and response_id:
+                tool_results = []
+                for call_id, call_info in pending_calls.items():
+                    args = json.loads(call_info["arguments"]) if isinstance(call_info["arguments"], str) else call_info["arguments"]
+                    logger.info("🔧 Stream MCP tool: %s(%s)", call_info["name"], json.dumps(args, ensure_ascii=False)[:200])
+                    output = _execute_mcp_tool(call_info["name"], args)
+                    tool_results.append({
+                        "type": "function_call_output",
+                        "call_id": call_id,
+                        "output": output,
+                    })
+                    logger.info("🔧 Stream MCP result: %s → %s", call_info["name"], output[:200])
+
+                stream2 = self._client.responses.create(
+                    model=settings.MODEL_DEPLOYMENT,
+                    input=tool_results,
+                    previous_response_id=response_id,
+                    instructions=TEXT_INSTRUCTIONS,
+                    tools=mcp_tools,
+                    stream=True,
+                )
+                for event in stream2:
+                    if not hasattr(event, 'type'):
+                        continue
                     if event.type == 'response.output_text.delta':
                         full_text += event.delta
                         yield event.delta
                     elif event.type == 'response.completed':
                         response_id = event.response.id
+
             if response_id:
                 self._last_response[thread_id] = response_id
             return full_text
@@ -248,21 +402,22 @@ class AgentService:
             return ""
 
     def voice_chat(self, thread_id: str, user_message: str) -> str:
-        """语音对话 — 수진, 纯韩语短回复。"""
+        """语音对话 — 수진 + MCP 工具（简短韩语回复, TTS 友好）。"""
         try:
-            return self._call_agent(
+            return self._call_with_tools(
                 thread_id=thread_id,
                 user_message=user_message,
-                agent_name=settings.VOICE_AGENT_NAME,
                 instructions=VOICE_INSTRUCTIONS,
-                max_tokens=200,
+                tools=_get_mcp_tools(),
             )
         except Exception as e:
             logger.error("Voice chat error: %s", e, exc_info=True)
             return "죄송해요, 다시 한번 말씀해 주세요."
 
     def cleanup(self):
-        """关闭时清理资源。"""
+        """关闭时清理资源, 释放 MCP 工具缓存。"""
+        global _cached_tools
+        _cached_tools = None
         if self._client:
             self._client.close()
 
