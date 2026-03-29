@@ -10,14 +10,14 @@ from app.services.agent_service import agent_service
 
 print("=== Test 1: Chat with tool call (vocabulary query) ===")
 thread = agent_service.create_thread()
-result = agent_service.chat(thread, "会议 用韩语怎么说？查一下词汇")
+result = agent_service.chat(thread, "How do you say meeting in Korean? Look up vocabulary")
 print(f"Response ({len(result)} chars):")
 print(result[:500])
 print()
 
 print("=== Test 2: Non-streaming simple chat ===")
 thread2 = agent_service.create_thread()
-result2 = agent_service.chat(thread2, "你好")
+result2 = agent_service.chat(thread2, "Hello")
 print(f"Response2 ({len(result2)} chars):")
 print(result2[:500])
 

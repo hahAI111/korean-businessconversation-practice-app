@@ -1,5 +1,5 @@
 """
-应用配置 —— 从 .env 加载，Pydantic Settings 验证
+App configuration — loaded from .env, validated by Pydantic Settings
 """
 
 from functools import lru_cache
@@ -11,16 +11,16 @@ class Settings(BaseSettings):
     AZURE_AI_ENDPOINT: str
     MODEL_DEPLOYMENT: str = "gpt-5-nano"
 
-    # ── Foundry Agent Names (Portal 中创建的 Agent 名称) ──
+    # ── Foundry Agent Names (created in Portal) ──
     TEXT_AGENT_NAME: str = "korean-biz-coach"
     VOICE_AGENT_NAME: str = "sujin-voice"
 
-    # ── Azure Speech (Identity-based, 用于 voice pipeline REST API) ──
+    # ── Azure Speech (Identity-based, for voice pipeline REST API) ──
     AZURE_SPEECH_REGION: str = "eastus2"
     AZURE_SPEECH_RESOURCE_ENDPOINT: str = "https://gpt522222.cognitiveservices.azure.com/"
     AZURE_SPEECH_RESOURCE_ID: str = ""
 
-    # ── Azure Blob Storage (Speech MCP 音频文件) ──
+    # ── Azure Blob Storage (Speech MCP audio files) ──
     AZURE_STORAGE_ACCOUNT_URL: str = ""
     AZURE_STORAGE_CONTAINER: str = "speech-audio"
 

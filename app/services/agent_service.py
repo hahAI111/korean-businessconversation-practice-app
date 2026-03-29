@@ -1,23 +1,23 @@
 """
-Agent 服务 —— LLM + Agent + MCP 架构
+Agent Service — LLM + Agent + MCP Architecture
 
-架构:
+Architecture:
   MCP Server (mcp_server/server.py):
-    - 9 个韩语教学工具, 通过 MCP 协议暴露
-    - 本地 HTTP 挂载在 /mcp, 供外部 Agent 访问
+    - 9 Korean teaching tools exposed via MCP protocol
+    - Mounted locally at /mcp for external Agent access
 
-  Agent Service (本模块):
-    - 通过 fastmcp.Client 连接 MCP Server, 动态发现工具
-    - 将 MCP 工具 schema 转换为 OpenAI function tool 格式
-    - LLM 返回 function_call → MCP Client 执行 → 结果回传 → LLM 生成最终回复
+  Agent Service (this module):
+    - Connects to MCP Server via fastmcp.Client, dynamically discovers tools
+    - Converts MCP tool schema to OpenAI function tool format
+    - LLM returns function_call → MCP Client executes → result sent back → LLM generates final reply
 
-  korean-biz-coach (文字对话):
-    - instructions + MCP tools, 中文教学, 详细讲解
+  korean-biz-coach (text chat):
+    - instructions + MCP tools, English teaching, detailed explanations
 
-  sujin-voice (语音对话):
-    - instructions + MCP tools, 韩语为主, 简短回复, TTS 友好
+  sujin-voice (voice chat):
+    - instructions + MCP tools, Korean-first, short replies, TTS-friendly
 
-  对话上下文通过 previous_response_id 链式维护。
+  Conversation context maintained via previous_response_id chaining.
 """
 
 import asyncio
@@ -37,17 +37,17 @@ settings = get_settings()
 
 
 # ──────────────────────────────────────────────────────────────
-# MCP Client — 动态发现和执行 MCP Server 工具
+# MCP Client — Dynamic discovery and execution of MCP Server tools
 # ──────────────────────────────────────────────────────────────
 
 def _get_mcp_server():
-    """获取 FastMCP server 实例（in-process 连接）。"""
+    """Get FastMCP server instance (in-process connection)."""
     from mcp_server.server import mcp
     return mcp
 
 
 def _mcp_tool_to_openai(tool) -> dict:
-    """将 MCP tool schema 转换为 OpenAI function tool 格式。"""
+    """Convert MCP tool schema to OpenAI function tool format."""
     input_schema = tool.inputSchema if hasattr(tool, "inputSchema") else {}
     schema = dict(input_schema) if input_schema else {"type": "object", "properties": {}}
     schema.pop("title", None)
@@ -63,7 +63,7 @@ def _mcp_tool_to_openai(tool) -> dict:
 
 
 def _discover_tools() -> list[dict]:
-    """通过 MCP 协议连接 Server, 发现所有可用工具, 返回 OpenAI 格式。"""
+    """Connect to MCP Server via MCP protocol, discover all available tools, return in OpenAI format."""
     async def _list():
         async with MCPClient(_get_mcp_server()) as client:
             tools = await client.list_tools()
@@ -72,7 +72,7 @@ def _discover_tools() -> list[dict]:
 
 
 def _execute_mcp_tool(name: str, arguments: dict) -> str:
-    """通过 MCP 协议执行工具调用, 返回文本结果。"""
+    """Execute tool call via MCP protocol, return text result."""
     async def _call():
         async with MCPClient(_get_mcp_server()) as client:
             result = await client.call_tool(name, arguments)
@@ -106,12 +106,12 @@ def _execute_mcp_tool(name: str, arguments: dict) -> str:
         return json.dumps({"error": str(e)})
 
 
-# 工具缓存 — 首次使用时从 MCP Server 动态发现
+# Tool cache — discovered from MCP Server on first use
 _cached_tools: list[dict] | None = None
 
 
 def _get_mcp_tools() -> list[dict]:
-    """获取 MCP 工具列表（带缓存, 首次调用时自动发现）。"""
+    """Get MCP tools list (cached, auto-discovered on first call)."""
     global _cached_tools
     if _cached_tools is None:
         _cached_tools = _discover_tools()
@@ -126,33 +126,35 @@ def _get_mcp_tools() -> list[dict]:
 # ──────────────────────────────────────────────────────────────
 
 TEXT_INSTRUCTIONS = """
-你是商务韩语教练。用中文教学，韩语附中文翻译。教自然口语（非教科书式）。
+You are a Business Korean Coach. Teach in ENGLISH with Korean examples. Teach natural spoken Korean (not textbook style).
 
-核心规则：
-- 回复简洁（3-5个例句或4轮对话即可）
-- 韩语附中文翻译，首次出现的词加罗马音
-- 说明适用场合（对上级/同事/客户）
-- 用韩剧台词当例句
-- 教不同语气等级（합니다体/해요体/반말）
+Core Rules:
+- Keep replies concise (3-5 example sentences or 4 dialogue turns max)
+- Korean text with English translation and romanization (e.g. 감사합니다 gamsahamnida — Thank you)
+- Add romanization for every Korean word/phrase on first appearance
+- Explain when to use each expression (to superiors / colleagues / clients)
+- Use K-drama lines as examples
+- Teach different formality levels (합니다체 / 해요체 / 반말)
+- Accept input in ANY language (English, Chinese, Korean) but ALWAYS explain in English
 
-## 工具使用指南 (MUST USE):
-你有专业韩语教学工具（通过 MCP Server 提供）。请根据用户请求调用对应工具：
-- 用户问词汇/单词 → 调用 lookup_vocabulary
-- 用户问语法/句式 → 调用 get_grammar_pattern
-- 用户想模拟场景/练习 → 调用 generate_business_scenario
-- 用户要邮件模板 → 调用 get_email_template
-- 用户贴韩语句子检查 → 调用 check_formality
-- 用户想测验/考试 → 调用 quiz_me
-- 用户想看韩剧台词 → 调用 get_drama_dialogue
-- 用户问语尾/어미 → 调用 get_sentence_endings
-- 用户想对话练习 → 调用 practice_conversation
+## Tool Usage Guide (MUST USE):
+You have specialized Korean teaching tools via MCP Server. Call the appropriate tool based on user request:
+- Vocabulary/words → call lookup_vocabulary
+- Grammar/patterns → call get_grammar_pattern
+- Scenario/practice → call generate_business_scenario
+- Email templates → call get_email_template
+- Check Korean sentences → call check_formality
+- Quiz/test → call quiz_me
+- K-drama dialogues → call get_drama_dialogue
+- Sentence endings/어미 → call get_sentence_endings
+- Conversation practice → call practice_conversation
 
-先调用工具获取数据，再结合工具返回的内容生成教学回复。
+Always call a tool first to get data, then build your teaching response from the tool output.
 
-对话格式：
-[场景] 팀장님께 보고
-A: 프로젝트 어떻게 되고 있어요? (项目怎么样了？)
-B: 1차 개발은 완료했고요, 테스트 중입니다. (一期开发完了，在测试。)
+Dialogue format:
+[Scenario] Reporting to Team Leader / 팀장님께 보고
+A: 프로젝트 어떻게 되고 있어요? (peulojekteu eotteoke doego isseoyo? — How's the project going?)
+B: 1차 개발은 완료했고요, 테스트 중입니다. (ilcha gaebareun wanlyohaetgoyo, teseuteu jungipnida. — Phase 1 dev is done, testing now.)
 """.strip()
 
 
@@ -160,7 +162,7 @@ VOICE_INSTRUCTIONS = """
 You are a Korean conversation partner named 수진 (Sujin). You are a warm, professional Korean woman in her late 20s working as a senior manager at a tech company in Seoul (판교 IT 회사).
 
 ## CRITICAL VOICE RULES:
-- Accept input in ANY language: Chinese (中文), Korean (한국어), or English. Understand all three.
+- Accept input in ANY language: Chinese, Korean (한국어), or English. Understand all three.
 - ALWAYS respond with Korean FIRST, then provide a brief English explanation/translation.
 - Response format: Korean sentence(s) first, then "(English: ...)" translation.
 - Example: "아~ 회의 준비하셨군요! 수고하셨어요. (English: Oh, you prepared for the meeting! Good job.)"
@@ -168,22 +170,22 @@ You are a Korean conversation partner named 수진 (Sujin). You are a warm, prof
 - Keep responses SHORT: 1-3 Korean sentences + English translation. This is real-time voice conversation.
 - NEVER use markdown, emojis, bullet points, or formatting.
 
-## 工具使用指南:
-你有专业韩语教学工具（通过 MCP Server 提供）。当用户问到词汇、语法、语尾等需要查询的内容时，
-调用相应工具获取准确数据。但回复必须保持简短（1-3句韩语 + 英语翻译），适合语音输出。
+## Tool Usage Guide:
+You have specialized Korean teaching tools via MCP Server. When the user asks about vocabulary, grammar, endings, etc.,
+call the appropriate tool to get accurate data. But keep replies SHORT (1-3 Korean sentences + English translation), suitable for voice output.
 
-## 핵심: 지도(地道) 한국어 사용 — 세 번 강조!
-1. 지도(地道)! 2. 지도(地道)! 3. 지도(地道)!
+## Key: Use AUTHENTIC Korean — emphasized three times!
+1. Authentic! 2. Authentic! 3. Authentic!
 
-### 어미 사용법 (한국 드라마에서 배운 것처럼):
-- 부드러운 확인: -는데요, -거든요, -잖아요 (미생 스타일)
-- 감탄/발견: -네요, -더라고요, -구나 (이태원클라쓰 스타일)
-- 동의 구하기: -죠?, -지 않아요?, 그쵸?
-- 제안: -ㄹ까요?, -는 게 어때요?, -시죠
-- 설명/이유: -거든요, -는데, -다 보니까
-- 부드러운 거절: -기는 한데요..., -ㄹ 수도 있는데...
+### Sentence Endings (as seen in K-dramas):
+- Soft confirmation: -는데요, -거든요, -잖아요 (Misaeng style)
+- Exclamation/discovery: -네요, -더라고요, -구나 (Itaewon Class style)
+- Seeking agreement: -죠?, -지 않아요?, 그쵸?
+- Suggestions: -ㄹ까요?, -는 게 어때요?, -시죠
+- Explanation/reason: -거든요, -는데, -다 보니까
+- Soft refusal: -기는 한데요..., -ㄹ 수도 있는데...
 
-### 자연스러운 표현 (교과서 X, 실전 O):
+### Natural Expressions (real life, NOT textbook):
 - "진짜요?" / "정말요?" (instead of formal 그렇습니까?)
 - "아~ 그렇구나" (natural acknowledgment)
 - "맞아요 맞아요" (emphatic agreement)
@@ -191,10 +193,10 @@ You are a Korean conversation partner named 수진 (Sujin). You are a warm, prof
 - "음... 뭐랄까..." (natural filler)
 - "그니까요" / "내 말이요" (strong agreement)
 
-### 비즈니스 톤 (합니다체 + 구어체 믹스):
-- 처음 만났을 때: 합니다체 위주
-- 좀 친해지면: 해요체 + 구어 어미
-- 편한 동료처럼: 해요체 + 가끔 반말
+### Business Tone (formal + casual mix):
+- First meeting: mostly 합니다체 (formal)
+- Getting familiar: 해요체 + casual endings
+- Close colleagues: 해요체 + occasional 반말
 
 ## 수진의 성격:
 - 따뜻하고 프로페셔널
@@ -216,12 +218,12 @@ User: "저는 어제 회사에 갔습니다" (too formal for daily chat)
 
 
 class AgentService:
-    """LLM + Agent + MCP 架构:
+    """LLM + Agent + MCP Architecture:
 
-    Agent Service 通过 MCP Client 连接 MCP Server, 动态发现工具。
-    LLM 决定调用哪个工具, Agent 通过 MCP 协议执行, 结果回传给 LLM。
+    Agent Service connects to MCP Server via MCP Client, dynamically discovers tools.
+    LLM decides which tool to call, Agent executes via MCP protocol, result sent back to LLM.
 
-    支持文字和语音两种模式, 共享 MCP 工具集。
+    Supports both text and voice modes, sharing the MCP tool set.
     """
 
     def __init__(self):
@@ -239,13 +241,13 @@ class AgentService:
             logger.info("AIProjectClient OpenAI initialized: %s", settings.AZURE_AI_ENDPOINT)
 
     def create_thread(self) -> str:
-        """创建新对话线程标识。"""
+        """Create a new conversation thread identifier."""
         self._ensure_client()
         import uuid
         return f"thread_{uuid.uuid4().hex[:16]}"
 
     def _handle_tool_calls(self, response) -> list | None:
-        """处理 LLM 的 function_call, 通过 MCP Client 执行工具。"""
+        """Handle LLM function_call, execute tool via MCP Client."""
         tool_calls = []
         for item in response.output:
             if item.type == "function_call":
@@ -272,7 +274,7 @@ class AgentService:
         self, thread_id: str, user_message: str,
         instructions: str, tools: list,
     ) -> str:
-        """LLM + MCP tools 模式。模型返回 function_call → MCP Client 执行 → 结果回传。"""
+        """LLM + MCP tools mode. Model returns function_call → MCP Client executes → result sent back."""
         self._ensure_client()
         prev_id = self._last_response.get(thread_id)
 
@@ -287,7 +289,7 @@ class AgentService:
 
         resp = self._client.responses.create(**kwargs)
 
-        # 工具调用循环 (最多 5 轮)
+        # Tool call loop (max 5 rounds)
         for _ in range(5):
             tool_results = self._handle_tool_calls(resp)
             if not tool_results:
@@ -306,10 +308,10 @@ class AgentService:
             logger.warning("Empty output_text, output types: %s", [i.type for i in resp.output])
         return text
 
-    # ── 公开接口 ──
+    # ── Public Interface ──
 
     def chat(self, thread_id: str, user_message: str) -> str:
-        """文字对话 — 商务韩语教练 + MCP 工具。"""
+        """Text chat — Business Korean Coach + MCP tools."""
         try:
             return self._call_with_tools(
                 thread_id=thread_id,
@@ -319,10 +321,10 @@ class AgentService:
             )
         except Exception as e:
             logger.error("Chat error: %s", e, exc_info=True)
-            return f"[错误] Agent 调用失败: {type(e).__name__}: {e}"
+            return f"[Error] Agent call failed: {type(e).__name__}: {e}"
 
     def chat_stream(self, thread_id: str, user_message: str) -> Generator[str, None, str]:
-        """流式文字对话 — LLM + MCP tools, 流式输出 (支持多轮工具调用)。"""
+        """Streaming text chat — LLM + MCP tools, streamed output (supports multi-round tool calls)."""
         try:
             self._ensure_client()
             prev_id = self._last_response.get(thread_id)
@@ -340,7 +342,7 @@ class AgentService:
             full_text = ""
             response_id = None
 
-            # 多轮工具调用循环 (最多 5 轮, 与 _call_with_tools 一致)
+            # Multi-round tool call loop (max 5 rounds, consistent with _call_with_tools)
             for round_num in range(5):
                 stream = self._client.responses.create(**kwargs)
                 pending_calls = {}
@@ -364,11 +366,11 @@ class AgentService:
                     elif event.type == 'response.completed':
                         response_id = event.response.id
 
-                # 无 pending function calls → 完成
+                # No pending function calls → done
                 if not pending_calls or not response_id:
                     break
 
-                # 执行 MCP 工具并准备下一轮
+                # Execute MCP tools and prepare next round
                 tool_results = []
                 for call_id, call_info in pending_calls.items():
                     args = json.loads(call_info["arguments"]) if isinstance(call_info["arguments"], str) else call_info["arguments"]
@@ -381,7 +383,7 @@ class AgentService:
                     })
                     logger.info("🔧 Stream MCP result: %s → %s", call_info["name"], output[:200])
 
-                # 下一轮: 提交工具结果, 继续流式
+                # Next round: submit tool results, continue streaming
                 kwargs = {
                     "model": settings.MODEL_DEPLOYMENT,
                     "input": tool_results,
@@ -396,11 +398,11 @@ class AgentService:
             return full_text
         except Exception as e:
             logger.error("Chat stream error: %s", e, exc_info=True)
-            yield f"[错误] {type(e).__name__}: {e}"
+            yield f"[Error] {type(e).__name__}: {e}"
             return ""
 
     def voice_chat(self, thread_id: str, user_message: str) -> str:
-        """语音对话 — 수진 + MCP 工具（简短韩语回复, TTS 友好）。"""
+        """Voice chat — Sujin + MCP tools (short Korean replies, TTS-friendly)."""
         try:
             return self._call_with_tools(
                 thread_id=thread_id,
@@ -413,12 +415,12 @@ class AgentService:
             return "죄송해요, 다시 한번 말씀해 주세요."
 
     def cleanup(self):
-        """关闭时清理资源, 释放 MCP 工具缓存。"""
+        """Cleanup resources on shutdown, release MCP tool cache."""
         global _cached_tools
         _cached_tools = None
         if self._client:
             self._client.close()
 
 
-# 全局单例
+# Global singleton
 agent_service = AgentService()

@@ -12,7 +12,7 @@ const STATIC_ASSETS = [
   '/static/icons/icon-512x512.png'
 ];
 
-// Install: 预缓存静态资源
+// Install: precache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -22,7 +22,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate: 清理旧版缓存
+// Activate: clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -34,14 +34,14 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: 缓存策略
+// Fetch: caching strategy
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // 跳过非 GET 请求
+  // Skip non-GET requests
   if (event.request.method !== 'GET') return;
 
-  // API / WebSocket / MCP: 不缓存，直接走网络
+  // API / WebSocket / MCP: no cache, network only
   if (url.pathname.startsWith('/api/') ||
       url.pathname.startsWith('/ws/') ||
       url.pathname.startsWith('/mcp/') ||
@@ -51,19 +51,19 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 静态资源: Cache First
+  // Static resources: Cache First
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
       return fetch(event.request).then((response) => {
-        // 缓存新的静态资源
+        // Cache new static resources
         if (response.ok && url.pathname.startsWith('/static/')) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return response;
       }).catch(() => {
-        // 离线降级: 返回 offline.html
+        // Offline fallback: return offline.html
         if (event.request.destination === 'document') {
           return caches.match('/static/offline.html');
         }

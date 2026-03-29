@@ -1,6 +1,6 @@
 """
-Cosmos DB 服务层 —— conversations / drama_content / learning_events CRUD
-所有操作对现有 PostgreSQL 逻辑透明，不影响已有功能。
+Cosmos DB service layer — conversations / drama_content / learning_events CRUD
+All operations are transparent to existing PostgreSQL logic, no impact on existing features.
 """
 
 import uuid
@@ -11,11 +11,11 @@ from app.core.cosmos import get_container
 
 
 # =============================================
-# Conversations 容器
+# Conversations container
 # =============================================
 
-async def create_conversation(user_id: int, thread_id: str, title: str = "新对话") -> dict:
-    """创建新对话文档。"""
+async def create_conversation(user_id: int, thread_id: str, title: str = "New Chat") -> dict:
+    """Create new conversation document."""
     container = get_container("conversations")
     doc = {
         "id": str(uuid.uuid4()),
@@ -30,7 +30,7 @@ async def create_conversation(user_id: int, thread_id: str, title: str = "新对
 
 
 async def append_message(doc_id: str, user_id: int, role: str, content: str) -> dict:
-    """追加消息到对话文档。"""
+    """Append messages to conversation document."""
     container = get_container("conversations")
     doc = await container.read_item(item=doc_id, partition_key=user_id)
     doc["messages"].append({
@@ -43,7 +43,7 @@ async def append_message(doc_id: str, user_id: int, role: str, content: str) -> 
 
 
 async def get_conversation(doc_id: str, user_id: int) -> dict | None:
-    """读取单个对话文档。"""
+    """Read a single conversation document."""
     container = get_container("conversations")
     try:
         return await container.read_item(item=doc_id, partition_key=user_id)
@@ -52,7 +52,7 @@ async def get_conversation(doc_id: str, user_id: int) -> dict | None:
 
 
 async def list_conversations(user_id: int, limit: int = 20) -> list[dict]:
-    """列出用户最近的对话。"""
+    """List user's recent conversations."""
     container = get_container("conversations")
     query = "SELECT * FROM c WHERE c.user_id = @uid ORDER BY c.updated_at DESC OFFSET 0 LIMIT @lim"
     params: list[dict[str, Any]] = [
@@ -66,18 +66,18 @@ async def list_conversations(user_id: int, limit: int = 20) -> list[dict]:
 
 
 # =============================================
-# Drama Content 容器
+# Drama Content container
 # =============================================
 
 async def upsert_drama(drama_doc: dict) -> dict:
-    """插入/更新韩剧内容文档。"""
+    """Insert/update K-drama content document."""
     container = get_container("drama_content")
     drama_doc.setdefault("id", str(uuid.uuid4()))
     return await container.upsert_item(drama_doc)
 
 
 async def get_drama(doc_id: str, drama_id: str) -> dict | None:
-    """获取单个韩剧文档。"""
+    """Get a single K-drama document."""
     container = get_container("drama_content")
     try:
         return await container.read_item(item=doc_id, partition_key=drama_id)
@@ -86,7 +86,7 @@ async def get_drama(doc_id: str, drama_id: str) -> dict | None:
 
 
 async def list_dramas(drama_id: str | None = None) -> list[dict]:
-    """列出韩剧内容（可按 drama_id 过滤）。"""
+    """List K-drama content (filterable by drama_id)."""
     container = get_container("drama_content")
     if drama_id:
         query = "SELECT * FROM c WHERE c.drama_id = @did"
@@ -102,11 +102,11 @@ async def list_dramas(drama_id: str | None = None) -> list[dict]:
 
 
 # =============================================
-# Learning Events 容器
+# Learning Events container
 # =============================================
 
 async def log_event(user_id: int, event_type: str, payload: dict | None = None) -> dict:
-    """追加学习事件（仅插入，不更新）。"""
+    """Append learning event (insert only, no update)."""
     container = get_container("learning_events")
     doc = {
         "id": str(uuid.uuid4()),
@@ -121,7 +121,7 @@ async def log_event(user_id: int, event_type: str, payload: dict | None = None) 
 
 async def get_user_events(user_id: int, event_type: str | None = None,
                           limit: int = 50) -> list[dict]:
-    """查询用户学习事件。"""
+    """Query user learning events."""
     container = get_container("learning_events")
     if event_type:
         query = (

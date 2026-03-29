@@ -1,5 +1,5 @@
 """
-数据库引擎 —— async SQLAlchemy + PostgreSQL (Azure) / SQLite (本地开发)
+Database engine — async SQLAlchemy + PostgreSQL (Azure) / SQLite (local dev)
 """
 
 import ssl
@@ -34,6 +34,6 @@ class Base(DeclarativeBase):
 
 
 async def get_db() -> AsyncSession:
-    """FastAPI 依赖注入：获取数据库会话。"""
+    """FastAPI dependency injection: get database session."""
     async with async_session() as session:
         yield session

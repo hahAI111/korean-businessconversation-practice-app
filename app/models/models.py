@@ -1,5 +1,5 @@
 """
-数据库模型 —— 用户 / 课程 / 学习进度 / 对话记录 / 词汇本
+Database models — User / Course / Progress / Conversations / Vocabulary
 """
 
 import enum
@@ -24,11 +24,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.config import get_settings
 from app.core.database import Base
 
-# PostgreSQL → JSONB (索引/查询优化), SQLite → JSON
+# PostgreSQL → JSONB (index/query optimized), SQLite → JSON
 _JsonCol = JSONB if "postgres" in get_settings().DATABASE_URL else JSON
 
 
-# ── 枚举 ──
+# ── Enums ──
 class KoreanLevel(str, enum.Enum):
     BEGINNER = "beginner"       # TOPIK 1-2
     INTERMEDIATE = "intermediate"  # TOPIK 3-4
@@ -45,7 +45,7 @@ class LessonCategory(str, enum.Enum):
     GRAMMAR = "grammar"
 
 
-# ── 用户 ──
+# ── User ──
 class User(Base):
     __tablename__ = "users"
 
@@ -68,7 +68,7 @@ class User(Base):
     vocab_book: Mapped[list["VocabBook"]] = relationship(back_populates="user")
 
 
-# ── 课程内容 ──
+# ── Course Content ──
 class Lesson(Base):
     __tablename__ = "lessons"
 
@@ -79,7 +79,7 @@ class Lesson(Base):
     level: Mapped[KoreanLevel] = mapped_column(Enum(KoreanLevel))
     description: Mapped[str] = mapped_column(Text, default="")
     content: Mapped[dict] = mapped_column(_JsonCol, default=dict)
-    # content JSONB 存储灵活内容：词汇列表、语法点、对话脚本、韩剧台词等
+    # content JSONB stores flexible content: vocabulary lists, grammar points, dialogue scripts, K-drama lines etc.
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
     is_published: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(
@@ -89,7 +89,7 @@ class Lesson(Base):
     __table_args__ = (Index("ix_lessons_category_level", "category", "level"),)
 
 
-# ── 学习进度 ──
+# ── Learning Progress ──
 class LearningProgress(Base):
     __tablename__ = "learning_progress"
 
@@ -114,14 +114,14 @@ class LearningProgress(Base):
     )
 
 
-# ── 对话记录 ──
+# ── Conversation Records ──
 class Conversation(Base):
     __tablename__ = "conversations"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     thread_id: Mapped[str] = mapped_column(String(100), index=True)
-    title: Mapped[str] = mapped_column(String(200), default="新对话")
+    title: Mapped[str] = mapped_column(String(200), default="New Chat")
     messages: Mapped[list] = mapped_column(_JsonCol, default=list)
     # messages: [{"role": "user/assistant", "content": "...", "timestamp": "..."}]
     created_at: Mapped[datetime] = mapped_column(
@@ -134,7 +134,7 @@ class Conversation(Base):
     user: Mapped["User"] = relationship(back_populates="conversations")
 
 
-# ── 生词本 ──
+# ── Vocabulary Book ──
 class VocabBook(Base):
     __tablename__ = "vocab_book"
 
@@ -161,7 +161,7 @@ class VocabBook(Base):
     )
 
 
-# ── 学习打卡 ──
+# ── Daily Check-in ──
 class StudyStreak(Base):
     __tablename__ = "study_streaks"
 

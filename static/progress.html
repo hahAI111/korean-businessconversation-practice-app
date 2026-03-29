@@ -52,10 +52,10 @@
 
       <!-- Check-in Section -->
       <div class="checkin-section" id="checkinSection">
-        <h3>📅 Daily Check-in / 每日打卡</h3>
-        <p class="checkin-subtitle">Keep your streak alive! / 坚持每日学习打卡</p>
+        <h3>📅 Daily Check-in / 매일 출석체크</h3>
+        <p class="checkin-subtitle">Keep your streak alive! / 매일 학습 출석체크</p>
         <button class="checkin-btn" id="checkinBtn" onclick="doCheckin()">
-          ✅ Check In Today / 今日打卡
+          ✅ Check In Today / 오늘 출석
         </button>
         <div class="checkin-today-info" id="checkinInfo"></div>
         <div class="checkin-streak-badge" id="streakBadge" style="display:none;">
@@ -219,11 +219,11 @@
         const result = await Api.post('/api/checkin', {});
         if (result.already) {
           btn.classList.add('checked');
-          btn.textContent = '✅ Already Checked In / 已打卡';
+          btn.textContent = '✅ Already Checked In / 출석 완료';
           document.getElementById('checkinInfo').textContent = result.message;
         } else {
           btn.classList.add('checked');
-          btn.textContent = '✅ Checked In! / 已打卡';
+          btn.textContent = '✅ Checked In! / 출석 완료';
           document.getElementById('checkinInfo').textContent = result.message;
           document.getElementById('streakBadge').style.display = 'inline-flex';
           document.getElementById('streakBadgeCount').textContent = result.streak_days;
@@ -247,7 +247,7 @@
           if (streaks[0].date === today) {
             const btn = document.getElementById('checkinBtn');
             btn.classList.add('checked');
-            btn.textContent = '✅ Already Checked In / 已打卡';
+            btn.textContent = '✅ Already Checked In / 출석 완료';
             btn.disabled = true;
             document.getElementById('checkinInfo').textContent =
               `Today: ${streaks[0].minutes_studied} min studied`;

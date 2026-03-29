@@ -1,6 +1,6 @@
 """
-内部管理 API —— 用户统计 / 活跃度 / 内容分析
-仅管理员访问（通过 ADMIN_SECRET header 鉴权）
+Internal Admin API — user statistics / activity / content analysis
+Admin access only (via ADMIN_SECRET header authentication)
 """
 
 import logging
@@ -23,7 +23,7 @@ settings = get_settings()
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
-# ── Admin 鉴权 ──
+# ── Admin authentication ──
 ADMIN_SECRET = settings.ADMIN_SECRET
 
 async def verify_admin(x_admin_key: str = Header(...)):
@@ -32,51 +32,51 @@ async def verify_admin(x_admin_key: str = Header(...)):
 
 
 # ══════════════════════════════════════════════════════════
-# 1. 总览仪表盘
+# 1. Overview Dashboard
 # ══════════════════════════════════════════════════════════
 
 @router.get("/overview", dependencies=[Depends(verify_admin)])
 async def overview(db: AsyncSession = Depends(get_db)):
-    """核心指标一览"""
+    """Core metrics overview"""
     now = datetime.now(timezone.utc)
     today = now.replace(hour=0, minute=0, second=0, microsecond=0)
     week_ago = today - timedelta(days=7)
     month_ago = today - timedelta(days=30)
 
-    # 总注册用户
+    # Total registered users
     total_users = (await db.execute(select(func.count(User.id)))).scalar() or 0
 
-    # 今日新注册
+    # New registrations today
     today_signups = (await db.execute(
         select(func.count(User.id)).where(User.created_at >= today)
     )).scalar() or 0
 
-    # 7天新注册
+    # New registrations in 7 days
     week_signups = (await db.execute(
         select(func.count(User.id)).where(User.created_at >= week_ago)
     )).scalar() or 0
 
-    # 30天新注册
+    # New registrations in 30 days
     month_signups = (await db.execute(
         select(func.count(User.id)).where(User.created_at >= month_ago)
     )).scalar() or 0
 
-    # DAU (今天有学习记录的用户)
+    # DAU (users with study records today)
     dau = (await db.execute(
         select(func.count(distinct(StudyStreak.user_id))).where(StudyStreak.date >= today)
     )).scalar() or 0
 
-    # WAU (7天内有学习记录)
+    # WAU (study records in 7 days)
     wau = (await db.execute(
         select(func.count(distinct(StudyStreak.user_id))).where(StudyStreak.date >= week_ago)
     )).scalar() or 0
 
-    # MAU (30天内有学习记录)
+    # MAU (study records in 30 days)
     mau = (await db.execute(
         select(func.count(distinct(StudyStreak.user_id))).where(StudyStreak.date >= month_ago)
     )).scalar() or 0
 
-    # 总对话数 / 总词汇数
+    # Total conversations / Total vocabulary
     total_conversations = (await db.execute(select(func.count(Conversation.id)))).scalar() or 0
     total_vocab = (await db.execute(select(func.count(VocabBook.id)))).scalar() or 0
     mastered_vocab = (await db.execute(
@@ -96,12 +96,12 @@ async def overview(db: AsyncSession = Depends(get_db)):
 
 
 # ══════════════════════════════════════════════════════════
-# 2. 注册趋势 (每日)
+# 2. Registration trend (daily)
 # ══════════════════════════════════════════════════════════
 
 @router.get("/signups/trend", dependencies=[Depends(verify_admin)])
 async def signup_trend(days: int = 30, db: AsyncSession = Depends(get_db)):
-    """每日新注册用户数"""
+    """Daily new user registrations"""
     since = datetime.now(timezone.utc) - timedelta(days=days)
     result = await db.execute(
         select(
@@ -116,12 +116,12 @@ async def signup_trend(days: int = 30, db: AsyncSession = Depends(get_db)):
 
 
 # ══════════════════════════════════════════════════════════
-# 3. DAU 趋势
+# 3. DAU trend
 # ══════════════════════════════════════════════════════════
 
 @router.get("/dau/trend", dependencies=[Depends(verify_admin)])
 async def dau_trend(days: int = 30, db: AsyncSession = Depends(get_db)):
-    """每日活跃用户数"""
+    """Daily active users"""
     since = datetime.now(timezone.utc) - timedelta(days=days)
     result = await db.execute(
         select(
@@ -136,7 +136,7 @@ async def dau_trend(days: int = 30, db: AsyncSession = Depends(get_db)):
 
 
 # ══════════════════════════════════════════════════════════
-# 4. 用户列表
+# 4. User list
 # ══════════════════════════════════════════════════════════
 
 @router.get("/users", dependencies=[Depends(verify_admin)])
@@ -148,10 +148,10 @@ async def user_list(
     active: Optional[bool] = None,
     db: AsyncSession = Depends(get_db),
 ):
-    """所有注册用户 — 分页 + 搜索/筛选"""
+    """All registered users — paginated + search/filter"""
     offset = (page - 1) * size
 
-    # 构建过滤条件
+    # Build filter conditions
     filters = []
     if search:
         like_pat = f"%{search}%"
@@ -198,38 +198,38 @@ async def user_list(
 
 
 # ══════════════════════════════════════════════════════════
-# 5. 单个用户详情
+# 5. Single user details
 # ══════════════════════════════════════════════════════════
 
 @router.get("/users/{user_id}", dependencies=[Depends(verify_admin)])
 async def user_detail(user_id: int, db: AsyncSession = Depends(get_db)):
-    """用户详情 + 学习统计"""
+    """User details + learning statistics"""
     user = (await db.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
     if not user:
         raise HTTPException(404, "User not found")
 
-    # 对话数
+    # Conversation count
     conv_count = (await db.execute(
         select(func.count(Conversation.id)).where(Conversation.user_id == user_id)
     )).scalar() or 0
 
-    # 词汇数
+    # Vocabulary count
     vocab_count = (await db.execute(
         select(func.count(VocabBook.id)).where(VocabBook.user_id == user_id)
     )).scalar() or 0
 
-    # 总学习分钟数
+    # Total study minutes
     total_minutes = (await db.execute(
         select(func.coalesce(func.sum(StudyStreak.minutes_studied), 0))
         .where(StudyStreak.user_id == user_id)
     )).scalar() or 0
 
-    # 连续打卡天数
+    # Consecutive check-in days
     streak_days = (await db.execute(
         select(func.count(StudyStreak.id)).where(StudyStreak.user_id == user_id)
     )).scalar() or 0
 
-    # 最近活跃
+    # Recent activity
     last_active = (await db.execute(
         select(func.max(StudyStreak.date)).where(StudyStreak.user_id == user_id)
     )).scalar()
@@ -252,12 +252,12 @@ async def user_detail(user_id: int, db: AsyncSession = Depends(get_db)):
 
 
 # ══════════════════════════════════════════════════════════
-# 6. 等级分布
+# 6. Level distribution
 # ══════════════════════════════════════════════════════════
 
 @router.get("/levels", dependencies=[Depends(verify_admin)])
 async def level_distribution(db: AsyncSession = Depends(get_db)):
-    """用户韩语等级分布"""
+    """User Korean level distribution"""
     result = await db.execute(
         select(User.korean_level, func.count(User.id))
         .group_by(User.korean_level)
@@ -266,12 +266,12 @@ async def level_distribution(db: AsyncSession = Depends(get_db)):
 
 
 # ══════════════════════════════════════════════════════════
-# 7. 学习时长统计
+# 7. Study duration stats
 # ══════════════════════════════════════════════════════════
 
 @router.get("/study/trend", dependencies=[Depends(verify_admin)])
 async def study_trend(days: int = 30, db: AsyncSession = Depends(get_db)):
-    """每日总学习分钟数"""
+    """Daily total study minutes"""
     since = datetime.now(timezone.utc) - timedelta(days=days)
     result = await db.execute(
         select(
@@ -286,12 +286,12 @@ async def study_trend(days: int = 30, db: AsyncSession = Depends(get_db)):
 
 
 # ══════════════════════════════════════════════════════════
-# 8. 用户管理 — 禁用/启用
+# 8. User management — disable/enable
 # ══════════════════════════════════════════════════════════
 
 @router.patch("/users/{user_id}/toggle", dependencies=[Depends(verify_admin)])
 async def toggle_user(user_id: int, db: AsyncSession = Depends(get_db)):
-    """切换用户 is_active 状态"""
+    """Toggle user is_active status"""
     user = (await db.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
     if not user:
         raise HTTPException(404, "User not found")
@@ -302,7 +302,7 @@ async def toggle_user(user_id: int, db: AsyncSession = Depends(get_db)):
 
 
 # ══════════════════════════════════════════════════════════
-# 9. 用户管理 — 编辑信息
+# 9. User management — edit info
 # ══════════════════════════════════════════════════════════
 
 @router.patch("/users/{user_id}", dependencies=[Depends(verify_admin)])
@@ -312,7 +312,7 @@ async def update_user(
     korean_level: Optional[str] = Body(None),
     db: AsyncSession = Depends(get_db),
 ):
-    """编辑用户昵称 / 韩语等级"""
+    """Edit user nickname / Korean level"""
     user = (await db.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
     if not user:
         raise HTTPException(404, "User not found")
@@ -333,12 +333,12 @@ async def update_user(
 
 
 # ══════════════════════════════════════════════════════════
-# 10. 用户管理 — 软删除
+# 10. User management — soft delete
 # ══════════════════════════════════════════════════════════
 
 @router.delete("/users/{user_id}", dependencies=[Depends(verify_admin)])
 async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
-    """软删除用户 (设 is_active=False)"""
+    """Soft delete user (set is_active=False)"""
     user = (await db.execute(select(User).where(User.id == user_id))).scalar_one_or_none()
     if not user:
         raise HTTPException(404, "User not found")
@@ -348,12 +348,12 @@ async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
 
 
 # ══════════════════════════════════════════════════════════
-# 11. 数据导出 — 用户列表
+# 11. Data export — user list
 # ══════════════════════════════════════════════════════════
 
 @router.get("/export/users", dependencies=[Depends(verify_admin)])
 async def export_users(db: AsyncSession = Depends(get_db)):
-    """全量用户列表 (前端转 CSV)"""
+    """Full user list (frontend converts to CSV)"""
     result = await db.execute(select(User).order_by(User.created_at.desc()))
     users = result.scalars().all()
     return [
@@ -371,12 +371,12 @@ async def export_users(db: AsyncSession = Depends(get_db)):
 
 
 # ══════════════════════════════════════════════════════════
-# 12. 数据导出 — 统计概览
+# 12. Data export — statistics overview
 # ══════════════════════════════════════════════════════════
 
 @router.get("/export/overview", dependencies=[Depends(verify_admin)])
 async def export_overview(db: AsyncSession = Depends(get_db)):
-    """KPI 汇总 (前端转 CSV)"""
+    """KPI summary (frontend converts to CSV)"""
     now = datetime.now(timezone.utc)
     today = now.replace(hour=0, minute=0, second=0, microsecond=0)
     week_ago = today - timedelta(days=7)

@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════
-   Korean Biz Coach — 商务韩语教练 Web UI
+   Korean Biz Coach — Business Korean Web UI
    Premium dark theme — champagne gold + deep navy
    ══════════════════════════════════════════════════════════ */
 
@@ -843,7 +843,7 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════
-   Check-in (打卡) Section
+   Check-in Section
    ══════════════════════════════════════════════════════════ */
 .checkin-section {
   background: linear-gradient(135deg, var(--bg-card) 0%, rgba(201,169,110,0.08) 100%);

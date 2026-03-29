@@ -1,5 +1,5 @@
 """
-FastAPI 应用入口
+FastAPI Application Entry Point
 """
 
 from contextlib import asynccontextmanager
@@ -20,7 +20,7 @@ from app.services.agent_service import agent_service
 
 settings = get_settings()
 
-# ── MCP Server 初始化（需要在 lifespan 中启动 task group）──
+# ── MCP Server init (requires lifespan for task group) ──
 _mcp_http_app = None
 try:
     from mcp_server.server import mcp as _mcp_server
@@ -41,9 +41,9 @@ async def lifespan(app: FastAPI):
         logger.info("Database tables ready")
     except Exception as e:
         logger.error("Database init failed (will retry on first request): %s", e)
-    # Cosmos DB（连不上则自动降级为内存 Mock，不阻塞启动）
+    # Cosmos DB (auto-fallback to in-memory Mock if unavailable)
     await init_cosmos()
-    # MCP Server lifespan（初始化 StreamableHTTPSessionManager task group）
+    # MCP Server lifespan (init StreamableHTTPSessionManager task group)
     if _mcp_http_app:
         async with _mcp_http_app.router.lifespan_context(_mcp_http_app):
             logger.info("MCP server lifespan initialized")
@@ -58,21 +58,21 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title=settings.APP_NAME,
-    description="商务韩语口语教练 API —— 支持文字/语音对话、发音评分、学习进度追踪",
+    description="Business Korean Speaking Coach API — text/voice chat, pronunciation scoring, learning progress",
     version="1.0.0",
     lifespan=lifespan,
 )
 
-# CORS（移动端需要）
+# CORS (needed for mobile)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 生产环境应限定具体域名
+    allow_origins=["*"],  # Production should restrict to specific domains
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 路由
+# Routes
 app.include_router(admin.router)
 app.include_router(auth.router)
 app.include_router(chat.router)
@@ -91,7 +91,7 @@ async def health():
     }
 
 
-# ── 根路径重定向到前端 ──
+# ── Root redirect to frontend ──
 @app.get("/")
 async def root():
     return RedirectResponse(url="/static/index.html")
@@ -102,13 +102,13 @@ async def admin_redirect():
     return RedirectResponse(url="/static/admin_dashboard.html")
 
 
-# ── 语料 MCP Server（Korean Business Teacher Tools, 供 Foundry Agent 远程访问）──
+# ── MCP Server (Korean Business Teacher Tools, for Foundry Agent remote access) ──
 if _mcp_http_app is not None:
     app.mount("/mcp", _mcp_http_app)
     import logging as _log
     _log.getLogger(__name__).info("MCP server mounted at /mcp/ (streamable-http, stateless)")
 
-# ── PWA: Service Worker 和 manifest 必须在根路径 ──
+# ── PWA: Service Worker and manifest must be at root path ──
 _static_dir = Path(__file__).resolve().parent.parent / "static"
 
 @app.get("/service-worker.js")
@@ -119,6 +119,6 @@ async def service_worker():
 async def manifest():
     return FileResponse(_static_dir / "manifest.json", media_type="application/manifest+json")
 
-# ── 静态文件（Web前端）──
+# ── Static files (Web frontend) ──
 if _static_dir.is_dir():
     app.mount("/static", StaticFiles(directory=str(_static_dir)), name="static")

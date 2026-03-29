@@ -1,9 +1,9 @@
 """
-注册 Portal Agent (korean-biz-coach + sujin-voice) 到 Azure AI Foundry。
+Register Portal Agents (korean-biz-coach + sujin-voice) to Azure AI Foundry.
 
-两个 Agent 都通过 MCPTool 连接 MCP Server, 动态发现和执行工具。
+Both Agents connect to MCP Server via MCPTool for dynamic tool discovery and execution.
 
-运行: python scripts/register_tools.py
+Usage: python scripts/register_tools.py
 """
 import os
 import sys

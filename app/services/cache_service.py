@@ -1,6 +1,6 @@
 """
-缓存服务 —— Redis 封装（Redis 不可用时自动 fallback 到内存缓存）
-用于：对话上下文缓存、用户会话、学习连续打卡、热点数据
+Cache service — Redis wrapper (auto-fallback to in-memory cache when Redis unavailable)
+For: conversation context cache, user sessions, learning streaks, hot data
 """
 
 import json
@@ -53,7 +53,7 @@ class CacheService:
                 _redis_ok = False
             return None
 
-    # ── 对话线程映射（user_id → thread_id）──
+    # ── Conversation thread mapping (user_id → thread_id) ──
     async def get_thread_id(self, user_id: int) -> str | None:
         r = await self._redis()
         if r:
@@ -83,7 +83,7 @@ class CacheService:
                 pass
         _mem_cache.pop(f"thread:{user_id}", None)
 
-    # ── 对话上下文摘要缓存 ──
+    # ── Conversation context summary cache ──
     async def cache_conversation_context(self, thread_id: str, context: dict, ttl: int = 3600):
         r = await self._redis()
         if r:
@@ -105,7 +105,7 @@ class CacheService:
         data = _mem_get(f"ctx:{thread_id}")
         return json.loads(data) if data else None
 
-    # ── 今日学习打卡 ──
+    # ── Daily study check-in ──
     async def record_study_session(self, user_id: int, minutes: int):
         r = await self._redis()
         if r:
@@ -131,7 +131,7 @@ class CacheService:
         val = _mem_get(f"study:{user_id}:today")
         return int(val) if val else 0
 
-    # ── 学习连续天数 ──
+    # ── Learning streak days ──
     async def get_streak(self, user_id: int) -> int:
         r = await self._redis()
         if r:
@@ -153,7 +153,7 @@ class CacheService:
                 pass
         _mem_set(f"streak:{user_id}", str(days), ttl)
 
-    # ── 通用 JSON 缓存 ──
+    # ── General JSON cache ──
     async def get_json(self, key: str) -> Any:
         r = await self._redis()
         if r:
@@ -175,9 +175,9 @@ class CacheService:
                 pass
         _mem_set(key, json.dumps(value, ensure_ascii=False), ttl)
 
-    # ── API 限流 ──
+    # ── API rate limiting ──
     async def check_rate_limit(self, user_id: int, limit: int = 60, window: int = 60) -> bool:
-        """返回 True 表示允许请求。"""
+        """Returns True if request is allowed."""
         r = await self._redis()
         if r:
             try:

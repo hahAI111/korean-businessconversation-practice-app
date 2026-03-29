@@ -1,5 +1,5 @@
 """
-JWT 认证工具 — 支持自签 HS256 + Microsoft Entra ID RS256 双轨认证
+JWT auth utilities — dual-track: self-signed HS256 + Microsoft Entra ID RS256
 """
 
 import time

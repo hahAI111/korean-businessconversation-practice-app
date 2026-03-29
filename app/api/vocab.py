@@ -1,5 +1,5 @@
 """
-生词本 API
+Vocabulary book API
 """
 
 from fastapi import APIRouter, Depends, HTTPException

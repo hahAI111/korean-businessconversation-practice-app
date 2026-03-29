@@ -1,7 +1,7 @@
 """
-Redis 客户端 —— 会话缓存 / 对话上下文 / 限流
-支持 REDIS_URL=fake 时使用 fakeredis（本地开发）
-Access key 连不上时自动降级为内存缓存，并通过 /api/chat/redis-check 暴露状态
+Redis client — session cache / conversation context / rate limiting
+Uses fakeredis when REDIS_URL=fake (local dev)
+Auto-fallback to in-memory cache when access key fails; /api/chat/redis-check exposes status
 """
 
 import logging

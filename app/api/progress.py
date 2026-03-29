@@ -1,5 +1,5 @@
 """
-学习进度 + 课程 API
+Learning progress + course API
 """
 
 from datetime import datetime, timedelta, timezone
@@ -89,7 +89,7 @@ async def checkin(
     user_id: int = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
-    """学习打卡 — 每日签到，记录学习活动并更新连续天数"""
+    """Daily check-in — record learning activity and update streak"""
     today = datetime.now(timezone.utc).date()
     today_dt = datetime(today.year, today.month, today.day, tzinfo=timezone.utc)
 
@@ -107,7 +107,7 @@ async def checkin(
             "checked_in": True,
             "already": True,
             "minutes_today": existing.minutes_studied,
-            "message": "今天已经打卡了！继续加油 💪",
+            "message": "Already checked in today! Keep it up 💪",
         }
 
     # Create today's streak record
@@ -142,5 +142,5 @@ async def checkin(
         "checked_in": True,
         "already": False,
         "streak_days": consecutive,
-        "message": f"打卡成功！连续学习 {consecutive} 天 🔥",
+        "message": f"Check-in successful! {consecutive} day streak 🔥",
     }

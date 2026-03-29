@@ -1,5 +1,5 @@
 """
-认证 API —— 注册（含邮箱验证码） / 登录 / Microsoft 登录
+Auth API — registration (with email verification) / login / Microsoft login
 """
 
 import logging
@@ -29,7 +29,7 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 @router.post("/send-code")
 async def send_code(body: SendCodeRequest, db: AsyncSession = Depends(get_db)):
-    """发送邮箱验证码（注册前调用）"""
+    """Send email verification code (called before registration)"""
     # Check if email already registered
     existing = await db.execute(select(User).where(User.email == body.email))
     if existing.scalar_one_or_none():
@@ -83,7 +83,7 @@ async def login(body: UserLogin, db: AsyncSession = Depends(get_db)):
 
 @router.post("/microsoft", response_model=TokenResponse)
 async def microsoft_login(body: MicrosoftAuthRequest, db: AsyncSession = Depends(get_db)):
-    """Microsoft Entra ID 登录 — 验证 Microsoft ID token，自动注册/登录"""
+    """Microsoft Entra ID login — verify Microsoft ID token, auto-register/login"""
     claims = await validate_microsoft_id_token(body.id_token)
 
     email = claims.get("preferred_username") or claims.get("email", "")

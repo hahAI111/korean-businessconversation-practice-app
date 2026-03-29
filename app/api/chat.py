@@ -1,5 +1,5 @@
 """
-对话 API —— 文字聊天 + 语音聊天
+Chat API — Text chat + Voice chat
 """
 
 import asyncio
@@ -46,7 +46,7 @@ async def _save_messages(user_id: int, thread_id: str, user_msg: str, assistant_
             {"role": "user", "content": user_msg, "timestamp": now},
             {"role": "assistant", "content": assistant_msg, "timestamp": now},
         ]
-        # 按 thread_id 查找现有对话
+        # Find existing conversation by thread_id
         convos = await cosmos_service.list_conversations(user_id, limit=50)
         existing = next((c for c in convos if c.get("thread_id") == thread_id), None)
 
@@ -72,11 +72,11 @@ async def _save_messages(user_id: int, thread_id: str, user_msg: str, assistant_
 @router.post("", response_model=ChatResponse)
 async def chat(body: ChatRequest, user_id: int = Depends(get_current_user_id)):
     try:
-        # 限流
+        # Rate limit
         if not await cache_service.check_rate_limit(user_id):
             raise HTTPException(status_code=429, detail="Too many requests, please try again later")
 
-        # 获取或创建 thread
+        # Get or create thread
         thread_id = body.thread_id
         if not thread_id:
             thread_id = await cache_service.get_thread_id(user_id)
@@ -84,15 +84,15 @@ async def chat(body: ChatRequest, user_id: int = Depends(get_current_user_id)):
             thread_id = agent_service.create_thread()
             await cache_service.set_thread_id(user_id, thread_id)
 
-        # 调用 Agent (blocking SDK → run in thread to avoid blocking event loop)
+        # Call Agent (blocking SDK → run in thread to avoid blocking event loop)
         import asyncio
         reply = await asyncio.to_thread(agent_service.chat, thread_id, body.message)
 
-        # TTS 不再同步生成 —— 前端点击播放按钮时通过 /api/chat/tts 按需获取
-        # 这样用户可以立刻看到文字回复，不用等 2-4 秒的语音合成
+        # TTS is no longer generated synchronously — frontend fetches via /api/chat/tts on-demand
+        # This way user sees text reply immediately without waiting 2-4s for speech synthesis
         reply_audio_base64 = None
 
-        # Fire-and-forget: 记录学习时间 + 保存对话 + 学习事件
+        # Fire-and-forget: record study time + save conversation + learning event
         async def _background_saves():
             try:
                 await cache_service.record_study_session(user_id, 1)
@@ -122,7 +122,7 @@ async def chat(body: ChatRequest, user_id: int = Depends(get_current_user_id)):
 
 @router.post("/stream")
 async def chat_stream(body: ChatRequest, user_id: int = Depends(get_current_user_id)):
-    """SSE streaming chat — 逐字返回回复。"""
+    """SSE streaming chat — stream response tokens."""
     try:
         if not await cache_service.check_rate_limit(user_id):
             raise HTTPException(status_code=429, detail="Too many requests")
@@ -419,7 +419,7 @@ async def cosmos_check():
 
 @router.post("/voice", response_model=VoiceChatResponse)
 async def voice_chat(body: VoiceChatRequest, user_id: int = Depends(get_current_user_id)):
-    """语音对话：音频输入 → STT → Agent → TTS → 音频输出（不依赖Redis）"""
+    """Voice chat: audio input → STT → Agent → TTS → audio output (Redis-independent)"""
     print(f"[VOICE] start, audio_len={len(body.audio_base64)}, lang={body.language}", flush=True)
 
     try:
@@ -430,12 +430,12 @@ async def voice_chat(body: VoiceChatRequest, user_id: int = Depends(get_current_
         if not user_text:
             raise HTTPException(status_code=400, detail="Could not recognize speech, please try again")
 
-        # 2) 创建 thread（不依赖Redis）
+        # 2) Create thread (Redis-independent)
         thread_id = body.thread_id
         if not thread_id:
             thread_id = agent_service.create_thread()
 
-        # 3) Agent 对话（用voice agent，纯韩语短回复）
+        # 3) Agent chat (voice agent, short Korean replies)
         print("[VOICE] calling Agent...", flush=True)
         reply_text = agent_service.voice_chat(thread_id, user_text)
         print(f"[VOICE] Agent done: {len(reply_text)} chars", flush=True)

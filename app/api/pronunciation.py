@@ -1,5 +1,5 @@
 """
-发音评分 API
+Pronunciation scoring API
 """
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -16,12 +16,12 @@ async def score_pronunciation(
     body: PronunciationRequest,
     user_id: int = Depends(get_current_user_id),
 ):
-    """对用户韩语发音评分。"""
+    """Score user's Korean pronunciation."""
     result = await assess_pronunciation(
         audio_base64=body.audio_base64,
         reference_text=body.reference_text,
         language=body.language,
     )
     if result["pronunciation_score"] == 0 and not result["words"]:
-        raise HTTPException(status_code=400, detail="无法评估发音，请重试")
+        raise HTTPException(status_code=400, detail="Could not assess pronunciation, please try again")
     return result

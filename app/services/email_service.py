@@ -1,5 +1,5 @@
 """
-邮箱验证码服务 —— 生成 / 存 Redis / 发邮件 / 验证
+Email verification service — generate / store in Redis / send email / verify
 """
 
 import logging

@@ -1,5 +1,5 @@
 """
-API 数据模型 (Pydantic schemas)
+API data models (Pydantic schemas)
 """
 
 from datetime import datetime

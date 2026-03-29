@@ -1,6 +1,6 @@
 """
-scripts/seed_drama_cosmos.py — 将 business_korean.json 中的 drama_dialogues 导入 Cosmos DB drama_content 容器
-用法: python -m scripts.seed_drama_cosmos
+scripts/seed_drama_cosmos.py — Import drama_dialogues from business_korean.json into Cosmos DB drama_content container
+Usage: python -m scripts.seed_drama_cosmos
 """
 
 import asyncio
@@ -28,7 +28,7 @@ async def seed():
 
     for i, dialog in enumerate(dialogues):
         drama_name = dialog.get("drama", "unknown")
-        # 用 drama 名作为 partition key 值
+        # Use drama name as partition key value
         drama_id = drama_name.split("(")[0].strip()
 
         doc = {
