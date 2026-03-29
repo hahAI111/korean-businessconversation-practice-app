@@ -4,7 +4,7 @@ excluded = {'.venv', '__pycache__', '.git', '.azure', '_bmad', 'bmad-docs', 'app
 excluded_files = {'docker_log_today.txt', 'docker-compose.yml', 'Dockerfile', '.env.local', '.zipignore', 'deploy.zip', 'deploy2.zip', 'check_deploy.py', 'make_zip.py'}
 excluded_ext = {'.pyc', '.zip'}
 
-zf = zipfile.ZipFile('deploy2.zip', 'w', zipfile.ZIP_DEFLATED)
+zf = zipfile.ZipFile('deploy.zip', 'w', zipfile.ZIP_DEFLATED)
 count = 0
 for root, dirs, files in os.walk('.'):
     dirs[:] = [d for d in dirs if d not in excluded]
