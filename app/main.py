@@ -20,6 +20,15 @@ from app.services.agent_service import agent_service
 
 settings = get_settings()
 
+# ── MCP Server 初始化（需要在 lifespan 中启动 task group）──
+_mcp_http_app = None
+try:
+    from mcp_server.server import mcp as _mcp_server
+    _mcp_http_app = _mcp_server.http_app(path="/", transport="streamable-http", stateless_http=True)
+except Exception as _e:
+    import logging as _log
+    _log.getLogger(__name__).warning("Failed to create MCP app: %s", _e)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -34,7 +43,13 @@ async def lifespan(app: FastAPI):
         logger.error("Database init failed (will retry on first request): %s", e)
     # Cosmos DB（连不上则自动降级为内存 Mock，不阻塞启动）
     await init_cosmos()
-    yield
+    # MCP Server lifespan（初始化 StreamableHTTPSessionManager task group）
+    if _mcp_http_app:
+        async with _mcp_http_app.router.lifespan_context(_mcp_http_app):
+            logger.info("MCP server lifespan initialized")
+            yield
+    else:
+        yield
     # Shutdown
     agent_service.cleanup()
     await close_cosmos()
@@ -83,14 +98,10 @@ async def root():
 
 
 # ── 语料 MCP Server（Korean Business Teacher Tools, 供 Foundry Agent 远程访问）──
-try:
-    from mcp_server.server import mcp as _mcp_server
-    app.mount("/mcp", _mcp_server.http_app(path="/", transport="streamable-http", stateless_http=True))
+if _mcp_http_app is not None:
+    app.mount("/mcp", _mcp_http_app)
     import logging as _log
     _log.getLogger(__name__).info("MCP server mounted at /mcp/ (streamable-http, stateless)")
-except Exception as _e:
-    import logging as _log
-    _log.getLogger(__name__).warning("Failed to mount MCP server: %s", _e)
 
 # ── PWA: Service Worker 和 manifest 必须在根路径 ──
 _static_dir = Path(__file__).resolve().parent.parent / "static"
