@@ -43,6 +43,7 @@ body {
   position: fixed; width: 100%; top: 0; z-index: 100;
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
+  box-sizing: border-box;
 }
 
 .nav-brand {
@@ -54,6 +55,7 @@ body {
 
 .nav-links {
   list-style: none; display: flex; gap: 1.5rem; align-items: center;
+  margin: 0; padding: 0;
 }
 .nav-links a {
   color: var(--text-muted); text-decoration: none;
@@ -568,9 +570,10 @@ body {
 .profile-dropdown { position: relative; }
 .profile-trigger {
   display: flex; align-items: center; gap: 0.5rem;
-  background: none; border: 1px solid transparent; border-radius: 8px;
+  background: transparent; border: 1px solid transparent; border-radius: 8px;
   color: var(--text); cursor: pointer; padding: 0.3rem 0.6rem;
-  transition: all 0.2s;
+  transition: all 0.2s; -webkit-appearance: none; appearance: none;
+  font-family: inherit; font-size: inherit; line-height: 1.4;
 }
 .profile-trigger:hover {
   background: var(--bg-card); border-color: var(--border);
@@ -593,10 +596,10 @@ body {
 
 .profile-menu {
   display: none; position: absolute; right: 0; top: calc(100% + 6px);
-  min-width: 220px; background: var(--bg-card);
+  min-width: 240px; background: var(--bg-card);
   border: 1px solid var(--border-hover); border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-  z-index: 200; overflow: hidden;
+  z-index: 300; overflow: hidden;
   animation: dropdownFadeIn 0.15s ease;
 }
 .profile-menu.open { display: block; }
