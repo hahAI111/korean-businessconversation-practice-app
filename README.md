@@ -226,15 +226,27 @@ This is NOT a textbook Korean app. Korean Biz Coach teaches **natural Korean as 
 | 확인하겠습니다 (I'll check / 확인하겠습니다) | 네, 확인해 볼게요. 좀 이따 알려드릴게요~ |
 | 죄송합니다 (Sorry / 죄송합니다) | 아, 죄송해요~ 제가 깜빡했네요 |
 
-### Key sentence endings taught / 가르치는 핵심 어미
+### Key sentence endings taught / 가르치는 핵심 어미 / 核心语尾
 
-| Ending / 어미 | Usage / 용법 | Example / 예시 |
+| Ending / 어미 | Usage / 用法 | Example / 예시 |
 |---|---|---|
-| -거든요 | Giving reason / 이유 제시 | 늦어서 죄송해요, 회의가 길어졌**거든요** |
-| -잖아요 | Shared knowledge / 공유된 지식 | 이 프로젝트 중요하**잖아요** |
-| -더라고요 | Personal observation / 경험 관찰 | 어제 써봤는데 괜찮**더라고요** |
-| -네요 | Discovery/surprise / 발견/놀라움 | 벌써 끝났**네요**! |
-| -죠 | Seeking agreement / 동의 구하기 | 내일까지 맞**죠**? |
+| -거든요 | 说明原因 Giving reason | 늦어서 죄송해요, 회의가 길어졌**거든요** |
+| -잖아요 | 共知确认 Shared knowledge | 이 프로젝트 중요하**잖아요** |
+| -더라고요 | 亲身经历 Personal observation | 어제 써봤는데 괜찮**더라고요** |
+| -네요 | 发现/惊叹 Discovery/surprise | 벌써 끝났**네요**! |
+| -죠 | 求同意 Seeking agreement | 내일까지 맞**죠**? |
+
+### Key connectors taught / 가르치는 핵심 연결어미 / 核心连接词
+
+| Connector / 연결어미 | Usage / 用法 | Example / 예시 |
+|---|---|---|
+| -는데 | 背景/转折 Background/contrast | 보고서 다 썼**는데**, 봐 주실 수 있으세요? |
+| -면서 | 同时进行 Simultaneous actions | 회의하**면서** 점심 먹을까요? |
+| -다가 | 中途转换 Mid-action switch | 자료 정리하**다가** 문제를 발견했어요 |
+| -더니 | 观察→结果 Observed result | 열심히 준비하**더니** 결과가 좋네요 |
+| -길래 | 因为看到/听到 Because I saw/heard | 좋은 기회**길래** 바로 지원했어요 |
+| -(으)니까 | 原因/理由 Reason (stronger) | 시간이 없**으니까** 빨리 합시다 |
+| -아/어서 | 原因/顺序 Cause or sequence | 비가 **와서** 택시 탔어요 |
 
 ---
 
